@@ -1,0 +1,30 @@
+version: '3.7'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: scorewarriors
+      POSTGRES_USER: scorewarriors
+      POSTGRES_PASSWORD: defaultpassword
+    container_name: postgres
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    environment:
+      - PORT=${PORT}
+    ports:
+      - '3300:3300'
+    depends_on:
+      - db
+    volumes:
+      - ./backend/src:/app/src
+    
