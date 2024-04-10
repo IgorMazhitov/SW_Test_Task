@@ -19,8 +19,6 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: backend
-    environment:
-      - PORT=${PORT}
     ports:
       - '3300:3300'
     depends_on:
