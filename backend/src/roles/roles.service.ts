@@ -12,12 +12,12 @@ export class RolesService {
   ) {}
 
   async createRole(dto: CreateRoleDto) {
-    const user: Role = await this.rolesRepository.save(dto)
-    return user
+    const role: Role = await this.rolesRepository.save(dto)
+    return role
   }
 
-  async getAllUsers() {
-    const users: Role[] = await this.rolesRepository.find()
-    return users
+  async getAllRoles() {
+    const roles: Role[] = await this.rolesRepository.find()
+    return roles
   }
 }
