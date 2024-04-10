@@ -6,6 +6,9 @@ import { User } from './users/database/user.entity';
 import { RolesModule } from './roles/roles.module';
 import { Role } from './roles/database/role.entity';
 import { AuthModule } from './auth/auth.module';
+import { ActionsModule } from './actions/actions.module';
+import { Action } from './actions/database/action.entity';
+import { Item } from './actions/database/item.entity';
 
 @Module({
   imports: [
@@ -19,13 +22,14 @@ import { AuthModule } from './auth/auth.module';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [User, Role],
+      entities: [User, Role, Action, Item],
       synchronize: true,
       autoLoadEntities: true
     }),
     UsersModule,
     RolesModule,
-    AuthModule
+    AuthModule,
+    ActionsModule
   ],
   controllers: [],
   providers: [],

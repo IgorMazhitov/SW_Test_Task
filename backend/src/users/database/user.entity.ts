@@ -1,6 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToMany, JoinTable, ManyToOne } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Role } from 'src/roles/database/role.entity';
+import { Item } from '../../actions/database/item.entity';
+import { Action } from 'src/actions/database/action.entity';
 
 @Entity()
 export class User {
@@ -27,4 +29,14 @@ export class User {
   @ManyToOne(() => Role, role => role.users)
   @ApiProperty({ type: () => Role, description: 'The role of the user.' })
   role: Role;
+
+  @ManyToMany(() => Item, item => item.users)
+  @JoinTable()
+  @ApiProperty({ type: () => Item, isArray: true, description: 'The items owned by the user.' })
+  items: Item[];
+
+  @ManyToMany(() => Action)
+  @JoinTable()
+  @ApiProperty()
+  actions: Action[];
 }

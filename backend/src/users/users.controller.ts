@@ -4,7 +4,7 @@ import { CreateUserDto } from "./dtos/create-user.dto";
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import { Roles } from "src/auth/roles-auth.decorator";
 import { RolesGuard } from "src/auth/roles.guard";
-import { ChangeRoleDto } from "./dtos/change-role.dto";
+import { ChangeUserDto } from "./dtos/change-user.dto";
 
 @Controller('users')
 export class UsersController {
@@ -12,6 +12,8 @@ export class UsersController {
     private usersService: UsersService
   ) {}
 
+  @UseGuards(RolesGuard)
+  @Roles("Admin")
   @Post('create')
   create(@Body() userDto: CreateUserDto) {
     return this.usersService.createUser(userDto)
@@ -20,8 +22,8 @@ export class UsersController {
   @UseGuards(RolesGuard)
   @Roles("Admin")
   @Post('role')
-  changeUsersRole(@Body() dto: ChangeRoleDto) {
-    return this.usersService.changeUsersRole(dto)
+  changeUser(@Body() dto: ChangeUserDto) {
+    return this.usersService.changeUser(dto)
   }
 
   @UseGuards(RolesGuard)
