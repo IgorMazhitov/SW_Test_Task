@@ -9,12 +9,12 @@ export class RolesController {
   ) {}
 
   @Post('create')
-  create(@Body() roleDto: CreateRoleDto) {
+  createRole(@Body() roleDto: CreateRoleDto) {
     return this.rolesService.createRole(roleDto)
   }
 
   @Get()
-  getAllUsers() {
+  getAllRoles() {
     return this.rolesService.getAllRoles()
   }
 }

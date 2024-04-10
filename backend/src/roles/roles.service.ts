@@ -8,16 +8,24 @@ import { CreateRoleDto } from './dtos/create-role.dto';
 export class RolesService {
   constructor(
     @InjectRepository(Role)
-    private rolesRepository: Repository<Role>
+    private rolesRepository: Repository<Role>,
   ) {}
 
   async createRole(dto: CreateRoleDto) {
-    const role: Role = await this.rolesRepository.save(dto)
-    return role
+    try {
+      const role: Role = await this.rolesRepository.save(dto);
+      return role;
+    } catch (error) {
+      throw new Error(`Error during role creation: ${error.message}`);
+    }
   }
 
   async getAllRoles() {
-    const roles: Role[] = await this.rolesRepository.find()
-    return roles
+    try {
+      const roles: Role[] = await this.rolesRepository.find();
+      return roles;
+    } catch (error) {
+      throw new Error(`Error during role creation: ${error.message}`);
+    }
   }
 }
