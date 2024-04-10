@@ -31,6 +31,7 @@ export class UsersService {
           },
         });
       }
+      console.log(role, dto, 'test')
       const user: User = await this.usersRepository.save({
         ...dto,
         role,

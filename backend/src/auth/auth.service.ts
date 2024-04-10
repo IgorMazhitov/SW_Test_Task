@@ -36,6 +36,7 @@ export class AuthService {
             throw new HttpException('User with this email already existing', HttpStatus.BAD_REQUEST)
         }
         const hashPassword = await crypt.hash(userDto.password, 5)
+        console.log('step')
         const user = await this.usersService.createUser({
             ...userDto,
             password: hashPassword

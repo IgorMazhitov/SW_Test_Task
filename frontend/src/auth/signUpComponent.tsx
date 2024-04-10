@@ -4,7 +4,7 @@ import axios from 'axios';
 interface SignupProps {}
 
 const SignupComponent: React.FC<SignupProps> = () => {
-  const [username, setUsername] = useState('');
+  const [userName, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [roleId, setRoleId] = useState<number | null>(null);
@@ -14,7 +14,7 @@ const SignupComponent: React.FC<SignupProps> = () => {
     e.preventDefault();
 
     // Basic validation
-    if (!username || !email || !password) {
+    if (!userName || !email || !password) {
       setErrorMessage('Please fill in all required fields');
       return;
     }
@@ -23,7 +23,7 @@ const SignupComponent: React.FC<SignupProps> = () => {
       const response = await axios.post<any>( // Type annotation for response
         'http://localhost:3300/auth/signup',
         {
-          username,
+          userName,
           email,
           password,
           roleId,
@@ -32,18 +32,19 @@ const SignupComponent: React.FC<SignupProps> = () => {
 
       console.log('Signup successful:', response.data);
     } catch (error: any) {
-      setErrorMessage(error.response.data.message); 
+      setErrorMessage(error.response?.data?.message); 
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label htmlFor="username">Username</label>
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <label htmlFor="userName">Username</label>
       <input
         type="text"
-        id="username"
-        value={username}
+        id="userName"
+        value={userName}
         onChange={(e) => setUsername(e.target.value)}
+        style={{ padding: '5px', border: '1px solid #ccc' }}
       />
       <label htmlFor="email">Email</label>
       <input
@@ -51,6 +52,7 @@ const SignupComponent: React.FC<SignupProps> = () => {
         id="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
+        style={{ padding: '5px', border: '1px solid #ccc' }}
       />
       <label htmlFor="password">Password</label>
       <input
@@ -60,6 +62,7 @@ const SignupComponent: React.FC<SignupProps> = () => {
         onChange={(e) => setPassword(e.target.value)}
         minLength={4} // Basic password length validation
         maxLength={16}
+        style={{ padding: '5px', border: '1px solid #ccc' }}
       />
       <label htmlFor="roleId">Role Id (Optional)</label>
       <input
@@ -67,12 +70,14 @@ const SignupComponent: React.FC<SignupProps> = () => {
         id="roleId"
         value={roleId || ''} // Handle empty value
         onChange={(e) => setRoleId(Number(e.target.value))}
+        style={{ padding: '5px', border: '1px solid #ccc' }}
       />
       {errorMessage && <p className="error">{errorMessage}</p>}
-      <button type="submit">Signup</button>
+      <button type="submit" style={{ backgroundColor: '#4CAF50', color: 'white', padding: '10px 15px', borderRadius: '5px' }}>
+        Signup
+      </button>
     </form>
   );
 };
 
 export default SignupComponent;
-

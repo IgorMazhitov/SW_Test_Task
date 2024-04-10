@@ -7,7 +7,7 @@ async function bootstrap() {
   const appPort = process.env.PORT || 3300
   const appEnv = process.env.NODE_ENV
 
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {cors: true});
 
   const config = new DocumentBuilder()
                         .setTitle('ScoreWarriors')

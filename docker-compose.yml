@@ -28,6 +28,8 @@ services:
 
   frontend:
     container_name: frontend
+    depends_on:
+      - backend
     build:
       context: ./frontend
       dockerfile: Dockerfile
