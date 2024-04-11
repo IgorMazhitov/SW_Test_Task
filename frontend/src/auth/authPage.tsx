@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import LoginComponent from './logInComponent';
-import SignupComponent from './signUpComponent';
+import React, { useState } from "react";
+import LoginComponent from "./logInComponent";
+import SignupComponent from "./signUpComponent";
 
 interface AuthFormProps {}
 
@@ -11,14 +11,25 @@ const AuthForm: React.FC<AuthFormProps> = () => {
     setIsSignup(!isSignup);
   };
 
-  return (
-    <div>
-      {isSignup ? <SignupComponent /> : <LoginComponent />}
-      <button onClick={toggleForm}>
-        {isSignup ? 'Switch to Login' : 'Switch to Signup'}
-      </button>
-    </div>
-  );
+  if (!isSignup) {
+    return (
+      <>
+        <LoginComponent />
+        <button onClick={toggleForm}>
+          {isSignup ? "Switch to LogIn" : "Switch to SignUp"}
+        </button>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <SignupComponent />
+        <button onClick={toggleForm}>
+          {isSignup ? "Switch to LogIn" : "Switch to SignUp"}
+        </button>
+      </>
+    );
+  }
 };
 
 export default AuthForm;

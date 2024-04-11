@@ -42,7 +42,11 @@ export class Action {
 
   @Column({ nullable: true })
   @ApiProperty()
-  itemIds?: string;
+  itemId?: number;
+
+  @Column({ nullable: true })
+  @ApiProperty()
+  userGetId?: number;
 
   @ManyToMany(() => User)
   @JoinTable()

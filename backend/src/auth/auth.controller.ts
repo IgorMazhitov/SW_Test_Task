@@ -13,11 +13,13 @@ export class AuthController {
 
     @Post('/login')
     logIn(@Body() userDto: CreateUserDto) {
+        console.log('login')
         return this.authService.logIn(userDto)
     }
 
     @Post('/signup')
     signUp(@Body() userDto: CreateUserDto) {
+        console.log('signup')
         return this.authService.signUp(userDto)
     }
 }

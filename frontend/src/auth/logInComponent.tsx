@@ -1,67 +1,66 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
+import { Context } from "..";
+import { observer } from "mobx-react-lite";
 
 interface LoginProps {}
 
 const LoginComponent: React.FC<LoginProps> = () => {
-  const [userName, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    try {
-        console.log(password, userName)
-      const response = await fetch("http://localhost:3300/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userName, password }),
-      });
-
-      console.log("Login successful:", response);
-      // Handle successful login (e.g., store token, redirect)
-    } catch (error) {
-      console.log(error);
-      setErrorMessage("Invalid userName or password");
-    }
-  };
+  const { store } = useContext(Context);
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{ display: "flex", flexDirection: "column", gap: "10px" }}
+    <div
+      style={{
+        width: "max-content",
+        height: "max-content",
+        margin: "0 auto",
+        padding: "20px",
+        boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)",
+        borderRadius: "5px",
+        textAlign: "center",
+      }}
     >
-      <label htmlFor="userName">Username</label>
-      <input
-        type="text"
-        id="userName"
-        value={userName}
-        onChange={(e) => setUsername(e.target.value)}
-        style={{ padding: "5px", border: "1px solid #ccc" }}
-      />
-      <label htmlFor="password">Password</label>
-      <input
-        type="password"
-        id="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        style={{ padding: "5px", border: "1px solid #ccc" }}
-      />
-      {errorMessage && <p className="error">{errorMessage}</p>}
-      <button
-        type="submit"
+      <div
         style={{
-          backgroundColor: "#4CAF50",
-          color: "white",
-          padding: "10px 15px",
-          borderRadius: "5px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginBottom: "20px",
         }}
       >
-        Login
-      </button>
-    </form>
+        <input
+          onChange={(e) => setEmail(e.target.value)}
+          value={email}
+          type="text"
+          placeholder="Email"
+          style={{ marginRight: "10px" }}
+        />
+        <input
+          onChange={(e) => setPassword(e.target.value)}
+          value={password}
+          type="password"
+          placeholder="Password"
+          style={{ marginRight: "10px" }}
+        />
+        <button
+          onClick={() => store.login(email, password)}
+          style={{
+            padding: "10px 20px",
+            borderRadius: "5px",
+            backgroundColor: "#007bff",
+            color: "#fff",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          Log In
+        </button>
+      </div>
+    </div>
   );
 };
 
-export default LoginComponent;
+export default observer(LoginComponent);

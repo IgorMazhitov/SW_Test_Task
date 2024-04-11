@@ -5,7 +5,7 @@ import { Observable } from "rxjs";
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
     constructor(
-        private jwsService: JwtService
+        private jwtService: JwtService
     ) {}
     canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
         try {
@@ -20,7 +20,7 @@ export class JwtAuthGuard implements CanActivate {
                 })
             }
 
-            const user = this.jwsService.verify(token)
+            const user = this.jwtService.verify(token)
 
             req.user = user
             return true

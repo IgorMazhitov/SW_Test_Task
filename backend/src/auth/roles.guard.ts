@@ -7,7 +7,7 @@ import { ROLES_KEY } from "./roles-auth.decorator";
 @Injectable()
 export class RolesGuard implements CanActivate {
     constructor(
-        private jwsService: JwtService,
+        private jwtService: JwtService,
         private reflector: Reflector
     ) {}
     canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
@@ -30,10 +30,9 @@ export class RolesGuard implements CanActivate {
                 })
             }
 
-            const user = this.jwsService.verify(token)
+            const user = this.jwtService.verify(token)
 
             req.user = user
-            console.log(user.role, requiredRole)
             return user.role.name === requiredRole
         } catch (error) {
             throw new HttpException('User is not admin', HttpStatus.FORBIDDEN)

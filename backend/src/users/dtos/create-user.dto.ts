@@ -1,6 +1,7 @@
 import { IsEmail, IsNumber, IsOptional, IsString, Length } from "class-validator";
 
 export class CreateUserDto {
+    @IsOptional()
     @IsString({ message: 'User name has to be a string'})
     readonly userName: string;
     @IsString({ message: 'User email has to be a string'})

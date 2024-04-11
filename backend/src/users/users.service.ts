@@ -2,9 +2,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './database/user.entity';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { Role } from 'src/roles/database/role.entity';
 import { ChangeUserDto } from './dtos/change-user.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
@@ -13,6 +14,7 @@ export class UsersService {
     private usersRepository: Repository<User>,
     @InjectRepository(Role)
     private rolesRepository: Repository<Role>,
+    private jwtService: JwtService,
   ) {}
 
   async createUser(dto: CreateUserDto) {
@@ -31,7 +33,7 @@ export class UsersService {
           },
         });
       }
-      console.log(role, dto, 'test')
+      console.log(role, dto, 'test');
       const user: User = await this.usersRepository.save({
         ...dto,
         role,
@@ -70,13 +72,27 @@ export class UsersService {
     }
   }
 
-  async getAllUsers() {
+  async getAllUsers(token) {
     try {
-      const users: User[] = await this.usersRepository.find({
-        relations: {
-          role: true,
-        },
-      });
+      const user: User = this.jwtService.verify(token);
+      let users: User[] = null;
+      if (user.role.name === 'Admin') {
+        users = await this.usersRepository.find({
+          where: {
+            id: Not(user.id),
+          },
+          relations: {
+            role: true,
+          },
+        });
+      } else {
+        users = await this.usersRepository.find({
+          select: ['email', 'userName', 'id'],
+          where: {
+            id: Not(user.id),
+          },
+        });
+      }
       return users;
     } catch (error) {
       throw new Error(`Error during getting all users: ${error.message}`);

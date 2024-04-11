@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  forwardRef,
+} from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
@@ -9,11 +14,16 @@ import { AuthModule } from './auth/auth.module';
 import { ActionsModule } from './actions/actions.module';
 import { Action } from './actions/database/action.entity';
 import { Item } from './actions/database/item.entity';
+import { InitialRoles1712854276047 } from './migrations/1712854276047-initialRoles';
+import { AuditLog } from './audit/database/auditLog.entity';
+import { AuditModule } from './audit/audit.module';
+import { LoggerInterceptor } from './interceptors/logger.interceptor';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: `.${process.env.NODE_ENV}.env`
+      envFilePath: `.${process.env.NODE_ENV}.env`,
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -22,16 +32,23 @@ import { Item } from './actions/database/item.entity';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [User, Role, Action, Item],
+      entities: [User, Role, Action, Item, AuditLog],
       synchronize: true,
-      autoLoadEntities: true
+      autoLoadEntities: true,
+      migrations: [InitialRoles1712854276047],
     }),
     UsersModule,
     RolesModule,
     AuthModule,
-    ActionsModule
+    ActionsModule,
+    AuditModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggerInterceptor,
+    },
+  ],
 })
 export class AppModule {}
