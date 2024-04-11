@@ -7,6 +7,14 @@ export interface IUser {
   role: IRole;
 }
 
+export interface UserCreationDto {
+    userName: string;
+    email: string;
+    password: string;
+    roleId: number;
+  }
+  
+
 export interface IRole {
     id: number;
     name: string;

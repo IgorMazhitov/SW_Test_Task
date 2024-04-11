@@ -6,6 +6,7 @@ import { Not, Repository } from 'typeorm';
 import { Role } from 'src/roles/database/role.entity';
 import { ChangeUserDto } from './dtos/change-user.dto';
 import { JwtService } from '@nestjs/jwt';
+import * as crypt from 'bcryptjs'
 
 @Injectable()
 export class UsersService {
@@ -33,9 +34,11 @@ export class UsersService {
           },
         });
       }
+      const hashPassword = await crypt.hash(dto.password, 5)
       console.log(role, dto, 'test');
       const user: User = await this.usersRepository.save({
         ...dto,
+        password: hashPassword,
         role,
       });
       return user;

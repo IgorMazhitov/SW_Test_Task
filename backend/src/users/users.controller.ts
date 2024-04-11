@@ -19,8 +19,10 @@ export class UsersController {
   @Roles("Admin")
   @Post('create')
   @UseInterceptors(LoggerInterceptor)
+  @ApiBearerAuth() 
   @ApiTags('Create User') 
   create(@Body() userDto: CreateUserDto) {
+    console.log(userDto)
     return this.usersService.createUser(userDto)
   }
 
@@ -28,6 +30,7 @@ export class UsersController {
   @Roles("Admin")
   @Post('role')
   @ApiTags('Edit User') 
+  @ApiBearerAuth() 
   changeUser(@Body() dto: ChangeUserDto) {
     return this.usersService.changeUser(dto)
   }
@@ -36,6 +39,7 @@ export class UsersController {
   @Post('get')
   @ApiBearerAuth() 
   @ApiTags('Get All Users') 
+  @ApiBearerAuth() 
   getAllUsers(@Req() req) {
     const authHeader = req.headers.authorization;
     if (!authHeader) {

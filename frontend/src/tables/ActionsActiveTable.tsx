@@ -57,6 +57,17 @@ const ActionsTable = () => {
     }
   };
 
+  const handleDeclineAction = async (actionId: number) => {
+    try {
+      // Call your service method to approve the action by ID
+      await ActionsService.declineAction(actionId);
+      // Refresh actions after approval
+      fetchActions();
+    } catch (error) {
+      console.error("Error approving action:", error);
+    }
+  };
+
   return (
     <div>
       {actions.length ? (
@@ -122,13 +133,23 @@ const ActionsTable = () => {
                   {action.itemId ? action.itemId : "-"}
                 </td>
                 {store.user.role.name === "Admin" && (
-                  <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                  <>
+                   <td style={{ border: "1px solid #ddd", padding: "8px" }}>
                     {!action.approved && (
                       <button onClick={() => handleApproveAction(action.id)}>
                         Approve
                       </button>
                     )}
                   </td>
+                  <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                    {!action.approved && (
+                      <button onClick={() => handleDeclineAction(action.id)}>
+                        Decline
+                      </button>
+                    )}
+                  </td>
+                  </>
+                 
                 )}
               </tr>
             ))}

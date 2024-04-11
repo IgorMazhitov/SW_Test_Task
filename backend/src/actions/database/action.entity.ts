@@ -28,6 +28,10 @@ export class Action {
   @ApiProperty()
   requestedTime: Date;
 
+  @Column({ default: true})
+  @ApiProperty()
+  active: boolean
+
   @Column({ default: false })
   @ApiProperty()
   approved: boolean;

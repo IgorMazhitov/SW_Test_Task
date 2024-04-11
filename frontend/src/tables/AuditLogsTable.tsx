@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { IAudit } from '../interfaces/IAudit';
-import LogsService from '../services/logsService';
+import React, { useState, useEffect } from "react";
+import { IAudit } from "../interfaces/IAudit";
+import LogsService from "../services/logsService";
 
 const AuditLogTable = () => {
   const [auditLogs, setAuditLogs] = useState<IAudit[]>([]);
@@ -8,15 +8,23 @@ const AuditLogTable = () => {
   useEffect(() => {
     const fetchAuditLogs = async () => {
       try {
-        const response = await LogsService.getAllLogs()
+        const response = await LogsService.getAllLogs();
         setAuditLogs(response.data);
       } catch (error) {
-        console.error('Error fetching audit logs:', error);
+        console.error("Error fetching audit logs:", error);
       }
     };
 
     fetchAuditLogs();
   }, []);
+
+  function formatRequestForLogs(jsonRequest: string) {
+    const request = JSON.parse(jsonRequest);
+    const { url, method, userId, timestamp } = request;
+    const formattedTimestamp = new Date(timestamp).toLocaleString();
+
+    return `URL: ${url}\nMethod: ${method}\nUser ID: ${userId}\nTimestamp: ${formattedTimestamp}`;
+  }
 
   return (
     <div>
@@ -32,12 +40,14 @@ const AuditLogTable = () => {
           </tr>
         </thead>
         <tbody>
-          {auditLogs.map(log => (
+          {auditLogs.map((log) => (
             <tr key={log.id}>
               <td>{log.id}</td>
               <td>{log.type}</td>
-              <td>{JSON.stringify(log.requestData)}</td>
-              <td>{log.responseData ? JSON.stringify(log.responseData) : '-'}</td>
+              <td>{formatRequestForLogs(JSON.stringify(log.requestData))}</td>
+              <td>
+                {log.responseData ? JSON.stringify(log.responseData) : "-"}
+              </td>
               <td>{new Date(log.createdAt).toLocaleString()}</td>
             </tr>
           ))}

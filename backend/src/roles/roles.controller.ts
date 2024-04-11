@@ -14,19 +14,20 @@ export class RolesController {
 
   @UseGuards(RolesGuard)
   @Roles("Admin")
-  @Post('create')
   @ApiTags('Create Role') 
   @ApiBearerAuth() 
+  @Post('create')
   createRole(@Body() roleDto: CreateRoleDto) {
     return this.rolesService.createRole(roleDto)
   }
 
   @UseGuards(RolesGuard)
   @Roles("Admin")
-  @Get()
   @ApiTags('Get All Roles') 
   @ApiBearerAuth() 
+  @Get('all')
   getAllRoles() {
+    console.log('roles getting')
     return this.rolesService.getAllRoles()
   }
 }

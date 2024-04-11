@@ -50,7 +50,6 @@ export class ActionsController {
   @Post('action')
   @ApiTags('Request Action') 
   requestAction(@Body() dto: ActionRequestDto) {
-    console.log('request action', dto)
     return this.actionsService.requestAction(dto);
   }
 
@@ -59,7 +58,6 @@ export class ActionsController {
   @Post('action/approve')
   @ApiTags('Approve Action') 
   approveAction(@Body() dto: ApproveActionDto, @Req() req) {
-    console.log('approve action', dto)
     const authHeader = req.headers.authorization;
     if (!authHeader) {
       throw new UnauthorizedException({ message: 'User is not authorized' });
@@ -74,10 +72,26 @@ export class ActionsController {
 
   @UseGuards(RolesGuard)
   @Roles('Admin')
+  @Post('action/decline')
+  @ApiTags('Approve Action') 
+  declineAction(@Body() dto: ApproveActionDto, @Req() req) {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      throw new UnauthorizedException({ message: 'User is not authorized' });
+    }
+    const [bearer, token] = authHeader.split(' ');
+
+    if (bearer !== 'Bearer' || !token) {
+      throw new UnauthorizedException({ message: 'User is not authorized' });
+    }
+    return this.actionsService.declineAction(dto, token);
+  }
+
+  @UseGuards(RolesGuard)
+  @Roles('Admin')
   @Post('admin/item')
   @ApiTags('Give Item (Admin)') 
   giveItemAdmin(@Body() dto: GiveItemDto, @Req() req) {
-    console.log(dto, 'giving admin')
     const authHeader = req.headers.authorization;
     if (!authHeader) {
       throw new UnauthorizedException({ message: 'User is not authorized' });
@@ -94,7 +108,6 @@ export class ActionsController {
   @Post('action/get')
   @ApiTags('Get All Actions') 
   getAllActions(@Req() req, @Body() body: {active: boolean}) {
-    console.log('get all actions', body)
     const authHeader = req.headers.authorization;
     if (!authHeader) {
       throw new UnauthorizedException({ message: 'User is not authorized' });

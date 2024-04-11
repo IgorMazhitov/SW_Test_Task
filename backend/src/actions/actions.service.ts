@@ -37,7 +37,10 @@ export class ActionsService {
 
   async requestAction(dto: ActionRequestDto) {
     try {
-      const request = await this.actionsRepository.save(dto);
+      const request = await this.actionsRepository.save({
+        ...dto,
+        active: true,
+      });
       return request;
     } catch (error) {
       throw new Error(`Error during action request: ${error.message}`);
@@ -53,16 +56,36 @@ export class ActionsService {
         },
       });
       if (action.type === ActionType.TYPE_1) {
-        console.log(action)
-        await this.giveItemUser(action.userId, action.userGetId, action.itemId)
-        action.approved = true
-        action.approvedBy = user.id
-        action.approvedTime = new Date()
-        await this.actionsRepository.save(action)
-        return action
+        console.log(action);
+        await this.giveItemUser(action.userId, action.userGetId, action.itemId);
+        action.approved = true;
+        action.active = false;
+        action.approvedBy = user.id;
+        action.approvedTime = new Date();
+        await this.actionsRepository.save(action);
+        return action;
       } else {
-        throw new Error('Not Implemented Type of Action')
+        throw new Error('Not Implemented Type of Action');
       }
+    } catch (error) {
+      throw new Error(`Error during action request: ${error.message}`);
+    }
+  }
+
+  async declineAction(dto: ApproveActionDto, token: string) {
+    try {
+      const user: User = this.jwtService.verify(token);
+      const action = await this.actionsRepository.findOne({
+        where: {
+          id: dto.actionId,
+        },
+      });
+      action.approved = false;
+      action.active = false;
+      action.approvedBy = user.id;
+      action.approvedTime = new Date();
+      await this.actionsRepository.save(action);
+      return action;
     } catch (error) {
       throw new Error(`Error during action request: ${error.message}`);
     }
@@ -75,18 +98,18 @@ export class ActionsService {
       if (user.role.name === 'Admin') {
         actions = await this.actionsRepository.find({
           where: {
-            approved: active,
+            active: !active,
           },
         });
       } else {
         actions = await this.actionsRepository.find({
           where: {
-            approved: active,
+            active: !active,
             userId: user.id,
           },
         });
       }
-      console.log(actions)
+      console.log('----------', actions);
       return actions;
     } catch (error) {
       throw new Error(`Error during getting all actions: ${error.message}`);

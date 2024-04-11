@@ -6,6 +6,7 @@ export interface IAction {
   id: number;
   requestedTime?: Date;
   approved: boolean;
+  active: boolean;
   approvedTime?: Date;
   approvedBy?: number;
 }

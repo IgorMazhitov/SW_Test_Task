@@ -45,6 +45,13 @@ export default class ActionsService {
     });
   }
 
+  static declineAction(actionId: number): Promise<AxiosResponse<IAction>> {
+    return $api.post<IAction>("/actions/action/decline", {
+      actionId,
+    });
+  }
+
+
   static giveItemUser(
     itemId: number,
     userEmail: string
