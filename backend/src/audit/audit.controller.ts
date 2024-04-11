@@ -1,17 +1,21 @@
 import { Controller, Get, Post, Req, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'; 
 import { AuditService } from './audit.service';
-import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/auth/roles-auth.decorator';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/roles.guard';
 
+@ApiTags('Audit Logs')
 @Controller('logs')
+@ApiBearerAuth() 
 export class AuditController {
   constructor(private auditService: AuditService) {}
 
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(RolesGuard)
   @Roles('Admin')
   @Post('/all')
+  @ApiTags('Get All Audits') 
+  @ApiBearerAuth()
   getAllAudits(@Req() req) {
     console.log('audit')
     const authHeader = req.headers.authorization;

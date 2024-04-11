@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'; 
 import { CreateUserDto } from 'src/users/dtos/create-user.dto';
 import { AuthService } from './auth.service';
 
@@ -12,14 +12,16 @@ export class AuthController {
     ) {}
 
     @Post('/login')
+    @ApiTags('Login') 
     logIn(@Body() userDto: CreateUserDto) {
-        console.log('login')
-        return this.authService.logIn(userDto)
+        console.log('login');
+        return this.authService.logIn(userDto);
     }
 
     @Post('/signup')
+    @ApiTags('Signup') 
     signUp(@Body() userDto: CreateUserDto) {
-        console.log('signup')
-        return this.authService.signUp(userDto)
+        console.log('signup');
+        return this.authService.signUp(userDto);
     }
 }

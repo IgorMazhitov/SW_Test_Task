@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Post, Req, UnauthorizedException, UseGuards, UseInterceptors } from "@nestjs/common";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger"; // Import Swagger decorators
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dtos/create-user.dto";
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
@@ -7,6 +8,7 @@ import { RolesGuard } from "src/auth/roles.guard";
 import { ChangeUserDto } from "./dtos/change-user.dto";
 import { LoggerInterceptor } from "src/interceptors/logger.interceptor";
 
+@ApiTags('Users') 
 @Controller('users')
 export class UsersController {
   constructor(
@@ -17,6 +19,7 @@ export class UsersController {
   @Roles("Admin")
   @Post('create')
   @UseInterceptors(LoggerInterceptor)
+  @ApiTags('Create User') 
   create(@Body() userDto: CreateUserDto) {
     return this.usersService.createUser(userDto)
   }
@@ -24,14 +27,15 @@ export class UsersController {
   @UseGuards(RolesGuard)
   @Roles("Admin")
   @Post('role')
-  @UseInterceptors(LoggerInterceptor)
+  @ApiTags('Edit User') 
   changeUser(@Body() dto: ChangeUserDto) {
     return this.usersService.changeUser(dto)
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('get')
-  @UseInterceptors(LoggerInterceptor)
+  @ApiBearerAuth() 
+  @ApiTags('Get All Users') 
   getAllUsers(@Req() req) {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
@@ -45,4 +49,3 @@ export class UsersController {
     return this.usersService.getAllUsers(token);
   }
 }
-
