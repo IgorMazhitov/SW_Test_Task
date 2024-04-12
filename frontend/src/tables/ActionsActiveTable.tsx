@@ -1,41 +1,46 @@
-// Import necessary modules if not already imported
-import React, { useContext, useState, useEffect } from 'react';
-import { IAction } from '../interfaces/IAction';
-import { Context } from '..';
-import ActionsService from '../services/actionsService';
+import React, { useContext, useState, useEffect } from "react";
+import { ActionType, IAction } from "../interfaces/IAction";
+import { Context } from "..";
+import ActionsService from "../services/actionsService";
+import { typeMappingWithUndefined } from "../common/helpers";
 
 const ActionsTable = () => {
   const { store } = useContext(Context);
   const [actions, setActions] = useState<IAction[]>([]);
   const [itemName, setItemName] = useState("");
   const [itemDescription, setItemDescription] = useState("");
-
-  const fetchActions = async () => {
-    try {
-      const response = await ActionsService.fetchActions(false);
-      setActions(response.data);
-    } catch (error) {
-      console.error("Error fetching actions:", error);
-    }
-  };
+  const [pendingActionsAmount, setPendingActionsAmount] = useState<number>(0);
+  const [selectedType, setSelectedType] = useState<string>("ALL");
 
   useEffect(() => {
     fetchActions();
-  }, []);
+  }, [selectedType]);
+
+  const fetchActions = async () => {
+    try {
+      const actionType: ActionType | undefined =
+        typeMappingWithUndefined[selectedType];
+
+      const response = await ActionsService.fetchActions(false, actionType);
+      const responseData = response.data;
+
+      setActions(responseData.actions);
+      if (responseData.count !== undefined && responseData.count !== null) {
+        setPendingActionsAmount(responseData.count || 0);
+      }
+    } catch (error: any) {
+      console.error("Error fetching actions:", error.data.message);
+    }
+  };
 
   const handleCreateItem = async () => {
     try {
-      // Check if name and description are not empty
       if (!itemName.trim() || !itemDescription.trim()) {
         console.error("Name and description are required");
         return;
       }
 
-      const newItem = await ActionsService.createItem(
-        itemName,
-        itemDescription
-      );
-      console.log("Item created:", newItem);
+      await ActionsService.createItem(itemName, itemDescription);
 
       setItemName("");
       setItemDescription("");
@@ -48,9 +53,7 @@ const ActionsTable = () => {
 
   const handleApproveAction = async (actionId: number) => {
     try {
-      // Call your service method to approve the action by ID
       await ActionsService.approveAction(actionId);
-      // Refresh actions after approval
       fetchActions();
     } catch (error) {
       console.error("Error approving action:", error);
@@ -59,19 +62,49 @@ const ActionsTable = () => {
 
   const handleDeclineAction = async (actionId: number) => {
     try {
-      // Call your service method to approve the action by ID
       await ActionsService.declineAction(actionId);
-      // Refresh actions after approval
       fetchActions();
     } catch (error) {
-      console.error("Error approving action:", error);
+      console.error("Error declining action:", error);
     }
   };
 
   return (
     <div>
-      {actions.length ? (
-        <table style={{ borderCollapse: "collapse", width: "100%" }}>
+      {pendingActionsAmount !== 0 && store.user.role.name === "Admin" && (
+        <div
+          style={{
+            marginTop: "10px",
+            backgroundColor: "#f2f2f2",
+            padding: "10px",
+          }}
+        >
+          Pending Actions Amount: {pendingActionsAmount}
+        </div>
+      )}
+
+      <div>
+        <select
+          value={selectedType}
+          onChange={(e) => setSelectedType(e.target.value)}
+        >
+          <option value="ALL">All</option>
+          {Object.values(ActionType).map((type) => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {actions?.length ? (
+        <table
+          style={{
+            borderCollapse: "collapse",
+            width: "100%",
+            marginTop: "20px",
+          }}
+        >
           <thead>
             <tr>
               <th style={{ border: "1px solid #ddd", padding: "8px" }}>ID</th>
@@ -134,22 +167,21 @@ const ActionsTable = () => {
                 </td>
                 {store.user.role.name === "Admin" && (
                   <>
-                   <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                    {!action.approved && (
-                      <button onClick={() => handleApproveAction(action.id)}>
-                        Approve
-                      </button>
-                    )}
-                  </td>
-                  <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                    {!action.approved && (
-                      <button onClick={() => handleDeclineAction(action.id)}>
-                        Decline
-                      </button>
-                    )}
-                  </td>
+                    <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                      {!action.approved && (
+                        <button onClick={() => handleApproveAction(action.id)}>
+                          Approve
+                        </button>
+                      )}
+                    </td>
+                    <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                      {!action.approved && (
+                        <button onClick={() => handleDeclineAction(action.id)}>
+                          Decline
+                        </button>
+                      )}
+                    </td>
                   </>
-                 
                 )}
               </tr>
             ))}
@@ -158,6 +190,7 @@ const ActionsTable = () => {
       ) : (
         <div>No actions found</div>
       )}
+
       {store.user.role.name === "Admin" && (
         <div style={{ marginTop: "20px" }}>
           <input

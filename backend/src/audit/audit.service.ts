@@ -23,9 +23,6 @@ export class AuditService {
         requestData: requestInfo,
       });
       await this.auditLogRepository.save(logEntry);
-
-      // Log request information to the console
-      console.log('Request logged:', requestInfo);
     } catch (error) {
       console.error('Error logging request:', error);
     }
@@ -40,9 +37,6 @@ export class AuditService {
         responseData: responseInfo,
       });
       await this.auditLogRepository.save(logEntry);
-
-      // Log response information to the console
-      console.log('Response logged:', responseInfo);
     } catch (error) {
       console.error('Error logging response:', error);
     }

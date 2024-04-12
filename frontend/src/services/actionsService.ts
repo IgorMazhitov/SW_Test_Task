@@ -1,14 +1,14 @@
 import { AxiosResponse } from "axios";
 import $api from "../http";
-import { IAction } from "../interfaces/IAction";
+import { ActionType, IAction } from "../interfaces/IAction";
 import { IItem } from "../interfaces/IItem";
 import { IUser } from "../interfaces/IUser";
-import { ActionRequest } from "../interfaces/ActionRequest";
+import { ActionRequest, FetchActionsResponse } from "../interfaces/ActionRequest";
 
 export default class ActionsService {
-  static fetchActions(active: boolean): Promise<AxiosResponse<IAction[]>> {
-    console.log(active, 'sent')
-    return $api.post<IAction[]>("/actions/action/get", {active});
+  static fetchActions(active: boolean, type?: ActionType | string): Promise<AxiosResponse<FetchActionsResponse>> {
+    console.log(active, type, 'sent')
+    return $api.post<FetchActionsResponse>("/actions/action/get", {active, type});
   }
 
   static createItem(
@@ -34,6 +34,7 @@ export default class ActionsService {
   static requestActionUser(
     dto: ActionRequest
   ): Promise<AxiosResponse<IAction>> {
+    console.log(dto)
     return $api.post<IAction>("/actions/action", {
       ...dto,
     });

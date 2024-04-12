@@ -1,16 +1,23 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { Context } from '..';
-import ActionsService from '../services/actionsService';
-import { IAction } from '../interfaces/IAction';
+import React, { useContext, useState, useEffect } from "react";
+import { Context } from "..";
+import ActionsService from "../services/actionsService";
+import { IAction, ActionType } from "../interfaces/IAction";
+import { typeMappingWithUndefined } from "../common/helpers";
 
 const ActionsHistory = () => {
   const { store } = useContext(Context);
   const [actions, setActions] = useState<IAction[]>([]);
+  const [selectedType, setSelectedType] = useState<string>("ALL");
 
   const fetchActions = async () => {
     try {
-      const response = await ActionsService.fetchActions(true); 
-      setActions(response.data);
+      const actionType: ActionType | undefined = typeMappingWithUndefined[selectedType];
+
+      console.log(selectedType, "fetching", actionType);
+      const response = await ActionsService.fetchActions(true, actionType);
+      const responseData = response.data;
+
+      setActions(responseData.actions);
     } catch (error) {
       console.error("Error fetching actions:", error);
     }
@@ -18,11 +25,28 @@ const ActionsHistory = () => {
 
   useEffect(() => {
     fetchActions();
-  }, []);
+  }, [selectedType]);
 
   return (
     <div>
-      {actions.length ? (
+      <div>
+        <select
+          value={selectedType}
+          onChange={(e) => {
+            console.log(e.target.value);
+            setSelectedType(e.target.value);
+          }}
+        >
+          <option value="ALL">All</option>
+          {Object.values(ActionType).map((type) => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {actions?.length ? (
         <table style={{ borderCollapse: "collapse", width: "100%" }}>
           <thead>
             <tr>

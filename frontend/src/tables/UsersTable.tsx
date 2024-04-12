@@ -7,26 +7,26 @@ import ActionsService from "../services/actionsService";
 import { ActionRequest } from "../interfaces/ActionRequest";
 import { ActionType } from "../interfaces/IAction";
 import UserCreationForm from "../components/userCreationForm";
+import RolesCreationForm from "../components/rolesCreationForm";
+import NewActionRequest from "../components/actionRequestForm";
 
 const UsersTable = () => {
   const { store } = useContext(Context);
   const [users, setUsers] = useState<IUser[]>([]);
   const [items, setItems] = useState<IItem[]>([]);
   const [selectedItem, setSelectedItem] = useState<IItem | null>(null);
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        console.log(store.user.role.name, "store user");
-        const users = await UsersService.fetchUsers(store.user.role.name);
-        const items = await ActionsService.getItems();
-        console.log(users, items);
-        setUsers(users.data);
-        setItems(items.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  const fetchUsers = async () => {
+    try {
+      const users = await UsersService.fetchUsers(store.user.role.name);
+      const items = await ActionsService.getItems();
+      setUsers(users.data);
+      setItems(items.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
+  useEffect(() => {
     fetchUsers();
   }, []);
 
@@ -61,7 +61,8 @@ const UsersTable = () => {
   if (users.length) {
     return (
       <>
-        {store.user.role.name === 'Admin' && <UserCreationForm/>}
+        {store.user.role.name === "Admin" && <UserCreationForm />}
+        {store.user.role.name === "Admin" && <RolesCreationForm />}
         <table style={{ borderCollapse: "collapse", width: "100%" }}>
           <thead>
             <tr>
@@ -136,10 +137,17 @@ const UsersTable = () => {
             ))}
           </tbody>
         </table>
+        {store.user.role.name === 'User' && <NewActionRequest/>}
       </>
     );
   } else {
-    return <div>No users found</div>;
+    return (
+      <>
+        {store.user.role.name === "Admin" && <UserCreationForm />}
+        {store.user.role.name === "Admin" && <RolesCreationForm />}
+        <div>Users not found</div>
+      </>
+    );
   }
 };
 

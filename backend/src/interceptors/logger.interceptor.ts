@@ -18,10 +18,11 @@ export class LoggerInterceptor implements NestInterceptor {
     const [bearer, token] = authHeader.split(' ');
 
     try {
-      let userId;
+      let userEmail;
       if (token) {
         const decodedToken = this.jwtService.verify(token);
-        userId = decodedToken.sub;
+        console.log(decodedToken, decodedToken.email)
+        userEmail = decodedToken.email;
       }
 
       const requestInfo = {
@@ -29,10 +30,9 @@ export class LoggerInterceptor implements NestInterceptor {
         url,
         headers,
         body,
-        userId: userId ? userId : null,
+        userEmail: userEmail ? userEmail : null,
         timestamp: new Date().toISOString(),
       };
-      console.log('test')
       return next.handle().pipe(
         tap(() => {
           const executionTime = Date.now() - startTime;

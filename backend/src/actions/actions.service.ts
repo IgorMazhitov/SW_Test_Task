@@ -47,26 +47,38 @@ export class ActionsService {
     }
   }
 
-  async approveAction(dto: ApproveActionDto, token: string) {
+  async approveAction(dto: ApproveActionDto, token: string): Promise<Action> {
     try {
       const user: User = this.jwtService.verify(token);
+
       const action = await this.actionsRepository.findOne({
         where: {
           id: dto.actionId,
         },
       });
+
       if (action.type === ActionType.TYPE_1) {
-        console.log(action);
-        await this.giveItemUser(action.userId, action.userGetId, action.itemId);
-        action.approved = true;
-        action.active = false;
-        action.approvedBy = user.id;
-        action.approvedTime = new Date();
-        await this.actionsRepository.save(action);
-        return action;
-      } else {
-        throw new Error('Not Implemented Type of Action');
+        const transactionStatus: boolean = await this.giveItemUser(
+          action.userId,
+          action.userGetId,
+          action.itemId,
+          token,
+          dto,
+        );
+
+        if (!transactionStatus) {
+          return action;
+        }
       }
+
+      action.approved = true;
+      action.active = false;
+      action.approvedBy = user.id;
+      action.approvedTime = new Date();
+
+      await this.actionsRepository.save(action);
+
+      return action;
     } catch (error) {
       throw new Error(`Error during action request: ${error.message}`);
     }
@@ -84,44 +96,78 @@ export class ActionsService {
       action.active = false;
       action.approvedBy = user.id;
       action.approvedTime = new Date();
-      await this.actionsRepository.save(action);
-      return action;
+      const result = await this.actionsRepository.save(action);
+      return result;
     } catch (error) {
       throw new Error(`Error during action request: ${error.message}`);
     }
   }
 
-  async getAllActions(token: string, active: boolean) {
+  async getAllActions(
+    token: string,
+    active: boolean,
+    type?: ActionType,
+  ): Promise<{ actions: Action[]; count?: number }> {
     try {
       const user: User = this.jwtService.verify(token);
       let actions: Action[] = null;
+      console.log('get all actions type', type);
       if (user.role.name === 'Admin') {
+        const query: any = {
+          active: !active,
+        };
+
+        if (type) {
+          query.type = type;
+        }
+
         actions = await this.actionsRepository.find({
-          where: {
-            active: !active,
-          },
+          where: query,
         });
+
+        if (!active) {
+          const count = await this.actionsRepository.count({
+            where: {
+              active: true,
+              type,
+            },
+          });
+
+          return { actions, count };
+        }
       } else {
+        const query: any = {
+          active: !active,
+          userId: user.id,
+        };
+
+        if (type) {
+          query.type = type;
+        }
+
         actions = await this.actionsRepository.find({
-          where: {
-            active: !active,
-            userId: user.id,
-          },
+          where: query,
         });
       }
-      console.log('----------', actions);
-      return actions;
+
+      return { actions };
     } catch (error) {
       throw new Error(`Error during getting all actions: ${error.message}`);
     }
   }
 
-  private async giveItemUser(userGivingId, userGetId, itemId) {
+  private async giveItemUser(
+    userGivingId: number,
+    userGetId: number,
+    itemId: number,
+    token?: string,
+    dto?: ApproveActionDto,
+  ) {
     try {
       console.log('giving');
       const user = await this.usersRepository.findOne({
         where: {
-          id: userGivingId.id,
+          id: userGivingId,
         },
         relations: {
           items: true,
@@ -143,16 +189,21 @@ export class ActionsService {
           users: true,
         },
       });
-      console.log(user, userGet, item);
+      const hasUserItem = user.items.find((el) => el.id === item.id);
+      console.log(hasUserItem, user.items);
+      if (!hasUserItem) {
+        console.log('user has no item hes giving');
+        await this.declineAction(dto, token);
+        return false;
+      }
       userGet.items.push(item);
       item.users.push(userGet);
       item.users = item.users.filter((el) => el.id !== user.id);
       user.items = user.items.filter((el) => el.id !== item.id);
-      console.log(user, userGet, item);
       await this.usersRepository.save(userGet);
       await this.itemsRepository.save(item);
-      const updatedUser = await this.usersRepository.save(user);
-      return updatedUser;
+      await this.usersRepository.save(user);
+      return true;
     } catch (error) {
       throw new Error(`Error during giving item to user: ${error.message}`);
     }

@@ -58,19 +58,21 @@ const MainTable = () => {
         >
           Actions History
         </button>
-        <button
-          style={{
-            padding: "5px 10px",
-            backgroundColor: "#007bff",
-            color: "#fff",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-          onClick={() => handleTableChange("logs")}
-        >
-          Logs
-        </button>
+        {store.user.role.name === "Admin" && (
+          <button
+            style={{
+              padding: "5px 10px",
+              backgroundColor: "#007bff",
+              color: "#fff",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+            }}
+            onClick={() => handleTableChange("logs")}
+          >
+            Logs
+          </button>
+        )}
       </div>
 
       <div
@@ -84,7 +86,6 @@ const MainTable = () => {
         {selectedTable === "actions" && <ActionsTable />}
         {selectedTable === "history" && <ActionsHistory />}
         {selectedTable === "logs" && <AuditLogTable />}
-        
       </div>
     </div>
   );

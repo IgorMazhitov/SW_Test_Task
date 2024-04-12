@@ -18,7 +18,6 @@ export class UsersController {
   @UseGuards(RolesGuard)
   @Roles("Admin")
   @Post('create')
-  @UseInterceptors(LoggerInterceptor)
   @ApiBearerAuth() 
   @ApiTags('Create User') 
   create(@Body() userDto: CreateUserDto) {

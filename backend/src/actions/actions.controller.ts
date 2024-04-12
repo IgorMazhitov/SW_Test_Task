@@ -14,6 +14,7 @@ import { Roles } from 'src/auth/roles-auth.decorator';
 import { CreateItemDto, GiveItemDto } from './dto/create-item.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ActionRequestDto, ApproveActionDto } from './dto/action-request.dto';
+import { ActionType } from './database/action.entity';
 
 @ApiTags('Actions')
 @Controller('actions')
@@ -107,7 +108,7 @@ export class ActionsController {
   @UseGuards(JwtAuthGuard)
   @Post('action/get')
   @ApiTags('Get All Actions') 
-  getAllActions(@Req() req, @Body() body: {active: boolean}) {
+  getAllActions(@Req() req, @Body() body: {active: boolean, type?: ActionType}) {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
       throw new UnauthorizedException({ message: 'User is not authorized' });
@@ -117,6 +118,6 @@ export class ActionsController {
     if (bearer !== 'Bearer' || !token) {
       throw new UnauthorizedException({ message: 'User is not authorized' });
     }
-    return this.actionsService.getAllActions(token, body.active);
+    return this.actionsService.getAllActions(token, body.active, body?.type);
   }
 }
