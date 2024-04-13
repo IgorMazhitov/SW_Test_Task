@@ -29,11 +29,14 @@ const SignupComponent: React.FC<SignupProps> = () => {
       style={{
         width: "max-content",
         height: "max-content",
+        display: "flex",
+        flexDirection: "column",
         margin: "0 auto",
         padding: "20px",
         boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)",
         borderRadius: "5px",
         textAlign: "center",
+        backgroundColor: "#f8f9fa", // Fancy background color
       }}
     >
       <input
@@ -41,21 +44,36 @@ const SignupComponent: React.FC<SignupProps> = () => {
         value={userName}
         type="text"
         placeholder="Username"
-        style={{ marginBottom: "10px" }}
+        style={{
+          marginBottom: "10px",
+          padding: "8px",
+          borderRadius: "5px",
+          border: "1px solid #ced4da", // Fancy input border color
+        }}
       />
       <input
         onChange={(e) => setEmail(e.target.value)}
         value={email}
         type="text"
         placeholder="Email"
-        style={{ marginBottom: "10px" }}
+        style={{
+          marginBottom: "10px",
+          padding: "8px",
+          borderRadius: "5px",
+          border: "1px solid #ced4da", // Fancy input border color
+        }}
       />
       <input
         onChange={(e) => setPassword(e.target.value)}
         value={password}
         type="password"
         placeholder="Password"
-        style={{ marginBottom: "10px" }}
+        style={{
+          marginBottom: "10px",
+          padding: "8px",
+          borderRadius: "5px",
+          border: "1px solid #ced4da", // Fancy input border color
+        }}
       />
       <div style={{ marginBottom: "10px" }}>
         <label htmlFor="role" style={{ marginRight: "10px" }}>
@@ -65,16 +83,19 @@ const SignupComponent: React.FC<SignupProps> = () => {
           id="role"
           value={selectedRole}
           onChange={(e) => setSelectedRole(Number(e.target.value))}
-          style={{ marginRight: "10px" }}
+          style={{
+            marginRight: "10px",
+            padding: "8px",
+            borderRadius: "5px",
+            border: "1px solid #ced4da", // Fancy select border color
+          }}
         >
-          <option value="">Select...</option>
           {roles.map((role) => (
             <option key={role.id} value={role.id}>
               {role.name}
             </option>
           ))}
         </select>
-        <p>Selected Role: {selectedRole}</p>
       </div>
       <button
         onClick={() => store.signup(email, password, selectedRole, userName)}
@@ -85,6 +106,7 @@ const SignupComponent: React.FC<SignupProps> = () => {
           color: "#fff",
           border: "none",
           cursor: "pointer",
+          boxShadow: "0 2px 4px 0 rgba(0, 0, 0, 0.2)", // Fancy button shadow
         }}
       >
         SignUp

@@ -62,11 +62,12 @@ export class UsersService {
       if (!user || !roleToChange) {
         throw new HttpException('User or Role not found', HttpStatus.NOT_FOUND);
       }
+      const hashPassword = await crypt.hash(dto.password, 5)
       const updatedUser = await this.usersRepository.save({
         ...user,
         userName: dto.userName,
         email: dto.email,
-        password: dto.password,
+        password: hashPassword,
         role: roleToChange,
       });
       return updatedUser;

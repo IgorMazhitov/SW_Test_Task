@@ -3,6 +3,8 @@ import { ActionType, IAction } from "../interfaces/IAction";
 import { Context } from "..";
 import ActionsService from "../services/actionsService";
 import { typeMappingWithUndefined } from "../common/helpers";
+import NewActionRequest from "../components/actionRequestForm";
+import { ActionRequest } from "../interfaces/ActionRequest";
 
 const ActionsTable = () => {
   const { store } = useContext(Context);
@@ -15,6 +17,17 @@ const ActionsTable = () => {
   useEffect(() => {
     fetchActions();
   }, [selectedType]);
+
+  const handleActionRequest = async (formData: ActionRequest) => {
+    try {
+      await ActionsService.requestActionUser(formData);
+      fetchActions();
+      // Optionally, you can handle success feedback to the user
+      console.log("Action requested successfully!");
+    } catch (error) {
+      console.error("Error requesting action:", error);
+    }
+  };
 
   const fetchActions = async () => {
     try {
@@ -71,18 +84,30 @@ const ActionsTable = () => {
 
   return (
     <div>
-      {pendingActionsAmount !== 0 && store.user.role.name === "Admin" && (
-        <div
-          style={{
-            marginTop: "10px",
-            backgroundColor: "#f2f2f2",
-            padding: "10px",
-          }}
-        >
-          Pending Actions Amount: {pendingActionsAmount}
+      {store.user.role.name === "Admin" && (
+        <div style={{ marginTop: "20px", marginBottom: "20px" }}>
+          <input
+            type="text"
+            value={itemName}
+            onChange={(e) => setItemName(e.target.value)}
+            placeholder="Item Name"
+            style={{ marginRight: "10px" }}
+          />
+          <input
+            type="text"
+            value={itemDescription}
+            onChange={(e) => setItemDescription(e.target.value)}
+            placeholder="Item Description"
+            style={{ marginRight: "10px" }}
+          />
+          <button className="btn btn-primary" onClick={handleCreateItem}>
+            Create Item
+          </button>
         </div>
       )}
-
+      {store.user.role.name === "User" && (
+        <NewActionRequest handleActionRequest={handleActionRequest} />
+      )}
       <div>
         <select
           value={selectedType}
@@ -96,6 +121,18 @@ const ActionsTable = () => {
           ))}
         </select>
       </div>
+
+      {pendingActionsAmount !== 0 && store.user.role.name === "Admin" && (
+        <div
+          style={{
+            marginTop: "10px",
+            backgroundColor: "#f2f2f2",
+            padding: "10px",
+          }}
+        >
+          Pending Actions Amount: {pendingActionsAmount}
+        </div>
+      )}
 
       {actions?.length ? (
         <table
@@ -188,28 +225,16 @@ const ActionsTable = () => {
           </tbody>
         </table>
       ) : (
-        <div>No actions found</div>
-      )}
-
-      {store.user.role.name === "Admin" && (
-        <div style={{ marginTop: "20px" }}>
-          <input
-            type="text"
-            value={itemName}
-            onChange={(e) => setItemName(e.target.value)}
-            placeholder="Item Name"
-            style={{ marginRight: "10px" }}
-          />
-          <input
-            type="text"
-            value={itemDescription}
-            onChange={(e) => setItemDescription(e.target.value)}
-            placeholder="Item Description"
-            style={{ marginRight: "10px" }}
-          />
-          <button className="btn btn-primary" onClick={handleCreateItem}>
-            Create Item
-          </button>
+        <div
+          style={{
+            color: "red",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          No actions found
         </div>
       )}
     </div>

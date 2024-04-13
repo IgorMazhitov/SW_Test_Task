@@ -5,7 +5,11 @@ import ActionsService from "../services/actionsService";
 import { ActionRequest } from "../interfaces/ActionRequest";
 import { typeMapping } from "../common/helpers";
 
-const NewActionRequest = () => {
+type ActionRequestPropsType = {
+    handleActionRequest: (formData: ActionRequest) => void;
+  };
+
+const NewActionRequest = ({ handleActionRequest }: ActionRequestPropsType) => {
   const { store } = useContext(Context);
   const [description, setDescription] = useState<string>("");
   const [selectedType, setSelectedType] = useState<string>("type_2");
@@ -19,8 +23,8 @@ const NewActionRequest = () => {
         type: typeMapping[selectedType],
         description: description,
       };
-      console.log(typeMapping, selectedType)
-      await ActionsService.requestActionUser(actionRequest);
+      console.log(typeMapping, selectedType);
+      handleActionRequest(actionRequest)
 
       // Clear form fields
       setDescription("");
@@ -55,9 +59,9 @@ const NewActionRequest = () => {
           background: "#f9f9f9",
         }}
       >
-        <h3 style={{ textAlign: "center", marginBottom: "20px" }}>
+        <div style={{ textAlign: "center", marginBottom: "20px", marginRight: "20px", paddingTop: "20px" }}>
           Request New Action
-        </h3>
+        </div>
         <div
           style={{
             display: "flex",
@@ -65,6 +69,7 @@ const NewActionRequest = () => {
             alignItems: "center",
             marginBottom: "20px",
             marginRight: "20px",
+            paddingTop: "20px"
           }}
         >
           <label htmlFor="actionType" style={{ marginRight: "10px" }}>
@@ -76,11 +81,13 @@ const NewActionRequest = () => {
             onChange={(e) => setSelectedType(e.target.value)}
             required
           >
-            {Object.values(ActionType).filter(type => type !== 'item').map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
+            {Object.values(ActionType)
+              .filter((type) => type !== "item")
+              .map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
           </select>
         </div>
         <div
@@ -89,6 +96,7 @@ const NewActionRequest = () => {
             flexDirection: "row",
             alignItems: "center",
             marginBottom: "20px",
+            paddingTop: "20px"
           }}
         >
           <label htmlFor="description" style={{ marginRight: "10px" }}>
@@ -100,7 +108,7 @@ const NewActionRequest = () => {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             required
-            style={{ width: "300px" }}
+            style={{ width: "20vw", marginRight: "20px" }}
           />
         </div>
         <button

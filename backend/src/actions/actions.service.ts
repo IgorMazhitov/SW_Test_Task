@@ -7,7 +7,7 @@ import {
 import { CreateItemDto, GiveItemDto } from './dto/create-item.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Item } from './database/item.entity';
-import { Repository } from 'typeorm';
+import { Repository, getManager } from 'typeorm';
 import { ChangeItemDto } from './dto/change-item.dto';
 import { ActionRequestDto, ApproveActionDto } from './dto/action-request.dto';
 import { Action, ActionType } from './database/action.entity';
@@ -165,78 +165,67 @@ export class ActionsService {
   ) {
     try {
       console.log('giving');
-      const user = await this.usersRepository.findOne({
-        where: {
-          id: userGivingId,
-        },
-        relations: {
-          items: true,
-        },
-      });
-      const userGet = await this.usersRepository.findOne({
-        where: {
-          id: userGetId,
-        },
-        relations: {
-          items: true,
-        },
-      });
-      const item = await this.itemsRepository.findOne({
-        where: {
-          id: itemId,
-        },
-        relations: {
-          users: true,
-        },
-      });
-      const hasUserItem = user.items.find((el) => el.id === item.id);
+      const user = await this.fetchUserWithItems(userGivingId);
+      const userGet = await this.fetchUserWithItems(userGetId);
+      const item = await this.fetchItemWithUsers(itemId);
+
+      // Check if the user has the item to give
+      const hasUserItem = user.items.some((el) => el.id === item.id);
+
       console.log(hasUserItem, user.items);
+
       if (!hasUserItem) {
-        console.log('user has no item hes giving');
+        console.log("user has no item he's giving");
         await this.declineAction(dto, token);
         return false;
       }
+
+      // Transfer the item from the giving user to the receiving user
       userGet.items.push(item);
       item.users.push(userGet);
       item.users = item.users.filter((el) => el.id !== user.id);
       user.items = user.items.filter((el) => el.id !== item.id);
+
       await this.usersRepository.save(userGet);
       await this.itemsRepository.save(item);
       await this.usersRepository.save(user);
+
       return true;
     } catch (error) {
       throw new Error(`Error during giving item to user: ${error.message}`);
     }
   }
 
+  private async fetchUserWithItems(userId: number) {
+    return this.usersRepository.findOne({
+      where: { id: userId },
+      relations: { items: true },
+    });
+  }
+
+  private async fetchItemWithUsers(itemId: number) {
+    return this.itemsRepository.findOne({
+      where: { id: itemId },
+      relations: { users: true },
+    });
+  }
+
   async giveItemAdmin(dto: GiveItemDto, token: string) {
     try {
       const user: User = this.jwtService.verify(token);
-      if (user.role.name === 'Admin') {
-        const userGet = await this.usersRepository.findOne({
-          where: {
-            id: dto.userId,
-          },
-          relations: {
-            items: true,
-          },
-        });
-        const item = await this.itemsRepository.findOne({
-          where: {
-            id: dto.itemId,
-          },
-          relations: {
-            users: true,
-          },
-        });
-        userGet.items.push(item);
-        item.users.push(userGet);
-        await this.usersRepository.save(userGet);
-        await this.itemsRepository.save(item);
-        return;
-      } else {
+
+      if (user.role.name !== 'Admin') {
         throw new Error('User is not Admin');
       }
+
+      const userGet = await this.fetchUserWithItems(dto.userId);
+      const item = await this.fetchItemWithUsers(dto.itemId);
+
+      userGet.items.push(item);
+      item.users.push(userGet);
+
+      await this.usersRepository.save(userGet);
+      await this.itemsRepository.save(item);
     } catch (error) {
       throw new Error(`Error during giving item to user: ${error.message}`);
     }

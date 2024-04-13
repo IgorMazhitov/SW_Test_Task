@@ -27,7 +27,7 @@ export class UsersController {
 
   @UseGuards(RolesGuard)
   @Roles("Admin")
-  @Post('role')
+  @Post('/change')
   @ApiTags('Edit User') 
   @ApiBearerAuth() 
   changeUser(@Body() dto: ChangeUserDto) {

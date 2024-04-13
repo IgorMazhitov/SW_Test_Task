@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import UsersService from "../services/usersService";
 import { IRole, UserCreationDto } from "../interfaces/IUser";
 
-function UserCreationForm() {
+type UserCreationFormProps = {
+    handleSubmitUserCreation: (formData: UserCreationDto) => void;
+  };
+
+function UserCreationForm({ handleSubmitUserCreation }: UserCreationFormProps) {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -12,7 +16,6 @@ function UserCreationForm() {
   const fetchRoles = async () => {
     try {
       const roles = await UsersService.fetchRoles();
-      console.log(roles.data);
       setRoles(roles.data);
     } catch (error) {
       console.log(error);
@@ -43,25 +46,25 @@ function UserCreationForm() {
     e.preventDefault();
 
     try {
-        if (!userName.trim() || !email.trim() || !password.trim() || !role) {
-            console.log('All fields should not be empty')
-            return
-        }
-        const request: UserCreationDto = {
-            userName,
-            email,
-            password,
-            roleId: role
-        } 
-        UsersService.createUser(request)
+      if (!userName.trim() || !email.trim() || !password.trim() || !role) {
+        console.log("All fields should not be empty");
+        return;
+      }
+      const request: UserCreationDto = {
+        userName,
+        email,
+        password,
+        roleId: role,
+      };
+      handleSubmitUserCreation(request);
     } catch (error) {
-        console.log(error)
+      console.log(error);
     }
   };
 
   return (
     <div style={{ display: "flex", alignItems: "center" }}>
-      <h3 style={{ marginRight: "20px" }}>Create New User</h3>
+      <h3 style={{ marginRight: "10px" }}>Create New User</h3>
       <form
         id="userCreationForm"
         onSubmit={handleSubmit}
@@ -117,7 +120,21 @@ function UserCreationForm() {
             ))}
           </select>
         </div>
-        <button type="submit" onClick={(e) => handleSubmit(e)}>Create User</button>
+        <button
+          type="submit"
+          onClick={(e) => handleSubmit(e)}
+          style={{
+            background: "#4CAF50",
+            color: "white",
+            padding: "10px 20px",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+            minWidth: "max-content"
+          }}
+        >
+          Create User
+        </button>
       </form>
     </div>
   );

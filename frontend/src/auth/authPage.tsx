@@ -13,21 +13,37 @@ const AuthForm: React.FC<AuthFormProps> = () => {
 
   if (!isSignup) {
     return (
-      <>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "20px",
+        }}
+      >
         <LoginComponent />
         <button onClick={toggleForm}>
           {isSignup ? "Switch to LogIn" : "Switch to SignUp"}
         </button>
-      </>
+      </div>
     );
   } else {
     return (
-      <>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "20px",
+        }}
+      >
         <SignupComponent />
         <button onClick={toggleForm}>
           {isSignup ? "Switch to LogIn" : "Switch to SignUp"}
         </button>
-      </>
+      </div>
     );
   }
 };

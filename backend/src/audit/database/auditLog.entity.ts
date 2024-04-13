@@ -6,14 +6,17 @@ export class AuditLog {
   id: number;
 
   @Column()
-  type: string; // 'request' or 'response'
+  type: string; 
+
+  @Column({ nullable: true })
+  email: string;
 
   @Column({ type: 'jsonb' })
-  requestData: any; // Store request data as JSON
+  requestData: any; 
 
   @Column({ type: 'jsonb', nullable: true })
-  responseData: any; // Store response data as JSON, nullable in case of request logs
+  responseData: any; 
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: Date; // Timestamp of when the log entry was created
+  createdAt: Date; 
 }

@@ -43,8 +43,8 @@ export class LoggerInterceptor implements NestInterceptor {
           };
 
           // Log request and response
-          this.loggerService.logRequest(requestInfo);
-          this.loggerService.logResponse(requestInfo, responseInfo);
+          this.loggerService.logRequest(requestInfo, requestInfo.userEmail);
+          this.loggerService.logResponse(requestInfo, responseInfo, requestInfo.userEmail);
         }),
       );
     } catch (error) {

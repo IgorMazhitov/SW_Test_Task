@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import $api from "../http";
-import { IRole, IUser, UserCreationDto } from "../interfaces/IUser";
+import { ChangeUserDto, IRole, IUser, UserCreationDto } from "../interfaces/IUser";
 
 export default class UsersService {
     static fetchUsers(role: string): Promise<AxiosResponse<IUser[]>> {
@@ -14,5 +14,9 @@ export default class UsersService {
 
     static createUser(request: UserCreationDto): Promise<AxiosResponse<IUser>> {
         return $api.post<IUser>('/users/create', request)
+    }
+
+    static updateUser(request: ChangeUserDto): Promise<AxiosResponse<IUser>> {
+        return $api.post<IUser>('/users/change', request)
     }
 }

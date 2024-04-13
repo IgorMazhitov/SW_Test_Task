@@ -11,7 +11,8 @@ const ActionsHistory = () => {
 
   const fetchActions = async () => {
     try {
-      const actionType: ActionType | undefined = typeMappingWithUndefined[selectedType];
+      const actionType: ActionType | undefined =
+        typeMappingWithUndefined[selectedType];
 
       console.log(selectedType, "fetching", actionType);
       const response = await ActionsService.fetchActions(true, actionType);
@@ -108,7 +109,7 @@ const ActionsHistory = () => {
           </tbody>
         </table>
       ) : (
-        <div>No actions found</div>
+        <div style={{ color: "red", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>No actions found</div>
       )}
     </div>
   );

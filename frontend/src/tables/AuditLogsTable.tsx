@@ -4,32 +4,49 @@ import LogsService from "../services/logsService";
 
 const AuditLogTable = () => {
   const [auditLogs, setAuditLogs] = useState<IAudit[]>([]);
+  const [emailFilter, setEmailFilter] = useState<string>("");
+  const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(10); // Number of items per page
+  const [totalLogs, setTotalLogs] = useState<number>(0); // Total number of logs
+  const [rowsPerPageOptions] = useState<number[]>([10, 20, 30, 40, 50]); // Options for rows per page
+  const [selectedRowsPerPage, setSelectedRowsPerPage] = useState<number>(10); // Selected rows per page
 
   useEffect(() => {
     const fetchAuditLogs = async () => {
       try {
-        const response = await LogsService.getAllLogs();
-        setAuditLogs(response.data);
+        const response = await LogsService.getAllLogs({
+          email: emailFilter,
+          page,
+          limit: selectedRowsPerPage, // Use selected rows per page
+        });
+        console.log(response.data);
+        setAuditLogs(response.data.logs);
+        setTotalLogs(response.data.total);
       } catch (error) {
         console.error("Error fetching audit logs:", error);
       }
     };
 
     fetchAuditLogs();
-  }, []);
+  }, [emailFilter, page, selectedRowsPerPage]); // Include selectedRowsPerPage in the dependencies array
 
   function formatRequestForLogs(jsonRequest: string) {
     const request = JSON.parse(jsonRequest);
-    const { url, method, userEmail, timestamp } = request;
-    const formattedTimestamp = new Date(timestamp).toLocaleString();
+    const { url, method, body } = request;
+    const formattedRequestBody = JSON.stringify(body);
 
-    return `URL: ${url}\nMethod: ${method}\nUser Email: ${userEmail}\nTimestamp: ${formattedTimestamp}`;
+    return `${method} ${url} \n ${
+      formattedRequestBody !== "{}" ? formattedRequestBody : "No request body"
+    }`;
   }
 
-  function getEmail(jsonRequest: string) {
-    const request = JSON.parse(jsonRequest);
-    const { userEmail } = request;
-    return userEmail;
+  function formatResponseForLogs(jsonResponse: string) {
+    const response = JSON.parse(jsonResponse);
+    if (!response) {
+      return `Response is void`;
+    }
+    const { status } = response;
+    return `Status: ${status}`;
   }
 
   return (
@@ -44,6 +61,31 @@ const AuditLogTable = () => {
       }}
     >
       <h2 style={{ marginBottom: "20px", textAlign: "center" }}>Audit Logs</h2>
+      <input
+        type="text"
+        placeholder="Filter by Email"
+        value={emailFilter}
+        onChange={(e) => setEmailFilter(e.target.value)}
+        style={{ marginBottom: "10px", marginLeft: "10px" }}
+      />
+      <div style={{ marginBottom: "10px", textAlign: "right" }}>
+        Total Logs: {totalLogs}
+      </div>
+      {/* Rows per page selector */}
+      <div style={{ marginBottom: "10px", textAlign: "right" }}>
+        Rows per page:
+        <select
+          value={selectedRowsPerPage}
+          onChange={(e) => setSelectedRowsPerPage(Number(e.target.value))}
+          style={{ marginLeft: "5px" }}
+        >
+          {rowsPerPageOptions.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      </div>
       <table style={{ width: "100%", borderCollapse: "collapse" }}>
         <thead>
           <tr>
@@ -64,16 +106,24 @@ const AuditLogTable = () => {
           {auditLogs.map((log) => (
             <tr key={log.id}>
               <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                {getEmail(JSON.stringify(log.requestData))}
+                {log.email}
               </td>
               <td style={{ border: "1px solid #ddd", padding: "8px" }}>
                 {log.type}
               </td>
-              <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+              <td
+                style={{
+                  border: "1px solid #ddd",
+                  padding: "8px",
+                  maxWidth: "30vw",
+                  wordWrap: "break-word",
+                }}
+              >
                 {formatRequestForLogs(JSON.stringify(log.requestData))}
               </td>
+
               <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                {log.responseData ? JSON.stringify(log.responseData) : "-"}
+                {formatResponseForLogs(JSON.stringify(log.responseData))}
               </td>
               <td style={{ border: "1px solid #ddd", padding: "8px" }}>
                 {new Date(log.createdAt).toLocaleString()}
@@ -82,6 +132,24 @@ const AuditLogTable = () => {
           ))}
         </tbody>
       </table>
+      {/* Pagination controls */}
+      <div style={{ textAlign: "center", marginTop: "20px" }}>
+        <button
+          disabled={page === 1}
+          onClick={() => setPage((prevPage) => prevPage - 1)}
+          style={{ marginRight: "10px" }}
+        >
+          Previous
+        </button>
+        <span>Page {page}</span>
+        <button
+          disabled={auditLogs.length < selectedRowsPerPage}
+          onClick={() => setPage((prevPage) => prevPage + 1)}
+          style={{ marginLeft: "10px" }}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };

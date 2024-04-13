@@ -13,6 +13,14 @@ export interface UserCreationDto {
     password: string;
     roleId: number;
   }
+
+export interface ChangeUserDto {
+    id: number;
+    userName: string;
+    email: string;
+    password: string;
+    roleId: number;
+}
   
 
 export interface IRole {
