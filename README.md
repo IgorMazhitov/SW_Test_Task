@@ -10,7 +10,7 @@
 
 **Server:** NestJS, Custom Interceptor, PostgreSQL, TypeORM
 
-**AUX** Docker
+**AUX:** Docker
 
 
 
@@ -42,6 +42,7 @@ When a user wants to transfer an item to another user, they initiate a transfer 
 #### Messages 
 
 Admin can send any message to anyone without any approval
+
 User can only request message sent and if approved - it will be sent, else action is declined and message will not be sent
 
 (Can hash message with Crypt to hide them from Admin as we did with passwords)
@@ -79,6 +80,11 @@ To run this project run
 - Audit Logs / Audits Table
 - Actions Requests / Pending and History Actions Table
 - Approve / Decline Actions
+- Pagination for Active/History Actions Tables, User Table
+- Action Types filtering
+- Users role filtering
+- Audit Logs Email filtering
+- Messages service with chat for each 2 persons, there will be a history of all messages between 2 of You
 - Admin can: 
     - Create Users
     - Send any message to anyone (admin/user)
