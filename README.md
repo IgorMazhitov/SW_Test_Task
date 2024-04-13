@@ -10,7 +10,7 @@
 
 **Server:** NestJS, Custom Interceptor, PostgreSQL, TypeORM
 
-**AUX** Docker
+**AUX:** Docker
 
 
 
