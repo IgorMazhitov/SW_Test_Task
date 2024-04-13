@@ -12,7 +12,7 @@ type ActionRequestPropsType = {
 const NewActionRequest = ({ handleActionRequest }: ActionRequestPropsType) => {
   const { store } = useContext(Context);
   const [description, setDescription] = useState<string>("");
-  const [selectedType, setSelectedType] = useState<string>("type_2");
+  const [selectedType, setSelectedType] = useState<string>("type_3");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,7 +23,6 @@ const NewActionRequest = ({ handleActionRequest }: ActionRequestPropsType) => {
         type: typeMapping[selectedType],
         description: description,
       };
-      console.log(typeMapping, selectedType);
       handleActionRequest(actionRequest)
 
       // Clear form fields
@@ -31,7 +30,6 @@ const NewActionRequest = ({ handleActionRequest }: ActionRequestPropsType) => {
       setSelectedType("TYPE_1");
 
       // Optionally, you can handle success feedback to the user
-      console.log("Action requested successfully!");
     } catch (error) {
       console.error("Error requesting action:", error);
     }
@@ -82,7 +80,7 @@ const NewActionRequest = ({ handleActionRequest }: ActionRequestPropsType) => {
             required
           >
             {Object.values(ActionType)
-              .filter((type) => type !== "item")
+              .filter((type) => type !== "item" && type !== "message")
               .map((type) => (
                 <option key={type} value={type}>
                   {type}

@@ -76,6 +76,7 @@ To run this project run
 - Approve / Decline Actions
 - Admin can: 
     - Create Users
+    - Send any message to anyone (admin/user)
     - Edit Users
     - See All Users
     - Create Items
@@ -85,7 +86,8 @@ To run this project run
     - Approve / Decline Actions
 - User can: 
     - Send items they have to another user (Action type_1)
-    - Request Actions type_2 and type_3
+    - Send messages to admin/user (Action type_2)
+    - Request type_3
     - See their pending Actions
     - See their Approved / Declined Actions
     - See All Users

@@ -8,5 +8,9 @@ export const typeMappingWithUndefined: {
 };
 
 export const typeMapping: { [key: string]: ActionType } = {
-  ...Object.fromEntries(Object.values(ActionType).map((type) => [type, type]).filter(type => type[0] !== 'item')),
+  ...Object.fromEntries(
+    Object.values(ActionType)
+      .map((type) => [type, type])
+      .filter((type) => type[0] !== "item" && type[0] !== "message")
+  ),
 };
