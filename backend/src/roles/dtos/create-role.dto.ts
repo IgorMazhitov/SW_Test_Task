@@ -1,3 +1,6 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 export class CreateRoleDto {
-    name: string;
+  @ApiProperty({ description: 'The name of the role', example: 'Admin' })
+  name: string;
 }

@@ -8,7 +8,6 @@ import { RolesGuard } from "src/auth/roles.guard";
 import { ChangeUserDto } from "./dtos/change-user.dto";
 import { LoggerInterceptor } from "src/interceptors/logger.interceptor";
 
-@ApiTags('Users') 
 @Controller('users')
 export class UsersController {
   constructor(
