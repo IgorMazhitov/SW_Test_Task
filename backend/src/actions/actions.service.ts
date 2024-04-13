@@ -13,6 +13,9 @@ import { ActionRequestDto, ApproveActionDto } from './dto/action-request.dto';
 import { Action, ActionType } from './database/action.entity';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/users/database/user.entity';
+import { MessagesService } from 'src/messages/messages.service';
+import { SendMessageDto } from 'src/messages/dtos/send-message.dto';
+import { Message } from 'src/messages/database/message.entity';
 
 @Injectable()
 export class ActionsService {
@@ -24,6 +27,7 @@ export class ActionsService {
     @InjectRepository(Action)
     private actionsRepository: Repository<Action>,
     private jwtService: JwtService,
+    private messagesService: MessagesService,
   ) {}
 
   async createItem(dto: CreateItemDto) {
@@ -67,6 +71,18 @@ export class ActionsService {
         );
 
         if (!transactionStatus) {
+          return action;
+        }
+      } else if (action.type === ActionType.TYPE_2) {
+        const request: SendMessageDto = {
+          senderId: action.userId,
+          receiverId: action.userGetId,
+          content: action.text,
+        };
+        const message: Message =
+          await this.messagesService.sendMessageFromAdmin(request);
+
+        if (!message) {
           return action;
         }
       }

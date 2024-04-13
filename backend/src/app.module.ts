@@ -19,6 +19,8 @@ import { AuditLog } from './audit/database/auditLog.entity';
 import { AuditModule } from './audit/audit.module';
 import { LoggerInterceptor } from './interceptors/logger.interceptor';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { MessagesModule } from './messages/messages.module';
+import { Message } from './messages/database/message.entity';
 
 @Module({
   imports: [
@@ -32,7 +34,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [User, Role, Action, Item, AuditLog],
+      entities: [User, Role, Action, Item, AuditLog, Message],
       synchronize: true,
       autoLoadEntities: true,
       migrations: [InitialRoles1712854276047],
@@ -42,6 +44,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
     AuthModule,
     ActionsModule,
     AuditModule,
+    MessagesModule,
   ],
   controllers: [],
   providers: [

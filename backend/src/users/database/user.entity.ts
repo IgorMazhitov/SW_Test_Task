@@ -1,8 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToMany, JoinTable, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToMany, JoinTable, ManyToOne, OneToMany } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Role } from 'src/roles/database/role.entity';
 import { Item } from '../../actions/database/item.entity';
 import { Action } from 'src/actions/database/action.entity';
+import { Message } from 'src/messages/database/message.entity';
 
 @Entity()
 export class User {
@@ -39,4 +40,10 @@ export class User {
   @JoinTable()
   @ApiProperty()
   actions: Action[];
+
+  @OneToMany(() => Message, message => message.sender)
+  sentMessages: Message[];
+
+  @OneToMany(() => Message, message => message.receiver)
+  receivedMessages: Message[];
 }

@@ -1,3 +1,5 @@
+import { IMessage } from "./IMessage";
+
 export interface IUser {
   id: number;
   userName: string;
@@ -5,6 +7,8 @@ export interface IUser {
   password: string;
   created_at: Date;
   role: IRole;
+  sentMessages?: IMessage[];
+  receivedMessages?: IMessage[];
 }
 
 export interface GetUsersDto {

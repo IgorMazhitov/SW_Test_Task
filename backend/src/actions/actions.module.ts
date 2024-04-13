@@ -6,12 +6,13 @@ import { Item } from './database/item.entity';
 import { Action } from './database/action.entity';
 import { AuthModule } from 'src/auth/auth.module';
 import { User } from 'src/users/database/user.entity';
+import { MessagesModule } from 'src/messages/messages.module';
 
 @Module({
   controllers: [ActionsController],
   providers: [ActionsService],
   imports: [
-    TypeOrmModule.forFeature([Item, Action, User]), forwardRef(() => AuthModule)
+    TypeOrmModule.forFeature([Item, Action, User]), forwardRef(() => AuthModule), MessagesModule
   ]
 })
 export class ActionsModule {}

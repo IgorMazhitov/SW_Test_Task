@@ -2,10 +2,11 @@ import { ActionType, IAction } from "./IAction";
 
 export interface ActionRequest {
     userId: number;
-    userGetId?: number;
     type: ActionType;
     description: string;
+    userGetId?: number;
     itemId?: number;
+    text?: string;
   }
 
   export interface FetchActionsResponse {

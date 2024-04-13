@@ -6,7 +6,7 @@ import { User } from 'src/users/database/user.entity';
 
 export enum ActionType {
   TYPE_1 = 'item',
-  TYPE_2 = 'type_2',
+  TYPE_2 = 'message',
   TYPE_3 = 'type_3',
 }
 
@@ -47,6 +47,10 @@ export class Action {
   @Column({ nullable: true })
   @ApiProperty()
   itemId?: number;
+
+  @Column({ nullable: true })
+  @ApiProperty()
+  text?: string;
 
   @Column({ nullable: true })
   @ApiProperty()

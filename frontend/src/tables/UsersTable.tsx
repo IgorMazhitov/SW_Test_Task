@@ -15,6 +15,7 @@ import { ActionType } from "../interfaces/IAction";
 import UserCreationForm from "../components/userCreationForm";
 import RolesCreationForm from "../components/rolesCreationForm";
 import Modal from "../common/modal";
+import UserMessagesModal from "../components/messagerModal";
 
 const UsersTable = () => {
   const { store } = useContext(Context);
@@ -27,12 +28,24 @@ const UsersTable = () => {
   const [editedRoleId, setEditedRoleId] = useState<number>(store.user.role.id);
   const [editedPassword, setEditedPassword] = useState<string>("");
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
+  const [showMessagesModal, setShowMessagesModal] = useState<boolean>(false);
+  const [messageUser, setMessageUser] = useState<IUser>();
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(10);
   const [roles, setRoles] = useState<IRole[]>([]);
   const [role, setRole] = useState<number>(2);
   const [rowsPerPageOptions] = useState<number[]>([10, 20, 30, 40, 50]);
   const [selectedRowsPerPage, setSelectedRowsPerPage] = useState<number>(10);
+
+  const handleOpenMessagesModal = (user: IUser) => {
+    setMessageUser(user);
+    setShowMessagesModal(true);
+  };
+
+  const handleCloseMessagesModal = () => {
+    setShowMessagesModal(false);
+    setMessageUser(undefined);
+  };
 
   const fetchRoles = async () => {
     try {
@@ -104,7 +117,7 @@ const UsersTable = () => {
     setEditedEmail(user.email);
     setEditedPassword(""); // Clear the password field
     setShowEditModal(true);
-    setEditedRoleId(user.role.id)
+    setEditedRoleId(user.role.id);
   };
 
   const handleSaveEdit = async () => {
@@ -258,6 +271,12 @@ const UsersTable = () => {
                     >
                       Give
                     </button>
+                    <button
+                      className="btn btn-sm btn-primary"
+                      onClick={() => handleOpenMessagesModal(user)}
+                    >
+                      Messages
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -357,6 +376,7 @@ const UsersTable = () => {
           </div>
         </Modal>
       )}
+      {showMessagesModal && <UserMessagesModal user={messageUser!} handleModalClose={() => setShowMessagesModal(false)} />}
     </>
   );
 };
