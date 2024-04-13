@@ -8,6 +8,7 @@ import { RolesGuard } from "src/auth/roles.guard";
 import { ChangeUserDto } from "./dtos/change-user.dto";
 import { LoggerInterceptor } from "src/interceptors/logger.interceptor";
 
+@ApiTags('Users') 
 @Controller('users')
 export class UsersController {
   constructor(
@@ -38,7 +39,8 @@ export class UsersController {
   @ApiBearerAuth() 
   @ApiTags('Get All Users') 
   @ApiBearerAuth() 
-  getAllUsers(@Req() req) {
+  getAllUsers(@Req() req, @Body() body: { page: number, limit: number, roleId?: number }) {
+    console.log(body, 'test get')
     const authHeader = req.headers.authorization;
     if (!authHeader) {
       throw new UnauthorizedException({ message: 'User is not authorized' });
@@ -48,6 +50,6 @@ export class UsersController {
     if (bearer !== 'Bearer' || !token) {
       throw new UnauthorizedException({ message: 'User is not authorized' });
     }
-    return this.usersService.getAllUsers(token);
+    return this.usersService.getAllUsers(token, body);
   }
 }

@@ -6,7 +6,7 @@ import { Not, Repository } from 'typeorm';
 import { Role } from 'src/roles/database/role.entity';
 import { ChangeUserDto } from './dtos/change-user.dto';
 import { JwtService } from '@nestjs/jwt';
-import * as crypt from 'bcryptjs'
+import * as crypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
@@ -34,7 +34,7 @@ export class UsersService {
           },
         });
       }
-      const hashPassword = await crypt.hash(dto.password, 5)
+      const hashPassword = await crypt.hash(dto.password, 5);
       console.log(role, dto, 'test');
       const user: User = await this.usersRepository.save({
         ...dto,
@@ -62,7 +62,7 @@ export class UsersService {
       if (!user || !roleToChange) {
         throw new HttpException('User or Role not found', HttpStatus.NOT_FOUND);
       }
-      const hashPassword = await crypt.hash(dto.password, 5)
+      const hashPassword = await crypt.hash(dto.password, 5);
       const updatedUser = await this.usersRepository.save({
         ...user,
         userName: dto.userName,
@@ -76,25 +76,42 @@ export class UsersService {
     }
   }
 
-  async getAllUsers(token) {
+  async getAllUsers(
+    token,
+    body: { page: number; limit: number; roleId?: number },
+  ) {
     try {
       const user: User = this.jwtService.verify(token);
       let users: User[] = null;
+      const { page, limit, roleId } = body;
+
+      const skip = (page - 1) * limit;
+
       if (user.role.name === 'Admin') {
         users = await this.usersRepository.find({
           where: {
             id: Not(user.id),
+            role: {
+              id: roleId,
+            },
           },
           relations: {
             role: true,
           },
+          skip,
+          take: limit,
         });
       } else {
         users = await this.usersRepository.find({
           select: ['email', 'userName', 'id'],
           where: {
             id: Not(user.id),
+            role: {
+              id: roleId,
+            },
           },
+          skip,
+          take: limit,
         });
       }
       return users;

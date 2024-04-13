@@ -4,6 +4,7 @@ import { RolesService } from "./roles.service";
 import { CreateRoleDto } from "./dtos/create-role.dto";
 import { RolesGuard } from "src/auth/roles.guard";
 import { Roles } from "src/auth/roles-auth.decorator";
+import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 
 @ApiTags('Roles') 
 @Controller('roles')
@@ -21,8 +22,7 @@ export class RolesController {
     return this.rolesService.createRole(roleDto)
   }
 
-  @UseGuards(RolesGuard)
-  @Roles("Admin")
+  @UseGuards(JwtAuthGuard)
   @ApiTags('Get All Roles') 
   @ApiBearerAuth() 
   @Get('all')

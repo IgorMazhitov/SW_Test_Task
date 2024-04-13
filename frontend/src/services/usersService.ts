@@ -1,11 +1,11 @@
 import { AxiosResponse } from "axios";
 import $api from "../http";
-import { ChangeUserDto, IRole, IUser, UserCreationDto } from "../interfaces/IUser";
+import { ChangeUserDto, GetUsersDto, IRole, IUser, UserCreationDto } from "../interfaces/IUser";
 
 export default class UsersService {
-    static fetchUsers(role: string): Promise<AxiosResponse<IUser[]>> {
-        console.log(role, typeof role, 'role role')
-        return $api.post<IUser[]>('/users/get', { role })
+    static fetchUsers(request: GetUsersDto): Promise<AxiosResponse<IUser[]>> {
+        const { page, limit, roleId} = request
+        return $api.post<IUser[]>('/users/get', { page, limit, roleId })
     }
 
     static fetchRoles(): Promise<AxiosResponse<IRole[]>> {

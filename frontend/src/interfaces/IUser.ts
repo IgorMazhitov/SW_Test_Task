@@ -7,6 +7,12 @@ export interface IUser {
   role: IRole;
 }
 
+export interface GetUsersDto {
+    page: number;
+    limit: number;
+    roleId: number;
+}
+
 export interface UserCreationDto {
     userName: string;
     email: string;
