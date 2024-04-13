@@ -42,6 +42,7 @@ When a user wants to transfer an item to another user, they initiate a transfer 
 #### Messages 
 
 Admin can send any message to anyone without any approval
+
 User can only request message sent and if approved - it will be sent, else action is declined and message will not be sent
 
 (Can hash message with Crypt to hide them from Admin as we did with passwords)
