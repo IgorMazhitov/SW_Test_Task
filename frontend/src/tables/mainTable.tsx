@@ -15,11 +15,11 @@ const MainTable = () => {
 
   return (
     <div style={{ fontFamily: "Arial, sans-serif" }}>
-      <div style={{ marginBottom: "10px" }}>
+      <div style={{ marginBottom: "10px", textAlign: "center" }}>
         <button
           style={{
             marginRight: "5px",
-            padding: "5px 10px",
+            padding: "10px 20px",
             backgroundColor: "#007bff",
             color: "#fff",
             border: "none",
@@ -33,7 +33,7 @@ const MainTable = () => {
         <button
           style={{
             marginRight: "5px",
-            padding: "5px 10px",
+            padding: "10px 20px",
             backgroundColor: "#007bff",
             color: "#fff",
             border: "none",
@@ -47,7 +47,7 @@ const MainTable = () => {
         <button
           style={{
             marginRight: "5px",
-            padding: "5px 10px",
+            padding: "10px 20px",
             backgroundColor: "#007bff",
             color: "#fff",
             border: "none",
@@ -61,7 +61,7 @@ const MainTable = () => {
         {store.user.role.name === "Admin" && (
           <button
             style={{
-              padding: "5px 10px",
+              padding: "10px 20px",
               backgroundColor: "#007bff",
               color: "#fff",
               border: "none",
@@ -74,7 +74,7 @@ const MainTable = () => {
           </button>
         )}
       </div>
-
+      ;
       <div
         style={{
           border: "1px solid #ccc",

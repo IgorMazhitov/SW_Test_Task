@@ -42,11 +42,6 @@ const UsersTable = () => {
     setShowMessagesModal(true);
   };
 
-  const handleCloseMessagesModal = () => {
-    setShowMessagesModal(false);
-    setMessageUser(undefined);
-  };
-
   const fetchRoles = async () => {
     try {
       const roles = await UsersService.fetchRoles();
@@ -184,29 +179,27 @@ const UsersTable = () => {
                     Created At
                   </th>
                 )}
-                {users.some((el) => el.role) && (
-                  <th
-                    style={{
-                      border: "1px solid #ddd",
-                      padding: "8px",
-                      display: "flex",
-                      flexDirection: "column",
-                    }}
+                <th
+                  style={{
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  <label htmlFor="roleFilter">Filter by Role:</label>
+                  <select
+                    id="roleFilter"
+                    value={role}
+                    onChange={(e) => setRole(Number(e.target.value))}
                   >
-                    <label htmlFor="roleFilter">Filter by Role:</label>
-                    <select
-                      id="roleFilter"
-                      value={role}
-                      onChange={(e) => setRole(Number(e.target.value))}
-                    >
-                      {roles.map((role) => (
-                        <option key={role.id} value={role.id}>
-                          {role.name}
-                        </option>
-                      ))}
-                    </select>
-                  </th>
-                )}
+                    {roles.map((role) => (
+                      <option key={role.id} value={role.id}>
+                        {role.name}
+                      </option>
+                    ))}
+                  </select>
+                </th>
                 <th style={{ border: "1px solid #ddd", padding: "8px" }}>
                   Actions
                 </th>
@@ -376,7 +369,12 @@ const UsersTable = () => {
           </div>
         </Modal>
       )}
-      {showMessagesModal && <UserMessagesModal user={messageUser!} handleModalClose={() => setShowMessagesModal(false)} />}
+      {showMessagesModal && (
+        <UserMessagesModal
+          user={messageUser!}
+          handleModalClose={() => setShowMessagesModal(false)}
+        />
+      )}
     </>
   );
 };

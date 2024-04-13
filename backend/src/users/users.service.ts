@@ -35,7 +35,6 @@ export class UsersService {
         });
       }
       const hashPassword = await crypt.hash(dto.password, 5);
-      console.log(role, dto, 'test');
       const user: User = await this.usersRepository.save({
         ...dto,
         password: hashPassword,
@@ -103,12 +102,24 @@ export class UsersService {
         });
       } else {
         users = await this.usersRepository.find({
-          select: ['email', 'userName', 'id'],
+          select: {
+            email: true,
+            userName: true,
+            id: true,
+            role: {
+              name: true,
+              id: true,
+            },
+          },
           where: {
             id: Not(user.id),
             role: {
               id: roleId,
             },
+          },
+
+          relations: {
+            role: true,
           },
           skip,
           take: limit,
