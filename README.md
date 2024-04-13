@@ -80,6 +80,7 @@ To run this project run
 - Audit Logs / Audits Table
 - Actions Requests / Pending and History Actions Table
 - Approve / Decline Actions
+- Messages service with chat for each 2 persons, there will be a history of all messages between 2 of You
 - Admin can: 
     - Create Users
     - Send any message to anyone (admin/user)
