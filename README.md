@@ -39,7 +39,12 @@ Users in the system can possess multiple items without quantity tracking. Items 
 
 When a user wants to transfer an item to another user, they initiate a transfer request. This request can be made repeatedly until it's approved. Once approved, the item is transferred to the designated user, and pending transfer requests will be declined even if You will click approve.
 
+#### Messages 
 
+Admin can send any message to anyone without any approval
+User can only request message sent and if approved - it will be sent, else action is declined and message will not be sent
+
+(Can hash message with Crypt to hide them from Admin as we did with passwords)
 
 
 ## Deployment
