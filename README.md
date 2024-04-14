@@ -31,7 +31,7 @@ This project is running on next ports
 
 #### LogIn/LogOut 
 
-Firstly - create user or admin by switching to SingUp on the auth page.
+Firstly - create user or admin by switching to SingUp on the auth page and You will automatically login to created account.
 I didn't make refresh token cos it was not in requirements and I implemented another features so basically - DO NOT REFRESH PAGE IF YOU DO NOT WANT TO LOG OUT, otherwise - IF YOU WANT TO LOGOUT - REFRESH PAGE
 
 #### Roles
