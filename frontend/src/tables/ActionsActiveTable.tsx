@@ -85,7 +85,19 @@ const ActionsTable = () => {
   return (
     <div>
       {store.user.role.name === "Admin" && (
-        <div style={{ marginTop: "20px", marginBottom: "20px" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            backgroundColor: "rgba(173, 216, 230, 0.5)",
+            borderRadius: "10px",
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+            marginTop: "10px",
+            marginBottom: "10px",
+            padding: "20px",
+          }}
+        >
+          <label style={{ marginRight: "10px" }}>Item creation</label>
           <input
             type="text"
             value={itemName}

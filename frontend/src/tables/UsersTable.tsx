@@ -244,26 +244,35 @@ const UsersTable = () => {
                     >
                       Edit
                     </button>
-                    <select
-                      className="form-select"
-                      aria-label="Select Item"
-                      onChange={(e) =>
-                        handleItemSelect(items[parseInt(e.target.value, 10)])
-                      }
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "10px",
+                      }}
                     >
-                      <option value="">Select Item</option>
-                      {items.map((item, index) => (
-                        <option value={index} key={index}>
-                          {item.name}
-                        </option>
-                      ))}
-                    </select>
-                    <button
-                      className="btn btn-sm btn-primary"
-                      onClick={() => giveItemToUser(user.id)}
-                    >
-                      Give
-                    </button>
+                      <label>Action type_1 "item"</label>
+                      <select
+                        className="form-select"
+                        aria-label="Select Item"
+                        onChange={(e) =>
+                          handleItemSelect(items[parseInt(e.target.value, 10)])
+                        }
+                      >
+                        <option value="">Select Item</option>
+                        {items.map((item, index) => (
+                          <option value={index} key={index}>
+                            {item.name}
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        className="btn btn-sm btn-primary"
+                        onClick={() => giveItemToUser(user.id)}
+                      >
+                        Give
+                      </button>
+                    </div>
                     <button
                       className="btn btn-sm btn-primary"
                       onClick={() => handleOpenMessagesModal(user)}

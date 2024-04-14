@@ -18,6 +18,13 @@ function RolesCreationForm() {
         alignItems: "center",
         alignContent: "center",
         justifyItems: "center",
+        backgroundColor: "rgba(173, 216, 230, 0.5)",
+        borderRadius: "10px",
+        boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+        marginTop: "10px",
+        marginBottom: "10px",
+        paddingLeft: "20px",
+        paddingRight: "20px",
       }}
     >
       <h3 style={{ marginRight: "20px" }}>Create New Role</h3>

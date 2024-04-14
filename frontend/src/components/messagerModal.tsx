@@ -20,9 +20,6 @@ const UserMessagesModal = ({
   const { store } = useContext(Context);
   const [messages, setMessages] = useState<IMessageFromResponse[]>([]);
   const [newMessage, setNewMessage] = useState("");
-  const [showModal, setShowModal] = useState(false);
-
-  console.log(user, 'test')
 
   useEffect(() => {
       fetchMessages();
@@ -36,7 +33,6 @@ const UserMessagesModal = ({
     const messages: IMessageFromResponse[] = await MessagesService.fetchMessagesBetween(
       request
     ).then((response) => response.data);
-    console.log(messages, 'messages')
     setMessages(messages);
   };
 

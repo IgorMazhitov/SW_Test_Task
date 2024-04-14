@@ -3,8 +3,8 @@ import UsersService from "../services/usersService";
 import { IRole, UserCreationDto } from "../interfaces/IUser";
 
 type UserCreationFormProps = {
-    handleSubmitUserCreation: (formData: UserCreationDto) => void;
-  };
+  handleSubmitUserCreation: (formData: UserCreationDto) => void;
+};
 
 function UserCreationForm({ handleSubmitUserCreation }: UserCreationFormProps) {
   const [userName, setUserName] = useState("");
@@ -63,7 +63,17 @@ function UserCreationForm({ handleSubmitUserCreation }: UserCreationFormProps) {
   };
 
   return (
-    <div style={{ display: "flex", alignItems: "center" }}>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        backgroundColor: "rgba(173, 216, 230, 0.5)",
+        borderRadius: "10px",
+        boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+        paddingLeft: "20px",
+        paddingRight: "20px",
+      }}
+    >
       <h3 style={{ marginRight: "10px" }}>Create New User</h3>
       <form
         id="userCreationForm"
@@ -130,7 +140,7 @@ function UserCreationForm({ handleSubmitUserCreation }: UserCreationFormProps) {
             border: "none",
             borderRadius: "4px",
             cursor: "pointer",
-            minWidth: "max-content"
+            minWidth: "max-content",
           }}
         >
           Create User
