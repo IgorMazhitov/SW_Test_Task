@@ -29,6 +29,11 @@ This project is running on next ports
 
 ## FAQ
 
+#### LogIn/LogOut 
+
+Firstly - create user or admin by switching to SingUp on the auth page.
+I didn't make refresh token cos it was not in requirements and I implemented another features so basically - DO NOT REFRESH PAGE IF YOU DO NOT WANT TO LOG OUT, otherwise - IF YOU WANT TO LOGOUT - REFRESH PAGE
+
 #### Roles
 
 There are 2 roles created initially when project is built - Role 1 - {id: 1, name: Admin}, Role 2 - {id: 2, name: User}
