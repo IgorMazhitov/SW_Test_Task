@@ -7,6 +7,7 @@ import { Role } from 'src/roles/database/role.entity';
 import { ChangeUserDto } from './dtos/change-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import * as crypt from 'bcryptjs';
+import { GetAllUsersDto } from './dtos/get-all-users.dto';
 
 @Injectable()
 export class UsersService {
@@ -75,15 +76,22 @@ export class UsersService {
     }
   }
 
-  async getAllUsers(
-    token,
-    body: { page: number; limit: number; roleId?: number },
-  ) {
+  async getAllUsers(body: GetAllUsersDto) {
+    console.log('body', body)
     try {
-      const user: User = this.jwtService.verify(token);
+      const { limit, page, senderId, roleId } = body;
+      const user: User = await this.usersRepository.findOne({
+        where: {
+          id: senderId,
+        },
+        relations: {
+          role: true,
+        },
+      });
+      if (!user) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
       let users: User[] = null;
-      const { page, limit, roleId } = body;
-
       const skip = (page - 1) * limit;
 
       if (user.role.name === 'Admin') {

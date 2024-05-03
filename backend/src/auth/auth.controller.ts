@@ -20,6 +20,7 @@ export class AuthController {
     @Post('/signup')
     @ApiTags('Signup') 
     signUp(@Body() userDto: CreateUserDto) {
+        console.log(userDto);
         return this.authService.signUp(userDto);
     }
 }

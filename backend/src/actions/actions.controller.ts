@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Post,
+  Query,
   Req,
   UnauthorizedException,
   UseGuards,
@@ -15,6 +16,7 @@ import { CreateItemDto, GiveItemDto } from './dto/create-item.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ActionRequestDto, ApproveActionDto } from './dto/action-request.dto';
 import { ActionType } from './database/action.entity';
+import { GetAllItems } from './dto/get-all-items.dto';
 
 @ApiTags('Actions')
 @Controller('actions')
@@ -33,17 +35,11 @@ export class ActionsController {
   @UseGuards(JwtAuthGuard)
   @Get('item')
   @ApiTags('Get All Items') 
-  getAllItems(@Req() req) {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
-      throw new UnauthorizedException({ message: 'User is not authorized' });
+  getAllItems(@Query('userId') userId: number) {
+    const request: GetAllItems =  {
+      userId
     }
-    const [bearer, token] = authHeader.split(' ');
-
-    if (bearer !== 'Bearer' || !token) {
-      throw new UnauthorizedException({ message: 'User is not authorized' });
-    }
-    return this.actionsService.getAllItems(token);
+    return this.actionsService.getAllItems(request);
   }
 
   @UseGuards(RolesGuard)

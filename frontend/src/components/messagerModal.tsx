@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
-import { GetMessagesBetweenDto, IMessage, IMessageFromResponse } from "../interfaces/IMessage";
+import {
+  GetMessagesBetweenDto,
+  IMessage,
+  IMessageFromResponse,
+} from "../interfaces/IMessage";
 import { IUser } from "../interfaces/IUser";
 import MessagesService from "../services/messagesService";
 import { Context } from "..";
@@ -7,6 +11,9 @@ import { ActionRequest } from "../interfaces/ActionRequest";
 import { ActionType } from "../interfaces/IAction";
 import ActionsService from "../services/actionsService";
 import { typeMapping } from "../common/helpers";
+import { Modal, ModalContainer } from "../UI/styled/modals";
+import { BluePinkButton, PinkBlueButton } from "../UI/styled/buttons";
+import { ModalMessageInput } from "../UI/styled/inputs";
 
 type UserMessagesPropsType = {
   user: IUser;
@@ -22,7 +29,7 @@ const UserMessagesModal = ({
   const [newMessage, setNewMessage] = useState("");
 
   useEffect(() => {
-      fetchMessages();
+    fetchMessages();
   }, []);
 
   const fetchMessages = async () => {
@@ -30,9 +37,8 @@ const UserMessagesModal = ({
       senderId: user.id,
       receiverId: store.user.id,
     };
-    const messages: IMessageFromResponse[] = await MessagesService.fetchMessagesBetween(
-      request
-    )
+    const messages: IMessageFromResponse[] =
+      await MessagesService.fetchMessagesBetween(request);
     setMessages(messages);
   };
 
@@ -45,7 +51,7 @@ const UserMessagesModal = ({
           content: newMessage,
         };
         await MessagesService.sendMessageFromAdmin(message);
-        setNewMessage("")
+        setNewMessage("");
         fetchMessages();
       } else {
         const request: ActionRequest = {
@@ -56,7 +62,7 @@ const UserMessagesModal = ({
           text: newMessage,
         };
         await ActionsService.requestActionUser(request);
-        setNewMessage("")
+        setNewMessage("");
         fetchMessages();
       }
     } catch (error) {
@@ -65,35 +71,17 @@ const UserMessagesModal = ({
   };
 
   const handleClose = () => {
-    handleModalClose(false)
+    handleModalClose(false);
   };
 
   return (
     <>
-      <div className="modal" style={{
-        position: "fixed",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        backgroundColor: "white", 
-        border: "1px solid black",
-        zIndex: "999", 
-        padding: "20px",
-        borderRadius: "8px",
-      }}>
-        <div className="modal-content">
-          <span
-            style={{
-              cursor: "pointer",
-              float: "right",
-              fontSize: "20px",
-              fontWeight: "bold",
-            }}
-            onClick={handleClose}
-          >
-            &times;
-          </span>
-          <h2>Messages with {user.userName}</h2>
+      <Modal>
+        <div>
+          <ModalContainer>
+            <BluePinkButton onClick={handleClose}>&times;</BluePinkButton>
+            <h2>Messages with {user.userName}</h2>
+          </ModalContainer>
           <div
             style={{
               maxHeight: "300px",
@@ -114,7 +102,8 @@ const UserMessagesModal = ({
                       message.sender.id === store.user.id
                         ? "#007bff"
                         : "#f0f0f0",
-                    color: message.sender.id === store.user.id ? "#fff" : "#000",
+                    color:
+                      message.sender.id === store.user.id ? "#fff" : "#000",
                     padding: "8px",
                     borderRadius: "8px",
                     display: "inline-block",
@@ -126,31 +115,19 @@ const UserMessagesModal = ({
             ))}
           </div>
           <div>
-            <textarea
+            <ModalMessageInput
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              rows={4}
+              rows={1}
+              onFocus={(e) => (e.target.rows += 4)}
+              onBlur={(e) => (e.target.rows -= 4)}
               cols={50}
-              style={{ width: "100%", resize: "none", marginTop: "10px" }}
               placeholder="Enter your message..."
             />
-            <button
-              style={{
-                marginTop: "10px",
-                padding: "8px 16px",
-                backgroundColor: "#007bff",
-                color: "#fff",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-              }}
-              onClick={handleSend}
-            >
-              Send
-            </button>
+            <PinkBlueButton onClick={handleSend}>Send</PinkBlueButton>
           </div>
         </div>
-      </div>
+      </Modal>
     </>
   );
 };

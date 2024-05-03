@@ -1,20 +1,27 @@
 import { useContext } from "react";
 import { Context } from ".";
 import { observer } from "mobx-react-lite";
-import AuthForm from "./auth/authPage";
-import MainTable from "./tables/mainTable";
+import AuthPage from "./pages/authPage";
+import LogOutComponent from "./components/logOutComponent";
+import { LogOutCover } from "./UI/styled/buttons";
+import TablesPage from "./pages/tablesPage";
 
 function App() {
   const { store } = useContext(Context);
 
-  if (!store.isAuth) {
-    return (
-      <AuthForm />
-    )
+  const isUserLoggedIn = store.isAuth;
+
+  if (!isUserLoggedIn) {
+    return <AuthPage />;
   } else {
     return (
-      <MainTable/>
-    )
+      <>
+        <LogOutCover>
+          <LogOutComponent />
+        </LogOutCover>
+        <TablesPage />
+      </>
+    );
   }
 }
 

@@ -57,11 +57,13 @@ const UsersTable = () => {
         page,
         limit,
         roleId: role,
+        senderId: store.user.id,
       };
+      console.log(request)
       const users = await UsersService.fetchUsers(request);
-      const items = await ActionsService.getItems();
-      setUsers(users.data);
-      setItems(items.data);
+      const items = await ActionsService.getItems(store.user.id);
+      setUsers(users);
+      setItems(items);
     } catch (error) {
       console.log(error);
     }

@@ -15,6 +15,7 @@ export interface GetUsersDto {
     page: number;
     limit: number;
     roleId: number;
+    senderId: number;
 }
 
 export interface UserCreationDto {

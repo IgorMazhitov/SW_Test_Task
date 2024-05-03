@@ -2,9 +2,14 @@ import React, { useContext, useState, useEffect } from "react";
 import { ActionType, IAction } from "../interfaces/IAction";
 import { Context } from "..";
 import ActionsService from "../services/actionsService";
-import { typeMappingWithUndefined } from "../common/helpers";
+import {
+  columnsForActionsTable,
+  filterColumnsForActionsTable,
+  typeMappingWithUndefined,
+} from "../common/helpers";
 import NewActionRequest from "../components/actionRequestForm";
 import { ActionRequest } from "../interfaces/ActionRequest";
+import TableComponent from "../components/tables/actionsTableComponent";
 
 const ActionsTable = () => {
   const { store } = useContext(Context);
@@ -12,10 +17,16 @@ const ActionsTable = () => {
   const [itemName, setItemName] = useState("");
   const [itemDescription, setItemDescription] = useState("");
   const [pendingActionsAmount, setPendingActionsAmount] = useState<number>(0);
+  const [filteredColumnsForTable, setFilteredColumnsForTable] = useState<
+    string[]
+  >(columnsForActionsTable);
   const [selectedType, setSelectedType] = useState<string>("ALL");
 
   useEffect(() => {
     fetchActions();
+    setFilteredColumnsForTable(
+      filterColumnsForActionsTable(store.user.role.name === "Admin")
+    );
   }, [selectedType]);
 
   const handleActionRequest = async (formData: ActionRequest) => {
@@ -65,6 +76,7 @@ const ActionsTable = () => {
   };
 
   const handleApproveAction = async (actionId: number) => {
+    console.log("test");
     try {
       await ActionsService.approveAction(actionId);
       fetchActions();
@@ -147,95 +159,12 @@ const ActionsTable = () => {
       )}
 
       {actions?.length ? (
-        <table
-          style={{
-            borderCollapse: "collapse",
-            width: "100%",
-            marginTop: "20px",
-          }}
-        >
-          <thead>
-            <tr>
-              <th style={{ border: "1px solid #ddd", padding: "8px" }}>ID</th>
-              <th style={{ border: "1px solid #ddd", padding: "8px" }}>Type</th>
-              <th style={{ border: "1px solid #ddd", padding: "8px" }}>
-                User ID
-              </th>
-              <th style={{ border: "1px solid #ddd", padding: "8px" }}>
-                Requested Time
-              </th>
-              <th style={{ border: "1px solid #ddd", padding: "8px" }}>
-                Approved
-              </th>
-              <th style={{ border: "1px solid #ddd", padding: "8px" }}>
-                Approved Time
-              </th>
-              <th style={{ border: "1px solid #ddd", padding: "8px" }}>
-                Approved By
-              </th>
-              <th style={{ border: "1px solid #ddd", padding: "8px" }}>
-                Item IDs
-              </th>
-              {store.user.role.name === "Admin" && (
-                <th style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  Actions
-                </th>
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            {actions.map((action) => (
-              <tr key={action.id}>
-                <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  {action.id}
-                </td>
-                <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  {action.type}
-                </td>
-                <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  {action.userId}
-                </td>
-                <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  {action.requestedTime
-                    ? new Date(action.requestedTime).toLocaleString()
-                    : "-"}
-                </td>
-                <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  {action.approved ? "Yes" : "No"}
-                </td>
-                <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  {action.approvedTime
-                    ? new Date(action.approvedTime).toLocaleString()
-                    : "-"}
-                </td>
-                <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  {action.approvedBy ? action.approvedBy : "-"}
-                </td>
-                <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  {action.itemId ? action.itemId : "-"}
-                </td>
-                {store.user.role.name === "Admin" && (
-                  <>
-                    <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                      {!action.approved && (
-                        <button onClick={() => handleApproveAction(action.id)}>
-                          Approve
-                        </button>
-                      )}
-                    </td>
-                    <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                      {!action.approved && (
-                        <button onClick={() => handleDeclineAction(action.id)}>
-                          Decline
-                        </button>
-                      )}
-                    </td>
-                  </>
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <TableComponent
+          actions={actions}
+          columns={filteredColumnsForTable}
+          handleApproveAction={handleApproveAction}
+          handleDeclineAction={handleDeclineAction}
+        />
       ) : (
         <div
           style={{

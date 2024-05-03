@@ -16,6 +16,7 @@ import { User } from 'src/users/database/user.entity';
 import { MessagesService } from 'src/messages/messages.service';
 import { SendMessageDto } from 'src/messages/dtos/send-message.dto';
 import { Message } from 'src/messages/database/message.entity';
+import { GetAllItems } from './dto/get-all-items.dto';
 
 @Injectable()
 export class ActionsService {
@@ -239,9 +240,17 @@ export class ActionsService {
     }
   }
 
-  async getAllItems(token: string) {
+  async getAllItems(request: GetAllItems) {
     try {
-      const user: User = this.jwtService.verify(token);
+      const { userId } = request;
+      const user: User = await this.usersRepository.findOne({
+        where: {
+          id: userId,
+        },
+        relations: {
+          role: true,
+        }
+      });
       let items: Item[] = null;
       if (user.role.name === 'Admin') {
         items = await this.itemsRepository.find();

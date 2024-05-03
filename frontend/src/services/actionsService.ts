@@ -61,7 +61,10 @@ export default class ActionsService {
     });
   }
 
-  static getItems(): Promise<AxiosResponse<IItem[]>> {
-    return $api.get<IItem[]>("/actions/item");
+  static async getItems(userId: number): Promise<IItem[]> {
+    const { data } = await $api.get<IItem[]>(`/actions/item`, {
+      params: { userId: userId.toString() },
+    });
+    return data;
   }
 }
