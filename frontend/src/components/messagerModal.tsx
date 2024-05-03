@@ -32,7 +32,7 @@ const UserMessagesModal = ({
     };
     const messages: IMessageFromResponse[] = await MessagesService.fetchMessagesBetween(
       request
-    ).then((response) => response.data);
+    )
     setMessages(messages);
   };
 

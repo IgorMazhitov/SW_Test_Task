@@ -14,7 +14,6 @@ const ActionsHistory = () => {
       const actionType: ActionType | undefined =
         typeMappingWithUndefined[selectedType];
 
-      console.log(selectedType, "fetching", actionType);
       const response = await ActionsService.fetchActions(true, actionType);
       const responseData = response.data;
 
@@ -34,7 +33,6 @@ const ActionsHistory = () => {
         <select
           value={selectedType}
           onChange={(e) => {
-            console.log(e.target.value);
             setSelectedType(e.target.value);
           }}
         >

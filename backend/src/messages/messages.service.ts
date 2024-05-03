@@ -26,7 +26,6 @@ export class MessagesService {
         content,
       });
       const message = await this.messagesRepository.save(messageToSave);
-      console.log(message, receiver, sender, 'send message from admin');
       receiver.receivedMessages.push(message);
       sender.sentMessages.push(message);
       await this.usersRepository.save(receiver);

@@ -16,12 +16,6 @@ function App() {
       <MainTable/>
     )
   }
-
-  return (
-    <div className="App">
-      <p>Authorized ${store.user.email}</p>
-    </div>
-  );
 }
 
 export default observer(App);

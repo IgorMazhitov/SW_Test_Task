@@ -14,14 +14,12 @@ export class AuthController {
     @Post('/login')
     @ApiTags('Login') 
     logIn(@Body() userDto: CreateUserDto) {
-        console.log('login');
         return this.authService.logIn(userDto);
     }
 
     @Post('/signup')
     @ApiTags('Signup') 
     signUp(@Body() userDto: CreateUserDto) {
-        console.log('signup');
         return this.authService.signUp(userDto);
     }
 }

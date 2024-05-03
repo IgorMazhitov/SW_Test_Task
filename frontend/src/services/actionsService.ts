@@ -7,7 +7,6 @@ import { ActionRequest, FetchActionsResponse } from "../interfaces/ActionRequest
 
 export default class ActionsService {
   static fetchActions(active: boolean, type?: ActionType | string): Promise<AxiosResponse<FetchActionsResponse>> {
-    console.log(active, type, 'sent')
     return $api.post<FetchActionsResponse>("/actions/action/get", {active, type});
   }
 
@@ -34,7 +33,6 @@ export default class ActionsService {
   static requestActionUser(
     dto: ActionRequest
   ): Promise<AxiosResponse<IAction>> {
-    console.log(dto)
     return $api.post<IAction>("/actions/action", {
       ...dto,
     });

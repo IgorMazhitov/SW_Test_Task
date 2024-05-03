@@ -127,7 +127,6 @@ export class ActionsService {
     try {
       const user: User = this.jwtService.verify(token);
       let actions: Action[] = null;
-      console.log('get all actions type', type);
       if (user.role.name === 'Admin') {
         const query: any = {
           active: !active,
@@ -180,23 +179,16 @@ export class ActionsService {
     dto?: ApproveActionDto,
   ) {
     try {
-      console.log('giving');
       const user = await this.fetchUserWithItems(userGivingId);
       const userGet = await this.fetchUserWithItems(userGetId);
       const item = await this.fetchItemWithUsers(itemId);
 
-      // Check if the user has the item to give
       const hasUserItem = user.items.some((el) => el.id === item.id);
 
-      console.log(hasUserItem, user.items);
-
       if (!hasUserItem) {
-        console.log("user has no item he's giving");
         await this.declineAction(dto, token);
         return false;
       }
-
-      // Transfer the item from the giving user to the receiving user
       userGet.items.push(item);
       item.users.push(userGet);
       item.users = item.users.filter((el) => el.id !== user.id);

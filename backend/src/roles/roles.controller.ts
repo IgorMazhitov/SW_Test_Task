@@ -27,7 +27,6 @@ export class RolesController {
   @ApiBearerAuth() 
   @Get('all')
   getAllRoles() {
-    console.log('roles getting')
     return this.rolesService.getAllRoles()
   }
 }

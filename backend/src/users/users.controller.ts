@@ -21,7 +21,6 @@ export class UsersController {
   @ApiBearerAuth() 
   @ApiTags('Create User') 
   create(@Body() userDto: CreateUserDto) {
-    console.log(userDto)
     return this.usersService.createUser(userDto)
   }
 
@@ -40,7 +39,6 @@ export class UsersController {
   @ApiTags('Get All Users') 
   @ApiBearerAuth() 
   getAllUsers(@Req() req, @Body() body: { page: number, limit: number, roleId?: number }) {
-    console.log(body, 'test get')
     const authHeader = req.headers.authorization;
     if (!authHeader) {
       throw new UnauthorizedException({ message: 'User is not authorized' });

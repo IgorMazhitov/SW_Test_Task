@@ -21,7 +21,6 @@ export class LoggerInterceptor implements NestInterceptor {
       let userEmail;
       if (token) {
         const decodedToken = this.jwtService.verify(token);
-        console.log(decodedToken, decodedToken.email)
         userEmail = decodedToken.email;
       }
 

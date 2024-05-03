@@ -14,7 +14,6 @@ import { UsersModule } from 'src/users/users.module';
     TypeOrmModule.forFeature([AuditLog, User]),
     forwardRef(() => AuthModule),
     forwardRef(() => UsersModule),
-
   ],
   exports: [AuditService]
 })

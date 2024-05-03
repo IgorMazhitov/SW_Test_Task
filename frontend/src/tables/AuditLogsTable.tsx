@@ -6,29 +6,27 @@ const AuditLogTable = () => {
   const [auditLogs, setAuditLogs] = useState<IAudit[]>([]);
   const [emailFilter, setEmailFilter] = useState<string>("");
   const [page, setPage] = useState<number>(1);
-  const [limit, setLimit] = useState<number>(10); // Number of items per page
-  const [totalLogs, setTotalLogs] = useState<number>(0); // Total number of logs
-  const [rowsPerPageOptions] = useState<number[]>([10, 20, 30, 40, 50]); // Options for rows per page
-  const [selectedRowsPerPage, setSelectedRowsPerPage] = useState<number>(10); // Selected rows per page
+  const [totalLogs, setTotalLogs] = useState<number>(0); 
+  const [rowsPerPageOptions] = useState<number[]>([10, 20, 30, 40, 50]); 
+  const [selectedRowsPerPage, setSelectedRowsPerPage] = useState<number>(10); 
 
   useEffect(() => {
     const fetchAuditLogs = async () => {
       try {
-        const response = await LogsService.getAllLogs({
+        const { logs, total } = await LogsService.getAllLogs({
           email: emailFilter,
           page,
-          limit: selectedRowsPerPage, // Use selected rows per page
+          limit: selectedRowsPerPage, 
         });
-        console.log(response.data);
-        setAuditLogs(response.data.logs);
-        setTotalLogs(response.data.total);
+        setAuditLogs(logs);
+        setTotalLogs(total);
       } catch (error) {
         console.error("Error fetching audit logs:", error);
       }
     };
 
     fetchAuditLogs();
-  }, [emailFilter, page, selectedRowsPerPage]); // Include selectedRowsPerPage in the dependencies array
+  }, [emailFilter, page, selectedRowsPerPage]); 
 
   function formatRequestForLogs(jsonRequest: string) {
     const request = JSON.parse(jsonRequest);
@@ -71,7 +69,6 @@ const AuditLogTable = () => {
       <div style={{ marginBottom: "10px", textAlign: "right" }}>
         Total Logs: {totalLogs}
       </div>
-      {/* Rows per page selector */}
       <div style={{ marginBottom: "10px", textAlign: "right" }}>
         Rows per page:
         <select

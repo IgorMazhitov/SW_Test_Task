@@ -35,7 +35,6 @@ export class AuthService {
 
   private async validateUser(userDto: CreateUserDto) {
     const user = await this.usersService.getUserByEmail(userDto.email);
-    console.log(user);
     const passwordEquals = await crypt.compare(userDto.password, user.password);
     if (user && passwordEquals) {
       return user;
@@ -54,7 +53,6 @@ export class AuthService {
       );
     }
     const hashPassword = await crypt.hash(userDto.password, 5);
-    console.log('step', hashPassword);
     const role = await this.rolesRepository.findOne({
         where: {
             id: userDto.roleId
@@ -65,7 +63,6 @@ export class AuthService {
       password: hashPassword,
       role
     });
-    console.log(user, 'user checked');
     const { token } = await this.generateToken(user);
     return {
       token,

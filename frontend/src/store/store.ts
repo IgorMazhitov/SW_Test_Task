@@ -22,7 +22,6 @@ export default class Store {
     async login(email: string, password: string) {
         try {
             const response = await AuthService.login(email, password)
-            console.log(response)
             localStorage.setItem('token', response.data.token)
             this.setAuth(true)
             this.setUser(response.data.user)
@@ -32,7 +31,6 @@ export default class Store {
     }
 
     async signup(email: string, password: string, roleId: number, userName: string) {
-        console.log(roleId)
         try {
             const response = await AuthService.signup(userName, roleId, email, password)
             localStorage.setItem('token', response.data.token)

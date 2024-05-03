@@ -63,7 +63,6 @@ export class AuditService {
       if (!user) {
         throw new Error('User not found or not authorized');
       }
-      console.log(page, limit, email, 'testtest');
       let logsQuery = this.auditLogRepository.createQueryBuilder('auditLog');
 
       if (email) {
