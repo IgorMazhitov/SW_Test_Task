@@ -4,6 +4,7 @@ import { Context } from "..";
 import ActionsTable from "./ActionsActiveTable";
 import ActionsHistory from "./ActionsHistoryTable";
 import AuditLogTable from "./AuditLogsTable";
+import { TableSelectButton } from "../UI/buttons";
 
 const MainTable = () => {
   const [selectedTable, setSelectedTable] = useState("users");
@@ -16,62 +17,23 @@ const MainTable = () => {
   return (
     <div style={{ fontFamily: "Arial, sans-serif" }}>
       <div style={{ marginBottom: "10px", textAlign: "center" }}>
-        <button
-          style={{
-            marginRight: "5px",
-            padding: "10px 20px",
-            backgroundColor: "#007bff",
-            color: "#fff",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-          onClick={() => handleTableChange("users")}
-        >
-          Users
-        </button>
-        <button
-          style={{
-            marginRight: "5px",
-            padding: "10px 20px",
-            backgroundColor: "#007bff",
-            color: "#fff",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-          onClick={() => handleTableChange("actions")}
-        >
-          Actions Pending
-        </button>
-        <button
-          style={{
-            marginRight: "5px",
-            padding: "10px 20px",
-            backgroundColor: "#007bff",
-            color: "#fff",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-          onClick={() => handleTableChange("history")}
-        >
-          Actions History
-        </button>
+        <TableSelectButton
+          tableName="users"
+          callback={() => handleTableChange("users")}
+        />
+        <TableSelectButton
+          tableName="actions pending"
+          callback={() => handleTableChange("actions")}
+        />
+        <TableSelectButton
+          tableName="actions history"
+          callback={() => handleTableChange("history")}
+        />
         {store.user.role.name === "Admin" && (
-          <button
-            style={{
-              padding: "10px 20px",
-              backgroundColor: "#007bff",
-              color: "#fff",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-            onClick={() => handleTableChange("logs")}
-          >
-            Logs
-          </button>
+          <TableSelectButton
+            tableName="logs"
+            callback={() => handleTableChange("logs")}
+          />
         )}
       </div>
       ;
