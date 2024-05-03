@@ -3,11 +3,12 @@ import $api from "../http";
 import { GetMessagesBetweenDto, IMessage, IMessageFromResponse } from "../interfaces/IMessage";
 
 export default class MessagesService {
-  static fetchMessagesBetween(
+  static async fetchMessagesBetween(
     request: GetMessagesBetweenDto
-  ): Promise<AxiosResponse<IMessageFromResponse[]>> {
+  ): Promise<IMessageFromResponse[]> {
     const { senderId, receiverId } = request;
-    return $api.post<IMessageFromResponse[]>("/messages/get", { senderId, receiverId });
+    const { data } = await $api.post<IMessageFromResponse[]>("/messages/get", { senderId, receiverId });
+    return data
   }
 
   static sendMessageFromAdmin(
