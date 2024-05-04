@@ -1,10 +1,5 @@
-import {
-  Controller,
-  Get,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuditService } from './audit.service';
 import { Roles } from 'src/decorators/roles-auth.decorator';
 import { RolesGuard } from 'src/guards/roles.guard';
@@ -19,9 +14,11 @@ export class AuditController {
   @UseGuards(RolesGuard)
   @Roles('Admin')
   @Get()
-  @ApiTags('Get All Audits')
-  @ApiBearerAuth()
-  async getAllAudits(
+  @ApiOperation({
+    summary: 'Get All Audits',
+    description: 'Endpoint to get all audit logs.',
+  })
+  getAllAudits(
     @Query('page') page = 1,
     @Query('limit') limit = 10,
     @Query('email') email?: string,
@@ -30,7 +27,7 @@ export class AuditController {
       page,
       limit,
       email,
-    }
+    };
     return this.auditService.getAllAudits(request);
   }
 }

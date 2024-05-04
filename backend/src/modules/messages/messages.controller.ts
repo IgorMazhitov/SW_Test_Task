@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { MessagesService } from './messages.service';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { Roles } from 'src/decorators/roles-auth.decorator';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { SendMessageDto } from './dtos/send-message.dto';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { GetMessagesBetweenDto } from './dtos/get-messages.dto';
@@ -14,7 +14,10 @@ export class MessagesController {
 
   @UseGuards(RolesGuard)
   @Roles('Admin')
-  @ApiTags('Send message from Admin to User')
+  @ApiOperation({
+    summary: 'Send message from Admin to User',
+    description: 'Endpoint to send a message from an admin to a user.',
+  })
   @ApiBearerAuth()
   @Post('send')
   sendMessageFromAdmin(@Body() request: SendMessageDto) {
@@ -22,14 +25,20 @@ export class MessagesController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @ApiTags('Get messages between')
+  @ApiOperation({
+    summary: 'Get messages between',
+    description: 'Endpoint to get messages between two users.',
+  })
   @ApiBearerAuth()
   @Get()
-  getMessagesBetween(@Query('senderId') senderId: number, @Query('receiverId') receiverId: number){
+  getMessagesBetween(
+    @Query('senderId') senderId: number,
+    @Query('receiverId') receiverId: number,
+  ) {
     const request: GetMessagesBetweenDto = {
       senderId,
-      receiverId
-    }
+      receiverId,
+    };
     return this.messageService.getMessagesBetween(request);
-  }  
+  }
 }
