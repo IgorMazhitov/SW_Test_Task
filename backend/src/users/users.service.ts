@@ -77,7 +77,6 @@ export class UsersService {
   }
 
   async getAllUsers(body: GetAllUsersDto) {
-    console.log('body', body)
     try {
       const { limit, page, senderId, roleId } = body;
       const user: User = await this.usersRepository.findOne({
