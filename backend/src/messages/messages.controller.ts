@@ -1,11 +1,11 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { MessagesService } from './messages.service';
-import { RolesGuard } from 'src/auth/roles.guard';
-import { Roles } from 'src/auth/roles-auth.decorator';
+import { RolesGuard } from 'src/guards/roles.guard';
+import { Roles } from 'src/decorators/roles-auth.decorator';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { SendMessageDto } from './dtos/send-message.dto';
 import { GetMessagesBetweenDto } from './dtos/get-messages.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 
 @Controller('messages')
 export class MessagesController {

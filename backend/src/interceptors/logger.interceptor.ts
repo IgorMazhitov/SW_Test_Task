@@ -14,22 +14,15 @@ export class LoggerInterceptor implements NestInterceptor {
 
     const startTime = Date.now();
     const { method, url, headers, body } = req;
-    const authHeader = req.headers.authorization;
-    const [bearer, token] = authHeader.split(' ');
-
+    console.log('iiiintes')
     try {
-      let userEmail;
-      if (token) {
-        const decodedToken = this.jwtService.verify(token);
-        userEmail = decodedToken.email;
-      }
-
+      let { useremail } = headers;
       const requestInfo = {
         method,
         url,
         headers,
         body,
-        userEmail: userEmail ? userEmail : null,
+        userEmail: useremail ? useremail : null,
         timestamp: new Date().toISOString(),
       };
       return next.handle().pipe(

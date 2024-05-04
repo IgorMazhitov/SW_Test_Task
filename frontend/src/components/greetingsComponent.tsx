@@ -56,11 +56,14 @@ const GreetingsComponent: React.FC<GreetingsComponentProps> = ({
                   <div
                     onClick={() => handleClick(indexRow, indexCol)}
                     style={{
+                      transition: "all 0.5s",
                       width: "20px",
                       height: "20px",
                       color: "",
                       backgroundColor:
-                        matrix[indexRow][indexCol] === 0 ? `${colorA}` : `${colorB}`,
+                        matrix[indexRow][indexCol] === 0
+                          ? `${colorA}`
+                          : `${colorB}`,
                       border: "0.5px solid black",
                     }}
                   ></div>

@@ -1,4 +1,8 @@
 import { Table, TableCell, TableHead } from "../../UI/styled/tables";
+import {
+  formatRequestForLogs,
+  formatResponseForLogs,
+} from "../../common/helpers";
 import { IAudit } from "../../interfaces/IAudit";
 
 interface LogsTableComponentProps {
@@ -6,6 +10,13 @@ interface LogsTableComponentProps {
 }
 
 const LogsTableComponent: React.FC<LogsTableComponentProps> = ({ logs }) => {
+  const formattedLogs = logs.map((log) => {
+    return {
+      ...log,
+      requestData: formatRequestForLogs(JSON.stringify(log.requestData)),
+      responseData: formatResponseForLogs(JSON.stringify(log.responseData)),
+    };
+  });
   return (
     <Table>
       <thead>
@@ -19,7 +30,7 @@ const LogsTableComponent: React.FC<LogsTableComponentProps> = ({ logs }) => {
         </tr>
       </thead>
       <tbody>
-        {logs.map((log) => (
+        {formattedLogs.map((log) => (
           <tr key={log.id}>
             <TableCell>{log.email}</TableCell>
             <TableCell>{log.id}</TableCell>

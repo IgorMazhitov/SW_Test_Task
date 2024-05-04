@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import LoginComponent from "../components/logInComponent";
-import SignupComponent from "../components/signUpComponent";
+import LoginComponent from "../components/authComponents/logInComponent";
+import SignupComponent from "../components/authComponents/signUpComponent";
 import { AuthPageLayout } from "../UI/styled/pages";
 
 interface AuthPageProps {}

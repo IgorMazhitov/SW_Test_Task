@@ -8,10 +8,11 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuditService } from './audit.service';
-import { Roles } from 'src/auth/roles-auth.decorator';
-import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from 'src/decorators/roles-auth.decorator';
+import { RolesGuard } from 'src/guards/roles.guard';
+import { GetAllAuditsDto } from './dtos/get-all-audits.dto';
 
 @ApiTags('Audit Logs')
 @Controller('logs')
@@ -21,24 +22,19 @@ export class AuditController {
 
   @UseGuards(RolesGuard)
   @Roles('Admin')
-  @Post('/all')
+  @Get()
   @ApiTags('Get All Audits')
   @ApiBearerAuth()
   async getAllAudits(
-    @Req() req,
-    @Body() body: { page: number, limit: number, email?: string},
+    @Query('page') page = 1,
+    @Query('limit') limit = 10,
+    @Query('email') email?: string,
   ) {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
-      throw new UnauthorizedException({ message: 'User is not authorized' });
+    const request: GetAllAuditsDto = {
+      page,
+      limit,
+      email,
     }
-    const [bearer, token] = authHeader.split(' ');
-
-    if (bearer !== 'Bearer' || !token) {
-      throw new UnauthorizedException({ message: 'User is not authorized' });
-    }
-
-    const { page = 1, limit = 10, email } = body;
-    return this.auditService.getAllAudits(token, { page, limit }, email);
+    return this.auditService.getAllAudits(request);
   }
 }

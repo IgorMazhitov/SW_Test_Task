@@ -10,6 +10,7 @@ import {
 import NewActionRequest from "../components/actionRequestForm";
 import { ActionRequest } from "../interfaces/ActionRequest";
 import TableComponent from "../components/tables/actionsTableComponent";
+import { TableContainer } from "../UI/styled/tables";
 
 const ActionsTable = () => {
   const { store } = useContext(Context);
@@ -95,7 +96,7 @@ const ActionsTable = () => {
   };
 
   return (
-    <div>
+    <TableContainer>
       {store.user.role.name === "Admin" && (
         <div
           style={{
@@ -178,7 +179,7 @@ const ActionsTable = () => {
           No actions found
         </div>
       )}
-    </div>
+    </TableContainer>
   );
 };
 

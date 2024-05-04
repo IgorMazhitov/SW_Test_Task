@@ -22,8 +22,8 @@ export default class Store {
     async login(email: string, password: string) {
         try {
             const response = await AuthService.login(email, password)
-            console.log(response.data.token)
             localStorage.setItem('token', response.data.token)
+            localStorage.setItem('userEmail', email)
             this.setAuth(true)
             this.setUser(response.data.user)
         } catch (error) {
@@ -34,7 +34,6 @@ export default class Store {
     async signup(email: string, password: string, roleId: number, userName: string) {
         try {
             const response = await AuthService.signup(userName, roleId, email, password)
-            console.log(response.data.token)
             localStorage.setItem('token', response.data.token)
             this.setAuth(true)
             this.setUser(response.data.user)
@@ -46,6 +45,7 @@ export default class Store {
     async logout() {
         try {
             localStorage.removeItem('token')
+            localStorage.removeItem('userEmail')
             this.setAuth(false)
             this.setUser({} as IUser)
         } catch (error) {

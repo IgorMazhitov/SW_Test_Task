@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { Context } from "..";
-import { BluePinkButton } from "../UI/styled/buttons";
+import { Context } from "../..";
+import { BluePinkButton } from "../../UI/styled/buttons";
 
 const LogOutComponent = () => {
   const { store } = useContext(Context);

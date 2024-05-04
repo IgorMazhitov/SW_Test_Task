@@ -1,4 +1,4 @@
-import { EmptyTableCover } from "../UI/styled/cards"
+import { EmptyTableCover } from "../../UI/styled/cards"
 
 interface EmptyTableComponentProps {
     name: string

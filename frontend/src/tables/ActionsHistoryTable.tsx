@@ -4,6 +4,7 @@ import ActionsService from "../services/actionsService";
 import { IAction, ActionType } from "../interfaces/IAction";
 import { columnsForActionsTable, filterColumnsForActionsTable, typeMappingWithUndefined } from "../common/helpers";
 import TableComponent from "../components/tables/actionsTableComponent";
+import { TableContainer } from "../UI/styled/tables";
 
 const ActionsHistory = () => {
   const { store } = useContext(Context);
@@ -31,7 +32,7 @@ const ActionsHistory = () => {
   }, [selectedType]);
 
   return (
-    <div>
+    <TableContainer>
       <div>
         <select
           value={selectedType}
@@ -53,7 +54,7 @@ const ActionsHistory = () => {
       ) : (
         <div style={{ color: "red", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>No actions found</div>
       )}
-    </div>
+    </TableContainer>
   );
 };
 

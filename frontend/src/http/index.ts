@@ -8,8 +8,8 @@ const $api = axios.create({
 })
 
 $api.interceptors.request.use((config) => {
-    console.log(localStorage.getItem('token'), 'interceptor')
     config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`
+    config.headers.userEmail = `${localStorage.getItem('userEmail')}`
     return config
 })
 

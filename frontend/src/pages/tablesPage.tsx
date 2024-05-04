@@ -5,6 +5,7 @@ import UsersTable from "../tables/UsersTable";
 import { BlueButton } from "../UI/styled/buttons";
 import ActionsTable from "../tables/ActionsActiveTable";
 import ActionsHistory from "../tables/ActionsHistoryTable";
+import AuditLogTable from "../tables/AuditLogsTable";
 
 interface TablesPageProps {}
 
@@ -46,6 +47,7 @@ const TablesPage: React.FC<TablesPageProps> = () => {
       {selectedTable === "users" && <UsersTable />}
       {selectedTable === "actions" && <ActionsTable />}
       {selectedTable === "history" && <ActionsHistory />}
+      {selectedTable === "logs" && <AuditLogTable />}
     </>
   );
 };

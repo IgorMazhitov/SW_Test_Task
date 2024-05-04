@@ -2,8 +2,13 @@ import React, { useState, useEffect } from "react";
 import { IAudit } from "../interfaces/IAudit";
 import LogsService from "../services/logsService";
 import LogsTableComponent from "../components/tables/logsTableCompoent";
-import EmptyTableComponent from "../components/emptyTableComponent";
+import EmptyTableComponent from "../components/tables/emptyTableComponent";
 import { TableContainer } from "../UI/styled/tables";
+import { formatRequestForLogs } from "../common/helpers";
+import PaginationComponent from "../components/paginationComponent";
+import { BasicInput, BasicSelect } from "../UI/styled/inputs";
+import { BasicHeader } from "../UI/styled/fonts";
+import { BasicRow } from "../UI/styled/cards";
 
 const AuditLogTable = () => {
   const [auditLogs, setAuditLogs] = useState<IAudit[]>([]);
@@ -31,45 +36,24 @@ const AuditLogTable = () => {
     fetchAuditLogs();
   }, [emailFilter, page, selectedRowsPerPage]);
 
-  function formatRequestForLogs(jsonRequest: string) {
-    const request = JSON.parse(jsonRequest);
-    const { url, method, body } = request;
-    const formattedRequestBody = JSON.stringify(body);
-
-    return `${method} ${url} \n ${
-      formattedRequestBody !== "{}" ? formattedRequestBody : "No request body"
-    }`;
-  }
-
-  function formatResponseForLogs(jsonResponse: string) {
-    const response = JSON.parse(jsonResponse);
-    if (!response) {
-      return `Response is void`;
-    }
-    const { status } = response;
-    return `Status: ${status}`;
-  }
-
   return (
     <TableContainer>
+      <BasicRow>
+        <BasicHeader>Audit Logs</BasicHeader>
+        <BasicHeader>total: {totalLogs}</BasicHeader>
+      </BasicRow>
       {auditLogs.length > 0 && (
         <>
-          <h2 style={{ marginBottom: "20px", textAlign: "center" }}>
-            Audit Logs
-          </h2>
-          <input
+          <BasicInput
             type="text"
             placeholder="Filter by Email"
             value={emailFilter}
             onChange={(e) => setEmailFilter(e.target.value)}
-            style={{ marginBottom: "10px", marginLeft: "10px" }}
           />
-          <div style={{ marginBottom: "10px", textAlign: "right" }}>
-            Total Logs: {totalLogs}
-          </div>
-          <div style={{ marginBottom: "10px", textAlign: "right" }}>
+
+          <BasicRow>
             Rows per page:
-            <select
+            <BasicSelect
               value={selectedRowsPerPage}
               onChange={(e) => setSelectedRowsPerPage(Number(e.target.value))}
               style={{ marginLeft: "5px" }}
@@ -79,27 +63,10 @@ const AuditLogTable = () => {
                   {option}
                 </option>
               ))}
-            </select>
-          </div>
+            </BasicSelect>
+          </BasicRow>
+          <PaginationComponent currentPage={page} onPageChange={setPage} />
           <LogsTableComponent logs={auditLogs} />
-          {/* Pagination controls */}
-          <div style={{ textAlign: "center", marginTop: "20px" }}>
-            <button
-              disabled={page === 1}
-              onClick={() => setPage((prevPage) => prevPage - 1)}
-              style={{ marginRight: "10px" }}
-            >
-              Previous
-            </button>
-            <span>Page {page}</span>
-            <button
-              disabled={auditLogs.length < selectedRowsPerPage}
-              onClick={() => setPage((prevPage) => prevPage + 1)}
-              style={{ marginLeft: "10px" }}
-            >
-              Next
-            </button>
-          </div>
         </>
       )}
       {auditLogs.length === 0 && <EmptyTableComponent name="Audit" />}

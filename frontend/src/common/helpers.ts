@@ -38,7 +38,7 @@ export const filterColumnsForActionsTable = (isUserAdmin: boolean) => {
     );
   }
   return columnsForActionsTable;
-}
+};
 
 export const getRandomMatrix = (matrix: number[][]) => {
   const randomMatrix = matrix.map((row: number[]) => {
@@ -47,4 +47,23 @@ export const getRandomMatrix = (matrix: number[][]) => {
     });
   });
   return randomMatrix;
-}
+};
+
+export const formatRequestForLogs = (jsonRequest: string): string => {
+  const request = JSON.parse(jsonRequest);
+  const { url, method, body } = request;
+  const formattedRequestBody = JSON.stringify(body);
+
+  return `${method} ${url} \n ${
+    formattedRequestBody !== "{}" ? formattedRequestBody : "No request body"
+  }`;
+};
+
+export const formatResponseForLogs = (jsonResponse: string) => {
+  const response = JSON.parse(jsonResponse);
+  if (!response) {
+    return `Response is void`;
+  }
+  const { status } = response;
+  return `Status: ${status}`;
+};

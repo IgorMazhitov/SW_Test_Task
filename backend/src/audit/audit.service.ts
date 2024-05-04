@@ -2,17 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuditLog } from './database/auditLog.entity';
 import { Like, Repository } from 'typeorm';
-import { User } from 'src/users/database/user.entity';
-import { JwtService } from '@nestjs/jwt';
+import { GetAllAuditsDto } from './dtos/get-all-audits.dto';
 
 @Injectable()
 export class AuditService {
   constructor(
     @InjectRepository(AuditLog)
-    private readonly auditLogRepository: Repository<AuditLog>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-    private jwtService: JwtService,
+    private readonly auditLogRepository: Repository<AuditLog>
   ) {}
 
   async logRequest(requestInfo: any, email?: string): Promise<void> {
@@ -53,16 +49,11 @@ export class AuditService {
   }
 
   async getAllAudits(
-    token: string,
-    { page = 1, limit = 10 },
-    email?: string,
+    request: GetAllAuditsDto,
   ): Promise<{ total: number; logs: AuditLog[] }> {
     try {
-      const user: User = this.jwtService.verify(token);
+      const { page, limit, email } = request;
 
-      if (!user) {
-        throw new Error('User not found or not authorized');
-      }
       let logsQuery = this.auditLogRepository.createQueryBuilder('auditLog');
 
       if (email) {

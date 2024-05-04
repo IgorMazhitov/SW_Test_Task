@@ -1,10 +1,10 @@
 import React, { useContext, useState } from "react";
 import axios from "axios";
-import { Context } from "..";
+import { Context } from "../..";
 import { observer } from "mobx-react-lite";
-import { BlueButton, BluePinkButton } from "../UI/styled/buttons";
-import { BasicInput, InputWrapper } from "../UI/styled/inputs";
-import { AuthFormWrapper } from "../UI/styled/cards";
+import { BlueButton, BluePinkButton } from "../../UI/styled/buttons";
+import { BasicInput, InputWrapper } from "../../UI/styled/inputs";
+import { AuthFormWrapper } from "../../UI/styled/cards";
 
 interface LoginProps {
   callback?: () => void;

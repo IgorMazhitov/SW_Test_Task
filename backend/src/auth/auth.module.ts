@@ -1,18 +1,15 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { UsersModule } from 'src/users/users.module';
-import { JwtModule } from '@nestjs/jwt';
-import { AuditModule } from 'src/audit/audit.module';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/users/database/user.entity';
 import { Role } from 'src/roles/database/role.entity';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, JwtService],
   imports: [
-    forwardRef(() => UsersModule),
     JwtModule.register({
       secret: process.env.PRIVATE_KEY || 'SECRET',
       signOptions: {
@@ -21,6 +18,6 @@ import { Role } from 'src/roles/database/role.entity';
     }),
     TypeOrmModule.forFeature([User, Role])
   ],
-  exports: [AuthService, JwtModule]
+  exports: [AuthService, JwtService]
 })
 export class AuthModule {}

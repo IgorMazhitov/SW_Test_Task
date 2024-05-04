@@ -2,9 +2,9 @@ import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger"; // Import Swagger decorators
 import { RolesService } from "./roles.service";
 import { CreateRoleDto } from "./dtos/create-role.dto";
-import { RolesGuard } from "src/auth/roles.guard";
-import { Roles } from "src/auth/roles-auth.decorator";
-import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
+import { RolesGuard } from "src/guards/roles.guard";
+import { Roles } from "src/decorators/roles-auth.decorator";
+import { JwtAuthGuard } from "src/guards/jwt-auth.guard";
 
 @ApiTags('Roles') 
 @Controller('roles')

@@ -1,18 +1,19 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ActionsController } from './actions.controller';
 import { ActionsService } from './actions.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Item } from './database/item.entity';
 import { Action } from './database/action.entity';
-import { AuthModule } from 'src/auth/auth.module';
 import { User } from 'src/users/database/user.entity';
-import { MessagesModule } from 'src/messages/messages.module';
+import { JwtService } from '@nestjs/jwt';
+import { MessagesService } from 'src/messages/messages.service';
+import { Message } from 'src/messages/database/message.entity';
 
 @Module({
   controllers: [ActionsController],
-  providers: [ActionsService],
+  providers: [ActionsService, JwtService, MessagesService],
   imports: [
-    TypeOrmModule.forFeature([Item, Action, User]), forwardRef(() => AuthModule), MessagesModule
+    TypeOrmModule.forFeature([Item, Action, User, Message])
   ]
 })
 export class ActionsModule {}

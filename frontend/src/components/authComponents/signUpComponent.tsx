@@ -1,11 +1,11 @@
 import React, { useContext, useState } from "react";
 import axios from "axios";
-import { Context } from "..";
-import { IRole } from "../interfaces/IUser";
+import { Context } from "../..";
+import { IRole } from "../../interfaces/IUser";
 import { observer } from "mobx-react-lite";
-import { BlueButton, BluePinkButton } from "../UI/styled/buttons";
-import { BasicInput, BasicSelect, InputWrapper } from "../UI/styled/inputs";
-import { AuthFormWrapper } from "../UI/styled/cards";
+import { BlueButton, BluePinkButton } from "../../UI/styled/buttons";
+import { BasicInput, BasicSelect, InputWrapper } from "../../UI/styled/inputs";
+import { AuthFormWrapper } from "../../UI/styled/cards";
 
 interface SignupProps {
   callback?: () => void;

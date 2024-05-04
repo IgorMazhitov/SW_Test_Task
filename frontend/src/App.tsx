@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { Context } from ".";
 import { observer } from "mobx-react-lite";
 import AuthPage from "./pages/authPage";
-import LogOutComponent from "./components/logOutComponent";
+import LogOutComponent from "./components/authComponents/logOutComponent";
 import { LogOutCover } from "./UI/styled/buttons";
 import TablesPage from "./pages/tablesPage";
 

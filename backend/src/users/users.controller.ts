@@ -4,22 +4,22 @@ import {
   Get,
   Post,
   Query,
-  Req,
-  UnauthorizedException,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'; // Import Swagger decorators
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dtos/create-user.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { Roles } from 'src/auth/roles-auth.decorator';
-import { RolesGuard } from 'src/auth/roles.guard';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { Roles } from 'src/decorators/roles-auth.decorator';
+import { RolesGuard } from 'src/guards/roles.guard';
 import { ChangeUserDto } from './dtos/change-user.dto';
 import { GetAllUsersDto } from './dtos/get-all-users.dto';
+import { LoggerInterceptor } from 'src/interceptors/logger.interceptor';
 
 @ApiTags('Users')
 @Controller('users')
+@UseInterceptors(LoggerInterceptor)
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
@@ -56,7 +56,6 @@ export class UsersController {
       page,
       limit,
     };
-    console.log(request);
     return this.usersService.getAllUsers(request);
   }
 }

@@ -10,10 +10,10 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'; 
 import { ActionsService } from './actions.service';
-import { RolesGuard } from 'src/auth/roles.guard';
-import { Roles } from 'src/auth/roles-auth.decorator';
+import { RolesGuard } from 'src/guards/roles.guard';
+import { Roles } from 'src/decorators/roles-auth.decorator';
 import { CreateItemDto, GiveItemDto } from './dto/create-item.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { ActionRequestDto, ApproveActionDto } from './dto/action-request.dto';
 import { ActionType } from './database/action.entity';
 import { GetAllItems } from './dto/get-all-items.dto';

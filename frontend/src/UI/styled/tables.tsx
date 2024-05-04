@@ -2,6 +2,8 @@ import styled from "styled-components";
 
 export const TableCell = styled.td`
   padding: 10px;
+  max-width: 100px;
+  word-wrap: break-word;
   border: 1px solid black;
 `;
 
@@ -17,20 +19,11 @@ export const Table = styled.table`
   width: 100%;
 `;
 
-/* 
-display: "flex",
-            alignItems: "center",
-            backgroundColor: "rgba(173, 216, 230, 0.5)",
-            borderRadius: "10px",
-            boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-            marginTop: "10px",
-            marginBottom: "10px",
-            padding: "20px",
-*/
-
 export const TableContainer = styled.div`
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
   justify-content: center;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
