@@ -1,15 +1,14 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Context } from "..";
 import ActionsService from "../services/actionsService";
-import { IAction, ActionType } from "../interfaces/IAction";
+import { IAction, ActionType } from "../interfaces/IAction.interface";
 import {
   columnsForActionsTable,
   filterColumnsForActionsTable,
   typeMappingWithUndefined,
 } from "../common/helpers";
 import TableComponent from "../components/tables/actionsTableComponent";
-import { FetchActionsRequest } from "../interfaces/ActionRequest";
-import EmptyTableComponent from "../components/tables/emptyTableComponent";
+import { FetchActionsRequest } from "../interfaces/api-interfaces/ActionsApi.interface";
 import {
   FormControl,
   Grid,

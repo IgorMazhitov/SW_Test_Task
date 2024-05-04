@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { IRole, IUser } from "../../interfaces/IUser";
+import { IUser } from "../../interfaces/IUser.interface";
 import {
     Button,
   Card,
@@ -13,6 +13,7 @@ import {
   Select,
   TextField,
 } from "@mui/material";
+import { IRole } from "../../interfaces/IRole.interface";
 
 interface UserEditModalProps {
   user: IUser;

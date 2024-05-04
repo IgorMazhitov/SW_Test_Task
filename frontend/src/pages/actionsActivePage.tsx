@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { ActionType, IAction } from "../interfaces/IAction";
+import { ActionType, IAction } from "../interfaces/IAction.interface";
 import { Context } from "..";
 import ActionsService from "../services/actionsService";
 import {
@@ -13,7 +13,7 @@ import {
   ApproveActionRequest,
   DeclineActionRequest,
   FetchActionsRequest,
-} from "../interfaces/ActionRequest";
+} from "../interfaces/api-interfaces/ActionsApi.interface";
 import TableComponent from "../components/tables/actionsTableComponent";
 import {
   FormControl,

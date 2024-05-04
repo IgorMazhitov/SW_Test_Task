@@ -3,7 +3,7 @@ import {
   formatRequestForLogs,
   formatResponseForLogs,
 } from "../../common/helpers";
-import { IAudit } from "../../interfaces/IAudit";
+import { IAudit } from "../../interfaces/IAudit.interface";
 
 interface LogsTableComponentProps {
   logs: IAudit[];

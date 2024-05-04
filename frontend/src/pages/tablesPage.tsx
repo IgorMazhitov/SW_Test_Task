@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
 import GreetingsComponent from "../components/greetingsComponent";
 import { Context } from "..";
-import UsersTable from "../tables/UsersTable";
-import ActionsTable from "../tables/ActionsActiveTable";
-import ActionsHistory from "../tables/ActionsHistoryTable";
-import AuditLogTable from "../tables/AuditLogsTable";
+import UsersTable from "./usersPage";
+import ActionsTable from "./actionsActivePage";
+import ActionsHistory from "./actionsHistoryPage";
+import AuditLogTable from "./auditLogsPage";
 import { Box, Button, ButtonGroup, Grid } from "@mui/material";
 import LogOutComponent from "../components/authComponents/logOutComponent";
 

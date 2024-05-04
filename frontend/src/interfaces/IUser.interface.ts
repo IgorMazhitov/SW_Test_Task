@@ -1,4 +1,4 @@
-import { IMessage } from "./IMessage";
+import { IMessage } from "./IMessage.interface";
 
 export interface IUser {
   id: number;

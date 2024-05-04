@@ -1,5 +1,5 @@
 import { Button, Paper, Table, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
-import { IAction } from "../../interfaces/IAction";
+import { IAction } from "../../interfaces/IAction.interface";
 import { fakeActions } from "../../common/helpers";
 
 interface TableComponentProps {

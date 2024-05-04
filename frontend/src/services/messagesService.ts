@@ -1,9 +1,6 @@
-import $api from "../http";
-import {
-  GetMessagesBetweenDto,
-  IMessage,
-  IMessageFromResponse,
-} from "../interfaces/IMessage";
+import $api from "../api";
+import { IMessage } from "../interfaces/IMessage.interface";
+import { GetMessagesBetweenDto, IMessageFromResponse } from "../interfaces/api-interfaces/MessagesApi.interface";
 
 export default class MessagesService {
   static async fetchMessagesBetween(

@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import axios from "axios";
 import { Context } from "../..";
-import { IRole } from "../../interfaces/IUser";
 import { observer } from "mobx-react-lite";
 import {
   Button,
@@ -14,6 +13,7 @@ import {
   Select,
   TextField,
 } from "@mui/material";
+import { IRole } from "../../interfaces/IRole.interface";
 
 interface SignupProps {
   callback?: () => void;

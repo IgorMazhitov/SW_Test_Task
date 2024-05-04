@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
 import {
-  GetMessagesBetweenDto,
   IMessage,
-  IMessageFromResponse,
-} from "../../interfaces/IMessage";
-import { IUser } from "../../interfaces/IUser";
+} from "../../interfaces/IMessage.interface";
+import { IUser } from "../../interfaces/IUser.interface";
 import MessagesService from "../../services/messagesService";
 import { Context } from "../..";
-import { ActionRequest } from "../../interfaces/ActionRequest";
-import { ActionType } from "../../interfaces/IAction";
+import { ActionRequest } from "../../interfaces/api-interfaces/ActionsApi.interface";
+import { ActionType } from "../../interfaces/IAction.interface";
 import ActionsService from "../../services/actionsService";
 import { typeMapping } from "../../common/helpers";
 import {
@@ -22,6 +20,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { GetMessagesBetweenDto, IMessageFromResponse } from "../../interfaces/api-interfaces/MessagesApi.interface";
 
 type UserMessagesPropsType = {
   user: IUser;

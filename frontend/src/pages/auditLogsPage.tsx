@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { IAudit } from "../interfaces/IAudit";
+import { IAudit } from "../interfaces/IAudit.interface";
 import LogsService from "../services/logsService";
 import LogsTableComponent from "../components/tables/logsTableCompoent";
-import EmptyTableComponent from "../components/tables/emptyTableComponent";
-import PaginationComponent from "../components/paginationComponent";
 import {
   FormControl,
   Grid,

@@ -1,15 +1,10 @@
 import { useContext } from "react";
 import { Context } from "../..";
-import {
-  columnsForUserTable,
-  filterColumnsForUserTable,
-} from "../../common/helpers";
-import { IUser } from "../../interfaces/IUser";
+import { filterColumnsForUserTable } from "../../common/helpers";
+import { IUser } from "../../interfaces/IUser.interface";
 import {
   Button,
   ButtonGroup,
-  Grid,
-  Pagination,
   Paper,
   Table,
   TableBody,
@@ -45,11 +40,58 @@ const UsersTableComponent: React.FC<UserTableComponentProps> = ({
               backgroundColor: "black",
             }}
           >
-            {columns.map((column) => (
-              <TableCell sx={{ color: "white" }} key={column}>
-                {column}
-              </TableCell>
-            ))}
+            {columns.map((column) => {
+              switch (column) {
+                case "id":
+                  return (
+                    <TableCell sx={{ color: "white" }} key={column}>
+                      ID
+                    </TableCell>
+                  );
+                case "role":
+                  return (
+                    <TableCell sx={{ color: "white" }} key={column}>
+                      Role
+                    </TableCell>
+                  );
+                case "userName":
+                  return (
+                    <TableCell sx={{ color: "white" }} key={column}>
+                      Username
+                    </TableCell>
+                  );
+                case "email":
+                  return (
+                    <TableCell sx={{ color: "white" }} key={column}>
+                      Email
+                    </TableCell>
+                  );
+                case "created_at":
+                  return (
+                    <TableCell sx={{ color: "white" }} key={column}>
+                      Created At
+                    </TableCell>
+                  );
+                case "password":
+                  return (
+                    <TableCell sx={{ color: "white" }} key={column}>
+                      Password
+                    </TableCell>
+                  );
+                case "Actions":
+                  return (
+                    <TableCell sx={{ color: "white" }} key={column}>
+                      Actions
+                    </TableCell>
+                  );
+                default:
+                  return (
+                    <TableCell sx={{ color: "white" }} key={column}>
+                      No Data
+                    </TableCell>
+                  );
+              }
+            })}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -62,7 +104,14 @@ const UsersTableComponent: React.FC<UserTableComponentProps> = ({
               {user?.created_at && (
                 <TableCell>{user?.created_at.toLocaleString()}</TableCell>
               )}
-              {user?.password && <TableCell>{user.password}</TableCell>}
+              {user?.password && (
+                <TableCell>
+                  {user.password
+                    .split("")
+                    .map((el) => "*")
+                    .join("")}
+                </TableCell>
+              )}
               <TableCell>
                 <ButtonGroup orientation="vertical">
                   {isUserAdmin && (

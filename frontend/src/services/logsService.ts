@@ -1,5 +1,5 @@
-import $api from "../http";
-import { AuditResponse, GetAllLogsParams } from "../interfaces/IAudit";
+import $api from "../api";
+import { AuditResponse, GetAllLogsParams } from "../interfaces/api-interfaces/AuditsApi.interface";
 
 export default class LogsService {
   static async getAllLogs(request: GetAllLogsParams): Promise<AuditResponse> {

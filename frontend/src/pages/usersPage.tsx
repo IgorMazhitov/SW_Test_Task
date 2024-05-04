@@ -1,23 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Context } from "..";
 import UsersService from "../services/usersService";
-import {
-  ChangeUserDto,
-  GetUsersDto,
-  IRole,
-  IUser,
-  UserCreationDto,
-} from "../interfaces/IUser";
-import { IItem } from "../interfaces/IItem";
-import ActionsService from "../services/actionsService";
 import UserCreationForm from "../components/userCreationForm";
 import RolesCreationForm from "../components/rolesCreationForm";
 import UserMessagesModal from "../components/modals/messagerModal";
-import PaginationComponent from "../components/paginationComponent";
 import UserEditModal from "../components/modals/userEditModal";
 import UsersTableComponent from "../components/tables/usersTableComponent";
 import GivingItemModal from "../components/modals/givingItemModal";
-import EmptyTableComponent from "../components/tables/emptyTableComponent";
 import {
   Box,
   FormControl,
@@ -26,7 +15,11 @@ import {
   MenuItem,
   Pagination,
   Select,
+  Typography,
 } from "@mui/material";
+import { ChangeUserDto, GetUsersDto, UserCreationDto } from "../interfaces/api-interfaces/UsersApi.interface";
+import { IUser } from "../interfaces/IUser.interface";
+import { IRole } from "../interfaces/IRole.interface";
 
 const UsersTable = () => {
   /* <---------------------------------------------- STORE ----------------------------------------------> */
@@ -37,7 +30,6 @@ const UsersTable = () => {
   const [showGiveItemModal, setShowGiveItemModal] = useState<boolean>(false);
   /* <---------------------------------------------- ENTITIES -------------------------------------------> */
   const [users, setUsers] = useState<IUser[]>([]);
-  const [items, setItems] = useState<IItem[]>([]);
   const [roles, setRoles] = useState<IRole[]>([]);
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
   /* <------------------------------------------- PAGINATION --------------------------------------------> */
@@ -45,8 +37,7 @@ const UsersTable = () => {
   const [totalPages, setTotalPages] = useState<number>(0);
   const [limit, setLimit] = useState<number>(10);
   const [role, setRole] = useState<number>(2);
-  const [rowsPerPageOptions] = useState<number[]>([10, 20, 30, 40, 50]);
-  const [selectedRowsPerPage, setSelectedRowsPerPage] = useState<number>(10);
+  const limitOptions = [10, 20, 30, 40, 50]
 
   const fetchRoles = async () => {
     try {
@@ -66,9 +57,7 @@ const UsersTable = () => {
         senderId: store.user.id,
       };
       const { users, count } = await UsersService.fetchUsers(request);
-      const items = await ActionsService.getItems(store.user.id);
       setUsers(users);
-      setItems(items);
       setTotalPages(Math.ceil(count / limit));
     } catch (error) {
       console.log(error);
@@ -78,7 +67,7 @@ const UsersTable = () => {
   useEffect(() => {
     fetchUsers();
     fetchRoles();
-  }, [page, limit, role, selectedRowsPerPage]);
+  }, [page, limit, role, limit]);
 
   const handleSubmitUserCreation = async (formData: UserCreationDto) => {
     try {
@@ -139,14 +128,14 @@ const UsersTable = () => {
             <FormControl>
               <InputLabel>Rows:</InputLabel>
               <Select
-                value={selectedRowsPerPage}
+                value={limit}
                 size="small"
                 label="Rows"
                 onChange={(e: any) =>
-                  setSelectedRowsPerPage(Number(e.target.value))
+                  setLimit(Number(e.target.value))
                 }
               >
-                {rowsPerPageOptions.map((option) => (
+                {limitOptions.map((option) => (
                   <MenuItem key={option} value={option}>
                     {option}
                   </MenuItem>
@@ -221,7 +210,9 @@ const UsersTable = () => {
                     alignItems: "center",
                   }}
                 >
-                  <EmptyTableComponent name="Users" />
+                  <Typography variant="h2">
+                    No users found
+                  </Typography>
                 </Grid>
               </Grid>
             </Box>

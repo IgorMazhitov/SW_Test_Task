@@ -1,12 +1,7 @@
-import $api from "../http";
-import {
-  ChangeUserDto,
-  GetAllUsersResponse,
-  GetUsersDto,
-  IRole,
-  IUser,
-  UserCreationDto,
-} from "../interfaces/IUser";
+import $api from "../api";
+import { IRole } from "../interfaces/IRole.interface";
+import { IUser } from "../interfaces/IUser.interface";
+import { ChangeUserDto, GetAllUsersResponse, GetUsersDto, UserCreationDto } from "../interfaces/api-interfaces/UsersApi.interface";
 
 export default class UsersService {
   static async fetchUsers(request: GetUsersDto): Promise<GetAllUsersResponse> {

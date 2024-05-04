@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from "react";
-import { GiveItemToUserFromAdminDto, IItem } from "../../interfaces/IItem";
-import { IUser } from "../../interfaces/IUser";
+import { IItem } from "../../interfaces/IItem.interface";
+import { IUser } from "../../interfaces/IUser.interface";
 import { Context } from "../..";
 import ActionsService from "../../services/actionsService";
-import { ActionRequest } from "../../interfaces/ActionRequest";
-import { ActionType } from "../../interfaces/IAction";
+import { ActionRequest } from "../../interfaces/api-interfaces/ActionsApi.interface";
+import { ActionType } from "../../interfaces/IAction.interface";
 import {
   Button,
   Card,
@@ -13,9 +13,11 @@ import {
   FormControl,
   Grid,
   InputLabel,
+  MenuItem,
   Select,
   Typography,
 } from "@mui/material";
+import { GiveItemToUserFromAdminDto } from "../../interfaces/api-interfaces/ItemsApi.interface";
 
 interface GivingItemModalProps {
   userReceiving: IUser;
@@ -74,10 +76,19 @@ const GivingItemModal: React.FC<GivingItemModalProps> = ({
 
   if (!items.length) {
     return (
-      <div>
-        <div>No items to give</div>
-        <button onClick={onClose}>Close</button>
-      </div>
+      <Card
+        sx={{
+          position: "absolute" as "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          padding: "10px",
+          maxWidth: "max-content",
+        }}
+      >
+        <Typography>No items to give</Typography>
+        <Button variant="outlined" onClick={onClose}>Close</Button>
+      </Card>
     );
   }
 
@@ -111,9 +122,9 @@ const GivingItemModal: React.FC<GivingItemModalProps> = ({
                 }}
               >
                 {items.map((item) => (
-                  <option key={item.id} value={item.id}>
+                  <MenuItem key={item.id} value={item.id}>
                     {item.name}
-                  </option>
+                  </MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -137,8 +148,12 @@ const GivingItemModal: React.FC<GivingItemModalProps> = ({
           alignItems: "center",
         }}
       >
-        <Button variant="outlined" onClick={onClose}>Close</Button>
-        <Button variant="contained" onClick={() => handleGiveItem()}>Give item</Button>
+        <Button variant="outlined" onClick={onClose}>
+          Close
+        </Button>
+        <Button variant="contained" onClick={() => handleGiveItem()}>
+          Give item
+        </Button>
       </CardActions>
     </Card>
   );

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import UsersService from "../services/usersService";
-import { IRole, UserCreationDto } from "../interfaces/IUser";
 import {
   Button,
   Grid,
@@ -9,6 +8,8 @@ import {
   Select,
   TextField,
 } from "@mui/material";
+import { UserCreationDto } from "../interfaces/api-interfaces/UsersApi.interface";
+import { IRole } from "../interfaces/IRole.interface";
 
 type UserCreationFormProps = {
   handleSubmitUserCreation: (formData: UserCreationDto) => void;
