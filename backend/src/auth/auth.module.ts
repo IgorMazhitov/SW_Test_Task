@@ -8,9 +8,10 @@ import { Role } from 'src/roles/database/role.entity';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, JwtService],
+  providers: [AuthService],
   imports: [
     JwtModule.register({
+      global: true,
       secret: process.env.PRIVATE_KEY || 'SECRET',
       signOptions: {
         expiresIn: '24h'
@@ -18,6 +19,6 @@ import { Role } from 'src/roles/database/role.entity';
     }),
     TypeOrmModule.forFeature([User, Role])
   ],
-  exports: [AuthService, JwtService]
+  exports: [AuthService]
 })
 export class AuthModule {}

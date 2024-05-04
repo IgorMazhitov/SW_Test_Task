@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -34,7 +35,7 @@ export class UsersController {
 
   @UseGuards(RolesGuard)
   @Roles('Admin')
-  @Post('/change')
+  @Patch('/change')
   @ApiTags('Edit User')
   @ApiBearerAuth()
   changeUser(@Body() dto: ChangeUserDto) {

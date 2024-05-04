@@ -13,3 +13,16 @@ export interface ActionRequest {
     actions: IAction[];
     count?: number;
   }
+
+  export interface ApproveActionRequest {
+    userId: number;
+    actionId: number;
+  }
+
+  export interface DeclineActionRequest extends ApproveActionRequest {}
+
+  export interface FetchActionsRequest {
+    userId: number;
+    type: ActionType | undefined;
+    active: boolean;
+  }

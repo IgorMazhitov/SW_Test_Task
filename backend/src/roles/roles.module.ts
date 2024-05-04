@@ -4,13 +4,13 @@ import { Role } from './database/role.entity';
 import { User } from 'src/users/database/user.entity';
 import { RolesService } from './roles.service';
 import { RolesController } from './roles.controller';
-import { AuthModule } from 'src/auth/auth.module';
-import { JwtService } from '@nestjs/jwt';
+import { AuditService } from 'src/audit/audit.service';
+import { AuditLog } from 'src/audit/database/auditLog.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Role, User])],
+  imports: [TypeOrmModule.forFeature([Role, User, AuditLog])],
   controllers: [RolesController],
-  providers: [RolesService, JwtService],
+  providers: [RolesService, AuditService],
   exports: [RolesService],
 })
 export class RolesModule {}

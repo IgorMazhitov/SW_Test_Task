@@ -12,7 +12,6 @@ import { AuthModule } from 'src/auth/auth.module';
   providers: [AuditService],
   imports: [
     TypeOrmModule.forFeature([AuditLog, User]),
-    AuthModule,
   ],
   exports: [AuditService]
 })

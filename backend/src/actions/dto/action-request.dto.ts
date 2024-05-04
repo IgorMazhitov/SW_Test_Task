@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ActionType } from '../database/action.entity';
 
 export class ActionRequestDto {
@@ -30,4 +30,25 @@ export class ApproveActionDto {
   @ApiProperty({ description: 'The ID of the action to be approved', example: 1 })
   @IsNumber({}, { message: 'Action id should be number' })
   readonly actionId: number;
+
+  @ApiProperty({ description: 'The ID of the user approving the action', example: 2 })
+  @IsNumber({}, { message: 'User id should be number' })
+  readonly userId: number;
+}
+
+export class GetAllActionsDto {
+  @ApiProperty({ description: 'The ID of the user to get actions for', example: 1 })
+  @IsNumber({}, { message: 'User id should be number' })
+  readonly userId: number;
+
+  @ApiProperty({ description: 'The type of action to get', enum: ActionType, required: false })
+  @IsOptional()
+  @IsEnum(ActionType, { message: 'Action type should be a valid enum value' })
+  readonly type?: ActionType;
+
+  @ApiProperty({ description: 'The status of the action to get', example: true, required: false })
+  @IsOptional()
+  @IsBoolean({ message: 'Action status should be boolean' })
+  readonly active?: boolean;
+
 }

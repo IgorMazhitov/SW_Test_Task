@@ -8,7 +8,7 @@ import {
   IUser,
   UserCreationDto,
 } from "../interfaces/IUser";
-import { IItem } from "../interfaces/IItem";
+import { GiveItemToUserFromAdminDto, IItem } from "../interfaces/IItem";
 import ActionsService from "../services/actionsService";
 import { ActionRequest } from "../interfaces/ActionRequest";
 import { ActionType } from "../interfaces/IAction";
@@ -82,7 +82,12 @@ const UsersTable = () => {
     if (selectedItem) {
       try {
         if (store.user.role.name === "Admin") {
-          await ActionsService.giveItemAdmin(selectedItem.id, userToGiveId);
+          const request: GiveItemToUserFromAdminDto = {
+            itemId: selectedItem.id,
+            userId: userToGiveId,
+            adminId: store.user.id,
+          }
+          await ActionsService.giveItemAdmin(request);
         } else {
           const request: ActionRequest = {
             userId: store.user.id,

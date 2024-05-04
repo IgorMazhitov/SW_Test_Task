@@ -5,6 +5,7 @@ import { IAction, ActionType } from "../interfaces/IAction";
 import { columnsForActionsTable, filterColumnsForActionsTable, typeMappingWithUndefined } from "../common/helpers";
 import TableComponent from "../components/tables/actionsTableComponent";
 import { TableContainer } from "../UI/styled/tables";
+import { FetchActionsRequest } from "../interfaces/ActionRequest";
 
 const ActionsHistory = () => {
   const { store } = useContext(Context);
@@ -16,8 +17,12 @@ const ActionsHistory = () => {
     try {
       const actionType: ActionType | undefined =
         typeMappingWithUndefined[selectedType];
-
-      const response = await ActionsService.fetchActions(true, actionType);
+      const request: FetchActionsRequest = {
+        active: true,
+        type: actionType,
+        userId: store.user.id,
+      };
+      const response = await ActionsService.fetchActions(request);
       const responseData = response.data;
 
       setActions(responseData.actions);

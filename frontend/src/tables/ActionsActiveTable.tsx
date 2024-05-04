@@ -8,7 +8,7 @@ import {
   typeMappingWithUndefined,
 } from "../common/helpers";
 import NewActionRequest from "../components/actionRequestForm";
-import { ActionRequest } from "../interfaces/ActionRequest";
+import { ActionRequest, ApproveActionRequest, DeclineActionRequest, FetchActionsRequest } from "../interfaces/ActionRequest";
 import TableComponent from "../components/tables/actionsTableComponent";
 import { TableContainer } from "../UI/styled/tables";
 
@@ -45,8 +45,12 @@ const ActionsTable = () => {
     try {
       const actionType: ActionType | undefined =
         typeMappingWithUndefined[selectedType];
-
-      const response = await ActionsService.fetchActions(false, actionType);
+      const request: FetchActionsRequest = {
+        active: false,
+        type: actionType,
+        userId: store.user.id,
+      };
+      const response = await ActionsService.fetchActions(request);
       const responseData = response.data;
 
       setActions(responseData.actions);
@@ -77,9 +81,12 @@ const ActionsTable = () => {
   };
 
   const handleApproveAction = async (actionId: number) => {
-    console.log("test");
     try {
-      await ActionsService.approveAction(actionId);
+      const request: ApproveActionRequest = {
+        actionId,
+        userId: store.user.id,
+      };
+      await ActionsService.approveAction(request);
       fetchActions();
     } catch (error) {
       console.error("Error approving action:", error);
@@ -88,7 +95,11 @@ const ActionsTable = () => {
 
   const handleDeclineAction = async (actionId: number) => {
     try {
-      await ActionsService.declineAction(actionId);
+      const request: DeclineActionRequest = {
+        actionId,
+        userId: store.user.id,
+      };
+      await ActionsService.declineAction(request);
       fetchActions();
     } catch (error) {
       console.error("Error declining action:", error);

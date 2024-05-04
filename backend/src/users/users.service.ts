@@ -16,7 +16,6 @@ export class UsersService {
     private usersRepository: Repository<User>,
     @InjectRepository(Role)
     private rolesRepository: Repository<Role>,
-    private jwtService: JwtService,
   ) {}
 
   async createUser(dto: CreateUserDto) {
@@ -79,14 +78,7 @@ export class UsersService {
   async getAllUsers(body: GetAllUsersDto) {
     try {
       const { limit, page, senderId, roleId } = body;
-      const user: User = await this.usersRepository.findOne({
-        where: {
-          id: senderId,
-        },
-        relations: {
-          role: true,
-        },
-      });
+      const user: User = await this.getUserById(senderId);
       if (!user) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
@@ -151,6 +143,22 @@ export class UsersService {
       return user;
     } catch (error) {
       throw new Error(`Error during get user by email: ${error.message}`);
+    }
+  }
+
+  async getUserById(id: number) {
+    try {
+      const user = await this.usersRepository.findOne({
+        where: {
+          id,
+        },
+        relations: {
+          role: true,
+        },
+      });
+      return user;
+    } catch (error) {
+      throw new Error(`Error during get user by id: ${error.message}`);
     }
   }
 }

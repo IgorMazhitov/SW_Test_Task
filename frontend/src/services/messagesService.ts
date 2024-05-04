@@ -7,14 +7,17 @@ export default class MessagesService {
     request: GetMessagesBetweenDto
   ): Promise<IMessageFromResponse[]> {
     const { senderId, receiverId } = request;
-    const { data } = await $api.post<IMessageFromResponse[]>("/messages/get", { senderId, receiverId });
+    const { data } = await $api.get<IMessageFromResponse[]>("/messages", { 
+      params: { senderId, receiverId }
+    });
     return data
   }
 
-  static sendMessageFromAdmin(
+  static async sendMessageFromAdmin(
     request: IMessage
-  ): Promise<AxiosResponse<IMessage[]>> {
+  ): Promise<IMessage[]> {
     const { receiverId, senderId, content } = request
-    return $api.post<IMessage[]>("/messages/send", { senderId, receiverId, content });
+    const { data } = await $api.post<IMessage[]>("/messages/send", { senderId, receiverId, content });
+    return data
   }
 }

@@ -14,7 +14,6 @@ export class LoggerInterceptor implements NestInterceptor {
 
     const startTime = Date.now();
     const { method, url, headers, body } = req;
-    console.log('iiiintes')
     try {
       let { useremail } = headers;
       const requestInfo = {
@@ -34,7 +33,6 @@ export class LoggerInterceptor implements NestInterceptor {
             timestamp: new Date().toISOString(),
           };
 
-          // Log request and response
           this.loggerService.logRequest(requestInfo, requestInfo.userEmail);
           this.loggerService.logResponse(requestInfo, responseInfo, requestInfo.userEmail);
         }),

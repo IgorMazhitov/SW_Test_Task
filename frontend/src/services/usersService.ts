@@ -31,6 +31,6 @@ export default class UsersService {
   }
 
   static updateUser(request: ChangeUserDto): Promise<AxiosResponse<IUser>> {
-    return $api.post<IUser>("/users/change", request);
+    return $api.patch<IUser>("/users/change", request);
   }
 }

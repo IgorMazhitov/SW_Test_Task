@@ -11,9 +11,7 @@ import { Message } from 'src/messages/database/message.entity';
 
 @Module({
   controllers: [ActionsController],
-  providers: [ActionsService, JwtService, MessagesService],
-  imports: [
-    TypeOrmModule.forFeature([Item, Action, User, Message])
-  ]
+  providers: [ActionsService, MessagesService],
+  imports: [TypeOrmModule.forFeature([Item, Action, User, Message])],
 })
 export class ActionsModule {}

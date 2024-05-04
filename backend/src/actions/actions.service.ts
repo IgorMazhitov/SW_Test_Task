@@ -9,7 +9,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Item } from './database/item.entity';
 import { Repository, getManager } from 'typeorm';
 import { ChangeItemDto } from './dto/change-item.dto';
-import { ActionRequestDto, ApproveActionDto } from './dto/action-request.dto';
+import {
+  ActionRequestDto,
+  ApproveActionDto,
+  GetAllActionsDto,
+} from './dto/action-request.dto';
 import { Action, ActionType } from './database/action.entity';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/users/database/user.entity';
@@ -52,10 +56,9 @@ export class ActionsService {
     }
   }
 
-  async approveAction(dto: ApproveActionDto, token: string): Promise<Action> {
+  async approveAction(dto: ApproveActionDto): Promise<Action> {
     try {
-      const user: User = this.jwtService.verify(token);
-
+      const user = await this.getUserById(dto.userId);
       const action = await this.actionsRepository.findOne({
         where: {
           id: dto.actionId,
@@ -67,7 +70,6 @@ export class ActionsService {
           action.userId,
           action.userGetId,
           action.itemId,
-          token,
           dto,
         );
 
@@ -101,9 +103,9 @@ export class ActionsService {
     }
   }
 
-  async declineAction(dto: ApproveActionDto, token: string) {
+  async declineAction(dto: ApproveActionDto) {
     try {
-      const user: User = this.jwtService.verify(token);
+      const user = await this.getUserById(dto.userId);
       const action = await this.actionsRepository.findOne({
         where: {
           id: dto.actionId,
@@ -121,12 +123,11 @@ export class ActionsService {
   }
 
   async getAllActions(
-    token: string,
-    active: boolean,
-    type?: ActionType,
+    request: GetAllActionsDto,
   ): Promise<{ actions: Action[]; count?: number }> {
     try {
-      const user: User = this.jwtService.verify(token);
+      const { userId, type, active } = request;
+      const user: User = await this.getUserById(userId);
       let actions: Action[] = null;
       if (user.role.name === 'Admin') {
         const query: any = {
@@ -176,7 +177,6 @@ export class ActionsService {
     userGivingId: number,
     userGetId: number,
     itemId: number,
-    token?: string,
     dto?: ApproveActionDto,
   ) {
     try {
@@ -187,7 +187,7 @@ export class ActionsService {
       const hasUserItem = user.items.some((el) => el.id === item.id);
 
       if (!hasUserItem) {
-        await this.declineAction(dto, token);
+        await this.declineAction(dto);
         return false;
       }
       userGet.items.push(item);
@@ -219,16 +219,17 @@ export class ActionsService {
     });
   }
 
-  async giveItemAdmin(dto: GiveItemDto, token: string) {
+  async giveItemAdmin(dto: GiveItemDto) {
     try {
-      const user: User = this.jwtService.verify(token);
+      const { adminId, itemId, userId } = dto;
+      const user: User = await this.getUserById(adminId);
 
       if (user.role.name !== 'Admin') {
         throw new Error('User is not Admin');
       }
 
-      const userGet = await this.fetchUserWithItems(dto.userId);
-      const item = await this.fetchItemWithUsers(dto.itemId);
+      const userGet = await this.fetchUserWithItems(userId);
+      const item = await this.fetchItemWithUsers(itemId);
 
       userGet.items.push(item);
       item.users.push(userGet);
@@ -249,7 +250,7 @@ export class ActionsService {
         },
         relations: {
           role: true,
-        }
+        },
       });
       let items: Item[] = null;
       if (user.role.name === 'Admin') {
@@ -266,6 +267,22 @@ export class ActionsService {
       return items;
     } catch (error) {
       throw new Error(`Error during getting all items: ${error.message}`);
+    }
+  }
+
+  async getUserById(userId: number) {
+    try {
+      const user = await this.usersRepository.findOne({
+        where: {
+          id: userId,
+        },
+        relations: {
+          role: true,
+        }
+      });
+      return user;
+    } catch (error) {
+      throw new Error(`Error during getting user by id: ${error.message}`);
     }
   }
 }

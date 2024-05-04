@@ -1,13 +1,24 @@
 import { AxiosResponse } from "axios";
 import $api from "../http";
 import { ActionType, IAction } from "../interfaces/IAction";
-import { IItem } from "../interfaces/IItem";
+import { GiveItemToUserFromAdminDto, IItem } from "../interfaces/IItem";
 import { IUser } from "../interfaces/IUser";
-import { ActionRequest, FetchActionsResponse } from "../interfaces/ActionRequest";
+import {
+  ActionRequest,
+  ApproveActionRequest,
+  DeclineActionRequest,
+  FetchActionsRequest,
+  FetchActionsResponse,
+} from "../interfaces/ActionRequest";
 
 export default class ActionsService {
-  static fetchActions(active: boolean, type?: ActionType | string): Promise<AxiosResponse<FetchActionsResponse>> {
-    return $api.post<FetchActionsResponse>("/actions/action/get", {active, type});
+  static fetchActions(
+    request: FetchActionsRequest
+  ): Promise<AxiosResponse<FetchActionsResponse>> {
+    const { active, type, userId } = request
+    return $api.get<FetchActionsResponse>("/actions", {
+      params: { active, type, userId },
+    });
   }
 
   static createItem(
@@ -20,14 +31,13 @@ export default class ActionsService {
     });
   }
 
-  static giveItemAdmin(
-    itemId: number,
-    userId: number
-  ): Promise<AxiosResponse<IItem>> {
-    return $api.post<IItem>("/actions/admin/item", {
-      itemId,
-      userId,
+  static async giveItemAdmin(
+    request: GiveItemToUserFromAdminDto
+  ): Promise<IItem> {
+    const { data } = await $api.post<IItem>("/actions/admin/item", {
+      ...request,
     });
+    return data;
   }
 
   static requestActionUser(
@@ -38,18 +48,17 @@ export default class ActionsService {
     });
   }
 
-  static approveAction(actionId: number): Promise<AxiosResponse<IAction>> {
-    return $api.post<IAction>("/actions/action/approve", {
-      actionId,
+  static approveAction(request: ApproveActionRequest): Promise<AxiosResponse<IAction>> {
+    return $api.patch<IAction>("/actions/approve", {
+      ...request,
     });
   }
 
-  static declineAction(actionId: number): Promise<AxiosResponse<IAction>> {
-    return $api.post<IAction>("/actions/action/decline", {
-      actionId,
+  static declineAction(request: DeclineActionRequest): Promise<AxiosResponse<IAction>> {
+    return $api.patch<IAction>("/actions/decline", {
+      ...request
     });
   }
-
 
   static giveItemUser(
     itemId: number,

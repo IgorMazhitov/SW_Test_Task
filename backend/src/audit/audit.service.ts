@@ -13,7 +13,6 @@ export class AuditService {
 
   async logRequest(requestInfo: any, email?: string): Promise<void> {
     try {
-      // Log request information to the database
       const logEntry = this.auditLogRepository.create({
         type: 'request',
         requestData: requestInfo,
@@ -33,7 +32,6 @@ export class AuditService {
     email?: string,
   ): Promise<void> {
     try {
-      // Log response information to the database
       const logEntry = this.auditLogRepository.create({
         type: 'response',
         requestData: requestInfo,

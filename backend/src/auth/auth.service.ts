@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/users/dtos/create-user.dto';
-import { UsersService } from 'src/users/users.service';
 import * as crypt from 'bcryptjs';
 import { User } from 'src/users/database/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -33,8 +32,13 @@ export class AuthService {
   }
 
   private async validateUser(userDto: CreateUserDto) {
-    const user = await this.usersRepository.findOneBy({
-      email: userDto.email,
+    const user = await this.usersRepository.findOne({
+      where: {
+        email: userDto.email,
+      }, 
+      relations: {
+        role: true
+      }
     });
     const passwordEquals = await crypt.compare(userDto.password, user.password);
     if (user && passwordEquals) {

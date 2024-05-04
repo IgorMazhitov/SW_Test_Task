@@ -9,6 +9,9 @@ export class CreateItemDto {
 }
 
 export class GiveItemDto {
+  @ApiProperty({ description: 'The ID of the admin', example: 1 })
+  readonly adminId: number;
+
   @ApiProperty({ description: 'The ID of the item', example: 1 })
   readonly itemId: number;
 
