@@ -8,9 +8,17 @@ import {
   typeMappingWithUndefined,
 } from "../common/helpers";
 import NewActionRequest from "../components/actionRequestForm";
-import { ActionRequest, ApproveActionRequest, DeclineActionRequest, FetchActionsRequest } from "../interfaces/ActionRequest";
+import {
+  ActionRequest,
+  ApproveActionRequest,
+  DeclineActionRequest,
+  FetchActionsRequest,
+} from "../interfaces/ActionRequest";
 import TableComponent from "../components/tables/actionsTableComponent";
 import { TableContainer } from "../UI/styled/tables";
+import { CreationContainerB } from "../UI/styled/cards";
+import { BasicInput, BasicLable } from "../UI/styled/inputs";
+import { BluePinkButton, PinkBlueButton } from "../UI/styled/buttons";
 
 const ActionsTable = () => {
   const { store } = useContext(Context);
@@ -46,7 +54,7 @@ const ActionsTable = () => {
       const actionType: ActionType | undefined =
         typeMappingWithUndefined[selectedType];
       const request: FetchActionsRequest = {
-        active: false,
+        active: true,
         type: actionType,
         userId: store.user.id,
       };
@@ -107,90 +115,82 @@ const ActionsTable = () => {
   };
 
   return (
-    <TableContainer>
+    <>
       {store.user.role.name === "Admin" && (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            backgroundColor: "rgba(173, 216, 230, 0.5)",
-            borderRadius: "10px",
-            boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-            marginTop: "10px",
-            marginBottom: "10px",
-            padding: "20px",
-          }}
-        >
-          <label style={{ marginRight: "10px" }}>Item creation</label>
-          <input
+        <CreationContainerB>
+          <BasicLable>Item creation</BasicLable>
+          <BasicInput
             type="text"
             value={itemName}
             onChange={(e) => setItemName(e.target.value)}
             placeholder="Item Name"
-            style={{ marginRight: "10px" }}
           />
-          <input
+          <BasicInput
             type="text"
             value={itemDescription}
             onChange={(e) => setItemDescription(e.target.value)}
             placeholder="Item Description"
-            style={{ marginRight: "10px" }}
           />
-          <button className="btn btn-primary" onClick={handleCreateItem}>
+          <BluePinkButton
+            className="btn btn-primary"
+            onClick={handleCreateItem}
+          >
             Create Item
-          </button>
+          </BluePinkButton>
+        </CreationContainerB>
+      )}
+      <TableContainer>
+        {store.user.role.name === "User" && (
+          <NewActionRequest handleActionRequest={handleActionRequest} />
+        )}
+        <div>
+          <select
+            value={selectedType}
+            onChange={(e) => setSelectedType(e.target.value)}
+          >
+            <option value="ALL">All</option>
+            {Object.values(ActionType).map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
+          </select>
         </div>
-      )}
-      {store.user.role.name === "User" && (
-        <NewActionRequest handleActionRequest={handleActionRequest} />
-      )}
-      <div>
-        <select
-          value={selectedType}
-          onChange={(e) => setSelectedType(e.target.value)}
-        >
-          <option value="ALL">All</option>
-          {Object.values(ActionType).map((type) => (
-            <option key={type} value={type}>
-              {type}
-            </option>
-          ))}
-        </select>
-      </div>
 
-      {pendingActionsAmount !== 0 && store.user.role.name === "Admin" && (
-        <div
-          style={{
-            marginTop: "10px",
-            backgroundColor: "#f2f2f2",
-            padding: "10px",
-          }}
-        >
-          Pending Actions Amount: {pendingActionsAmount}
-        </div>
-      )}
+        {pendingActionsAmount !== 0 && store.user.role.name === "Admin" && (
+          <div
+            style={{
+              marginTop: "10px",
+              backgroundColor: "#f2f2f2",
+              padding: "10px",
+            }}
+          >
+            Pending Actions Amount: {pendingActionsAmount}
+          </div>
+        )}
 
-      {actions?.length ? (
-        <TableComponent
-          actions={actions}
-          columns={filteredColumnsForTable}
-          handleApproveAction={handleApproveAction}
-          handleDeclineAction={handleDeclineAction}
-        />
-      ) : (
-        <div
-          style={{
-            color: "red",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          No actions found
-        </div>
-      )}
-    </TableContainer>
+        {actions?.length ? (
+          <TableComponent
+            actions={actions}
+            columns={filteredColumnsForTable}
+            handleApproveAction={handleApproveAction}
+            handleDeclineAction={handleDeclineAction}
+          />
+        ) : (
+          <div
+            style={{
+              color: "red",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            No actions found
+          </div>
+        )}
+      </TableContainer>
+    </>
   );
 };
 

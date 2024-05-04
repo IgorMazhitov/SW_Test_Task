@@ -51,4 +51,31 @@ export const BasicRow = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 10px;
+  margin-top: 10px;
+`;
+
+export const CreationContainerA = styled.div`
+  display: flex;
+  margin-top: 20px;
+  width: 100%;
+  padding: 5px;
+  padding-left: 20px;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  background-color: #f2f2f2;
+`;
+
+export const CreationContainerB = styled.div`
+  display: flex;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  width: 100%;
+  padding: 5px;
+  padding-left: 20px;
+  justify-content: flex-start;
+  color: #FBEAEB;
+  align-items: center;
+  gap: 10px;
+  background-color: #2F3C7E;
 `;

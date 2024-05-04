@@ -3,17 +3,23 @@ import {
   GetMessagesBetweenDto,
   IMessage,
   IMessageFromResponse,
-} from "../interfaces/IMessage";
-import { IUser } from "../interfaces/IUser";
-import MessagesService from "../services/messagesService";
-import { Context } from "..";
-import { ActionRequest } from "../interfaces/ActionRequest";
-import { ActionType } from "../interfaces/IAction";
-import ActionsService from "../services/actionsService";
-import { typeMapping } from "../common/helpers";
-import { Modal, ModalContainer } from "../UI/styled/modals";
-import { BluePinkButton, PinkBlueButton } from "../UI/styled/buttons";
-import { ModalMessageInput } from "../UI/styled/inputs";
+} from "../../interfaces/IMessage";
+import { IUser } from "../../interfaces/IUser";
+import MessagesService from "../../services/messagesService";
+import { Context } from "../..";
+import { ActionRequest } from "../../interfaces/ActionRequest";
+import { ActionType } from "../../interfaces/IAction";
+import ActionsService from "../../services/actionsService";
+import { typeMapping } from "../../common/helpers";
+import {
+  MessageColor,
+  MessagePosition,
+  MessagesBox,
+  Modal,
+  ModalContainer,
+} from "../../UI/styled/modals";
+import { BluePinkButton, PinkBlueButton } from "../../UI/styled/buttons";
+import { ModalMessageInput } from "../../UI/styled/inputs";
 
 type UserMessagesPropsType = {
   user: IUser;
@@ -82,38 +88,18 @@ const UserMessagesModal = ({
             <BluePinkButton onClick={handleClose}>&times;</BluePinkButton>
             <h2>Messages with {user.userName}</h2>
           </ModalContainer>
-          <div
-            style={{
-              maxHeight: "300px",
-              overflowY: "auto",
-            }}
-          >
+          <MessagesBox>
             {messages.map((message, index) => (
-              <div
+              <MessagePosition
                 key={index}
-                style={{
-                  textAlign:
-                    message.sender.id === store.user.id ? "right" : "left",
-                }}
+                sender={message.sender.id === store.user.id}
               >
-                <p
-                  style={{
-                    backgroundColor:
-                      message.sender.id === store.user.id
-                        ? "#007bff"
-                        : "#f0f0f0",
-                    color:
-                      message.sender.id === store.user.id ? "#fff" : "#000",
-                    padding: "8px",
-                    borderRadius: "8px",
-                    display: "inline-block",
-                  }}
-                >
+                <MessageColor sender={message.sender.id === store.user.id}>
                   {String(message.content)}
-                </p>
-              </div>
+                </MessageColor>
+              </MessagePosition>
             ))}
-          </div>
+          </MessagesBox>
           <div>
             <ModalMessageInput
               value={newMessage}

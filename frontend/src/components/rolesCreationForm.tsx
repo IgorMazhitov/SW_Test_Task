@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { CreationContainerB } from "../UI/styled/cards";
+import { BluePinkButton } from "../UI/styled/buttons";
+import { BasicInput, BasicLable } from "../UI/styled/inputs";
 
 function RolesCreationForm() {
   const [roleName, setRoleName] = useState<string>("");
@@ -12,48 +15,26 @@ function RolesCreationForm() {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        alignContent: "center",
-        justifyItems: "center",
-        backgroundColor: "rgba(173, 216, 230, 0.5)",
-        borderRadius: "10px",
-        boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-        marginTop: "10px",
-        marginBottom: "10px",
-        paddingLeft: "20px",
-        paddingRight: "20px",
-      }}
-    >
+    <CreationContainerB>
       <h3 style={{ marginRight: "20px" }}>Create New Role</h3>
-      <form
-        id="rolesCreationForm"
-        onSubmit={handleSubmit}
-        style={{ display: "flex" }}
-      >
-        <div style={{ marginRight: "10px" }}>
-          <label htmlFor="roleName">Role Name:</label>
-          <input
-            disabled
-            type="text"
-            id="roleName"
-            name="roleName"
-            value={roleName}
-            placeholder="Role name"
-            onChange={(e) => handleRoleNameChange(e)}
-            required
-          />
-        </div>
-        <button disabled type="submit" onClick={(e) => handleSubmit(e)}>
-          Create User
-        </button>
-      </form>
-      <span style={{ marginLeft: "10px", fontSize: "12px", color: "red" }}>
+      <BasicLable htmlFor="roleName">Role Name:</BasicLable>
+      <BasicInput
+        disabled
+        type="text"
+        id="roleName"
+        name="roleName"
+        value={roleName}
+        placeholder="Role name"
+        onChange={(e) => handleRoleNameChange(e)}
+        required
+      />
+      <BluePinkButton disabled type="submit" onClick={(e) => handleSubmit(e)}>
+        Create User
+      </BluePinkButton>
+      <span style={{ marginLeft: "10px", fontSize: "16px", fontWeight: "bold", color: "red" }}>
         (Role creation will be added in next versions)
       </span>
-    </div>
+    </CreationContainerB>
   );
 }
 

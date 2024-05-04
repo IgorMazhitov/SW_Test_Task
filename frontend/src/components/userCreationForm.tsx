@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import UsersService from "../services/usersService";
 import { IRole, UserCreationDto } from "../interfaces/IUser";
+import { CreationContainerA } from "../UI/styled/cards";
+import { BasicInput, BasicLable, BasicSelect } from "../UI/styled/inputs";
+import { PinkBlueButton } from "../UI/styled/buttons";
 
 type UserCreationFormProps = {
   handleSubmitUserCreation: (formData: UserCreationDto) => void;
@@ -63,90 +66,54 @@ function UserCreationForm({ handleSubmitUserCreation }: UserCreationFormProps) {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        backgroundColor: "rgba(173, 216, 230, 0.5)",
-        borderRadius: "10px",
-        boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-        paddingLeft: "20px",
-        paddingRight: "20px",
-      }}
-    >
+    <CreationContainerA>
       <h3 style={{ marginRight: "10px" }}>Create New User</h3>
-      <form
-        id="userCreationForm"
-        onSubmit={handleSubmit}
-        style={{ display: "flex" }}
+      <BasicLable htmlFor="userName">User Name:</BasicLable>
+      <BasicInput
+        type="text"
+        id="userName"
+        name="userName"
+        value={userName}
+        onChange={(e) => handleUserNameChange(e)}
+        required
+      />
+        <BasicLable htmlFor="email">Email:</BasicLable>
+        <BasicInput
+          type="email"
+          id="email"
+          name="email"
+          value={email}
+          onChange={(e) => handleEmailChange(e)}
+          required
+        />
+      <BasicLable htmlFor="password">Password:</BasicLable>
+      <BasicInput
+        type="password"
+        id="password"
+        name="password"
+        value={password}
+        onChange={(e) => handlePasswordChange(e)}
+        required
+      />
+      <BasicLable htmlFor="role" style={{ marginRight: "10px" }}>
+        Select a Role:
+      </BasicLable>
+      <BasicSelect
+        id="role"
+        value={role}
+        onChange={(e) => setRole(Number(e.target.value))}
+        style={{ marginRight: "10px" }}
       >
-        <div style={{ marginRight: "10px" }}>
-          <label htmlFor="userName">User Name:</label>
-          <input
-            type="text"
-            id="userName"
-            name="userName"
-            value={userName}
-            onChange={(e) => handleUserNameChange(e)}
-            required
-          />
-        </div>
-        <div style={{ marginRight: "10px" }}>
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={email}
-            onChange={(e) => handleEmailChange(e)}
-            required
-          />
-        </div>
-        <div style={{ marginRight: "10px" }}>
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={password}
-            onChange={(e) => handlePasswordChange(e)}
-            required
-          />
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <label htmlFor="role" style={{ marginRight: "10px" }}>
-            Select a Role:
-          </label>
-          <select
-            id="role"
-            value={role}
-            onChange={(e) => setRole(Number(e.target.value))}
-            style={{ marginRight: "10px" }}
-          >
-            {roles.map((role) => (
-              <option key={role.id} value={role.id}>
-                {role.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <button
-          type="submit"
-          onClick={(e) => handleSubmit(e)}
-          style={{
-            background: "#4CAF50",
-            color: "white",
-            padding: "10px 20px",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-            minWidth: "max-content",
-          }}
-        >
-          Create User
-        </button>
-      </form>
-    </div>
+        {roles.map((role) => (
+          <option key={role.id} value={role.id}>
+            {role.name}
+          </option>
+        ))}
+      </BasicSelect>
+      <PinkBlueButton type="submit" onClick={(e) => handleSubmit(e)}>
+        Create User
+      </PinkBlueButton>
+    </CreationContainerA>
   );
 }
 

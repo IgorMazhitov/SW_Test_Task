@@ -128,10 +128,11 @@ export class ActionsService {
     try {
       const { userId, type, active } = request;
       const user: User = await this.getUserById(userId);
+      console.log(user, 'Admin')
       let actions: Action[] = null;
       if (user.role.name === 'Admin') {
         const query: any = {
-          active: !active,
+          active: active,
         };
 
         if (type) {
@@ -142,19 +143,20 @@ export class ActionsService {
           where: query,
         });
 
-        if (!active) {
+        if (active) {
           const count = await this.actionsRepository.count({
             where: {
               active: true,
               type,
             },
           });
+          console.log(actions, 'lol')
 
           return { actions, count };
         }
       } else {
         const query: any = {
-          active: !active,
+          active: active,
           userId: user.id,
         };
 
@@ -166,7 +168,7 @@ export class ActionsService {
           where: query,
         });
       }
-
+      console.log(actions, 'test')
       return { actions };
     } catch (error) {
       throw new Error(`Error during getting all actions: ${error.message}`);

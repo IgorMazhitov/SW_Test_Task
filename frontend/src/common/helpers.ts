@@ -67,3 +67,20 @@ export const formatResponseForLogs = (jsonResponse: string) => {
   const { status } = response;
   return `Status: ${status}`;
 };
+
+export const columnsForUserTable: string[] = [
+  "id",
+  "role",
+  "userName",
+  "email",
+  "created_at",
+  "password",
+  "Actions"
+];
+
+export const filterColumnsForUserTable = (isUserAdmin: boolean) => {
+  if (!isUserAdmin) {
+    return columnsForUserTable.filter((column) => column !== "password" && column !== 'created_at' && column !== 'email');
+  }
+  return columnsForUserTable;
+}

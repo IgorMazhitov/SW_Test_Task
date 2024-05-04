@@ -21,13 +21,11 @@ export const Table = styled.table`
 
 export const TableContainer = styled.div`
   display: flex;
+  width: 100%;
+  padding: 10px;
   flex-direction: column;
   align-items: flex-start;
   gap: 10px;
   justify-content: center;
-  border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  margin-top: 10px;
-  margin-bottom: 10px;
-  padding: 20px;
 `;

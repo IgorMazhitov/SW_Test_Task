@@ -2,10 +2,17 @@ import React, { useContext, useState, useEffect } from "react";
 import { Context } from "..";
 import ActionsService from "../services/actionsService";
 import { IAction, ActionType } from "../interfaces/IAction";
-import { columnsForActionsTable, filterColumnsForActionsTable, typeMappingWithUndefined } from "../common/helpers";
+import {
+  columnsForActionsTable,
+  filterColumnsForActionsTable,
+  typeMappingWithUndefined,
+} from "../common/helpers";
 import TableComponent from "../components/tables/actionsTableComponent";
 import { TableContainer } from "../UI/styled/tables";
 import { FetchActionsRequest } from "../interfaces/ActionRequest";
+import EmptyTableComponent from "../components/tables/emptyTableComponent";
+import { BasicLable, BasicSelect } from "../UI/styled/inputs";
+import { BasicRow } from "../UI/styled/cards";
 
 const ActionsHistory = () => {
   const { store } = useContext(Context);
@@ -18,7 +25,7 @@ const ActionsHistory = () => {
       const actionType: ActionType | undefined =
         typeMappingWithUndefined[selectedType];
       const request: FetchActionsRequest = {
-        active: true,
+        active: false,
         type: actionType,
         userId: store.user.id,
       };
@@ -38,8 +45,9 @@ const ActionsHistory = () => {
 
   return (
     <TableContainer>
-      <div>
-        <select
+      <BasicRow>
+        <BasicLable>Actions type</BasicLable>
+        <BasicSelect
           value={selectedType}
           onChange={(e) => {
             setSelectedType(e.target.value);
@@ -51,13 +59,13 @@ const ActionsHistory = () => {
               {type}
             </option>
           ))}
-        </select>
-      </div>
+        </BasicSelect>
+      </BasicRow>
 
       {actions?.length ? (
         <TableComponent columns={columns} actions={actions} />
       ) : (
-        <div style={{ color: "red", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>No actions found</div>
+        <EmptyTableComponent name="History of actions" />
       )}
     </TableContainer>
   );

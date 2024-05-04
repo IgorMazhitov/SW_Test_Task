@@ -41,3 +41,7 @@ export const ModalMessageInput = styled.textarea`
   justify-content: center;
   margin-top: 10px;
 `;
+
+export const BasicLable = styled.label`
+  margin-right: 10px;
+`;

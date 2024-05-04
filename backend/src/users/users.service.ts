@@ -61,13 +61,19 @@ export class UsersService {
       if (!user || !roleToChange) {
         throw new HttpException('User or Role not found', HttpStatus.NOT_FOUND);
       }
+      const isPasswordSame = dto.password === user.password;
       const hashPassword = await crypt.hash(dto.password, 5);
-      const updatedUser = await this.usersRepository.save({
+      const userToUpdate = {
         ...user,
         userName: dto.userName,
         email: dto.email,
-        password: hashPassword,
         role: roleToChange,
+      };
+      if (!isPasswordSame) {
+        userToUpdate.password = hashPassword;
+      }
+      const updatedUser = await this.usersRepository.save({
+        ...userToUpdate
       });
       return updatedUser;
     } catch (error) {
@@ -102,7 +108,6 @@ export class UsersService {
       } else {
         users = await this.usersRepository.find({
           select: {
-            email: true,
             userName: true,
             id: true,
             role: {
