@@ -1,4 +1,4 @@
-import { ActionType } from "../interfaces/IAction";
+import { ActionType, IAction } from "../interfaces/IAction";
 
 export const typeMappingWithUndefined: {
   [key: string]: ActionType | undefined;
@@ -50,6 +50,7 @@ export const getRandomMatrix = (matrix: number[][]) => {
 };
 
 export const formatRequestForLogs = (jsonRequest: string): string => {
+  if (!jsonRequest) return "No request data"
   const request = JSON.parse(jsonRequest);
   const { url, method, body } = request;
   const formattedRequestBody = JSON.stringify(body);
@@ -60,6 +61,7 @@ export const formatRequestForLogs = (jsonRequest: string): string => {
 };
 
 export const formatResponseForLogs = (jsonResponse: string) => {
+  if (!jsonResponse) return "No response data"
   const response = JSON.parse(jsonResponse);
   if (!response) {
     return `Response is void`;
@@ -84,3 +86,16 @@ export const filterColumnsForUserTable = (isUserAdmin: boolean) => {
   }
   return columnsForUserTable;
 }
+
+export const fakeActions: IAction[] = [
+  {
+    id: 5,
+    type: ActionType.TYPE_1,
+    userId: 2,
+    requestedTime: new Date(),
+    active: true,
+    approved: false,
+    itemId: 1,
+    description: "Description",
+  },
+];

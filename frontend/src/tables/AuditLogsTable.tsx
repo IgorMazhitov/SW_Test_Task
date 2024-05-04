@@ -3,12 +3,17 @@ import { IAudit } from "../interfaces/IAudit";
 import LogsService from "../services/logsService";
 import LogsTableComponent from "../components/tables/logsTableCompoent";
 import EmptyTableComponent from "../components/tables/emptyTableComponent";
-import { TableContainer } from "../UI/styled/tables";
-import { formatRequestForLogs } from "../common/helpers";
 import PaginationComponent from "../components/paginationComponent";
-import { BasicInput, BasicSelect } from "../UI/styled/inputs";
-import { BasicHeader } from "../UI/styled/fonts";
-import { BasicRow } from "../UI/styled/cards";
+import {
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Pagination,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
 
 const AuditLogTable = () => {
   const [auditLogs, setAuditLogs] = useState<IAudit[]>([]);
@@ -17,6 +22,16 @@ const AuditLogTable = () => {
   const [totalLogs, setTotalLogs] = useState<number>(0);
   const [rowsPerPageOptions] = useState<number[]>([10, 20, 30, 40, 50]);
   const [selectedRowsPerPage, setSelectedRowsPerPage] = useState<number>(10);
+  const fakeLogs: IAudit[] = [
+    {
+      id: 1,
+      email: "",
+      type: "request",
+      createdAt: new Date(),
+      requestData: "",
+      responseData: "",
+    }
+  ];
 
   useEffect(() => {
     const fetchAuditLogs = async () => {
@@ -37,40 +52,69 @@ const AuditLogTable = () => {
   }, [emailFilter, page, selectedRowsPerPage]);
 
   return (
-    <TableContainer>
-      <BasicRow>
-        <BasicHeader>Audit Logs</BasicHeader>
-        <BasicHeader>total: {totalLogs}</BasicHeader>
-      </BasicRow>
-      {auditLogs.length > 0 && (
-        <>
-          <BasicInput
+    <Grid container spacing={2}>
+      <Grid item xs={3}>
+        <FormControl>
+          <TextField
             type="text"
-            placeholder="Filter by Email"
+            label="Email"
+            size="small"
             value={emailFilter}
             onChange={(e) => setEmailFilter(e.target.value)}
           />
+        </FormControl>
+      </Grid>
 
-          <BasicRow>
-            Rows per page:
-            <BasicSelect
-              value={selectedRowsPerPage}
-              onChange={(e) => setSelectedRowsPerPage(Number(e.target.value))}
-              style={{ marginLeft: "5px" }}
-            >
-              {rowsPerPageOptions.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </BasicSelect>
-          </BasicRow>
-          <PaginationComponent currentPage={page} onPageChange={setPage} />
+      <Grid item xs={2} sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "flex-start",
+      }}>
+        <Typography>Total: {totalLogs}</Typography>
+      </Grid>
+
+      <Grid item xs={1}>
+        <FormControl>
+          <InputLabel>Rows:</InputLabel>
+          <Select
+            value={selectedRowsPerPage}
+            label="Rows"
+            size="small"
+            onChange={(e) => setSelectedRowsPerPage(Number(e.target.value))}
+          >
+            {rowsPerPageOptions.map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Grid>
+      <Grid item xs={5} sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "flex-end",
+      
+      }}>
+        <Pagination
+          count={Math.ceil(totalLogs / selectedRowsPerPage) || 1}
+          page={page}
+          onChange={(e, value) => setPage(value)}
+        />
+      </Grid>
+      {auditLogs.length > 0 && (
+        <Grid item xs={12}>
           <LogsTableComponent logs={auditLogs} />
-        </>
+        </Grid>
       )}
-      {auditLogs.length === 0 && <EmptyTableComponent name="Audit" />}
-    </TableContainer>
+      {auditLogs.length === 0 && (
+        <Grid item xs={12} sx={{
+          minWidth: "100%",
+        }}>
+          <LogsTableComponent logs={fakeLogs} />
+        </Grid>
+      )}
+    </Grid>
   );
 };
 

@@ -3,9 +3,17 @@ import axios from "axios";
 import { Context } from "../..";
 import { IRole } from "../../interfaces/IUser";
 import { observer } from "mobx-react-lite";
-import { BlueButton, BluePinkButton } from "../../UI/styled/buttons";
-import { BasicInput, BasicSelect, InputWrapper } from "../../UI/styled/inputs";
-import { AuthFormWrapper } from "../../UI/styled/cards";
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
 
 interface SignupProps {
   callback?: () => void;
@@ -30,49 +38,70 @@ const SignupComponent: React.FC<SignupProps> = ({ callback }) => {
   const { store } = useContext(Context);
 
   return (
-    <AuthFormWrapper>
-      <InputWrapper>
-        <BasicInput
+    <Card
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "10px",
+        justifyContent: "center",
+        maxWidth: "max-content",
+        alignItems: "center",
+        padding: "20px",
+      }}
+    >
+      <CardContent
+        sx={{
+          display: "flex",
+          gap: "15px",
+          flexDirection: "column",
+        }}
+      >
+        <TextField
           onChange={(e) => setUserName(e.target.value)}
           value={userName}
           type="text"
           placeholder="Username"
         />
-        <BasicInput
+        <TextField
           onChange={(e) => setEmail(e.target.value)}
           value={email}
           type="text"
           placeholder="Email"
         />
-        <BasicInput
+        <TextField
           onChange={(e) => setPassword(e.target.value)}
           value={password}
           type="password"
           placeholder="Password"
         />
-        <div>
-          <BasicSelect
+        <FormControl>
+          <InputLabel id="role">Role</InputLabel>
+          <Select
             id="role"
             value={selectedRole}
+            label="Age"
             onChange={(e) => setSelectedRole(Number(e.target.value))}
           >
             {roles.map((role) => (
-              <option key={role.id} value={role.id}>
+              <MenuItem key={role.id} value={role.id}>
                 {role.name}
-              </option>
+              </MenuItem>
             ))}
-          </BasicSelect>
-        </div>
-      </InputWrapper>
-      <InputWrapper>
-        <BlueButton
+          </Select>
+        </FormControl>
+      </CardContent>
+      <CardActions>
+        <Button
+          variant="contained"
           onClick={() => store.signup(email, password, selectedRole, userName)}
         >
           SignUp
-        </BlueButton>
-        <BluePinkButton onClick={callback}>"Switch to LogIn"</BluePinkButton>
-      </InputWrapper>
-    </AuthFormWrapper>
+        </Button>
+        <Button variant="outlined" onClick={callback}>
+          "Switch to LogIn"
+        </Button>
+      </CardActions>
+    </Card>
   );
 };
 

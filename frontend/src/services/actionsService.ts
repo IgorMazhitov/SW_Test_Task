@@ -12,68 +12,106 @@ import {
 } from "../interfaces/ActionRequest";
 
 export default class ActionsService {
-  static fetchActions(
+  static async fetchActions(
     request: FetchActionsRequest
-  ): Promise<AxiosResponse<FetchActionsResponse>> {
-    const { active, type, userId } = request
-    return $api.get<FetchActionsResponse>("/actions", {
-      params: { active, type, userId },
-    });
+  ): Promise<FetchActionsResponse> {
+    try {
+      const { active, type, userId } = request;
+      const { data } = await $api.get<FetchActionsResponse>("/actions", {
+        params: { active, type, userId },
+      });
+      return data;
+    } catch (error: any) {
+      console.error("Error fetching actions:", error.data.message);
+      throw new Error("Error fetching actions");
+    }
   }
 
-  static createItem(
-    name: string,
-    description: string
-  ): Promise<AxiosResponse<IItem>> {
-    return $api.post<IItem>("/actions/item", {
-      name,
-      description,
-    });
+  static async createItem(name: string, description: string): Promise<IItem> {
+    try {
+      const { data } = await $api.post<IItem>("/actions/item", {
+        name,
+        description,
+      });
+      return data;
+    } catch (error) {
+      console.error("Error creating item:", error);
+      throw new Error("Error creating item");
+    }
   }
 
   static async giveItemAdmin(
     request: GiveItemToUserFromAdminDto
   ): Promise<IItem> {
-    const { data } = await $api.post<IItem>("/actions/admin/item", {
-      ...request,
-    });
-    return data;
+    try {
+      const { data } = await $api.post<IItem>("/actions/admin/item", {
+        ...request,
+      });
+      return data;
+    } catch (error) {
+      console.error("Error giving item to user:", error);
+      throw new Error("Error giving item to user");
+    }
   }
 
-  static requestActionUser(
-    dto: ActionRequest
-  ): Promise<AxiosResponse<IAction>> {
-    return $api.post<IAction>("/actions/action", {
-      ...dto,
-    });
+  static async requestActionUser(dto: ActionRequest): Promise<IAction> {
+    try {
+      const { data } = await $api.post<IAction>("/actions/action", {
+        ...dto,
+      });
+      return data;
+    } catch (error) {
+      console.error("Error requesting action:", error);
+      throw new Error("Error requesting action");
+    }
   }
 
-  static approveAction(request: ApproveActionRequest): Promise<AxiosResponse<IAction>> {
-    return $api.patch<IAction>("/actions/approve", {
-      ...request,
-    });
+  static async approveAction(request: ApproveActionRequest): Promise<IAction> {
+    try {
+      const { data } = await $api.patch<IAction>("/actions/approve", {
+        ...request,
+      });
+      return data;
+    } catch (error) {
+      console.error("Error approving action:", error);
+      throw new Error("Error approving action");
+    }
   }
 
-  static declineAction(request: DeclineActionRequest): Promise<AxiosResponse<IAction>> {
-    return $api.patch<IAction>("/actions/decline", {
-      ...request
-    });
+  static async declineAction(request: DeclineActionRequest): Promise<IAction> {
+    try {
+      const { data } = await $api.patch<IAction>("/actions/decline", {
+        ...request,
+      });
+      return data;
+    } catch (error) {
+      console.error("Error declining action:", error);
+      throw new Error("Error declining action");
+    }
   }
 
-  static giveItemUser(
-    itemId: number,
-    userEmail: string
-  ): Promise<AxiosResponse<IUser>> {
-    return $api.post<IUser>("/actions/user/item", {
-      itemId,
-      userEmail,
-    });
+  static async giveItemUser(itemId: number, userEmail: string): Promise<IUser> {
+    try {
+      const { data } = await $api.post<IUser>("/actions/user/item", {
+        itemId,
+        userEmail,
+      });
+      return data;
+    } catch (error) {
+      console.error("Error giving item to user:", error);
+      throw new Error("Error giving item to user");
+    }
   }
 
   static async getItems(userId: number): Promise<IItem[]> {
-    const { data } = await $api.get<IItem[]>(`/actions/item`, {
-      params: { userId: userId.toString() },
-    });
-    return data;
+    try {
+      const { data } = await $api.get<IItem[]>(`/actions/item`, {
+        params: { userId: userId.toString() },
+      });
+      return data;
+    } catch (error) {
+      console.error("Error fetching items:", error);
+      throw new Error("Error fetching items");
+    }
   }
 }

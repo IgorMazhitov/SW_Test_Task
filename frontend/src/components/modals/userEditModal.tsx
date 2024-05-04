@@ -1,9 +1,18 @@
 import { useState } from "react";
-import { BluePinkButton, PinkBlueButton } from "../../UI/styled/buttons";
-import { BasicRow } from "../../UI/styled/cards";
-import { BasicInput, BasicLable, BasicSelect } from "../../UI/styled/inputs";
-import { Modal } from "../../UI/styled/modals";
 import { IRole, IUser } from "../../interfaces/IUser";
+import {
+    Button,
+  Card,
+  CardActions,
+  CardContent,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  TextField,
+} from "@mui/material";
 
 interface UserEditModalProps {
   user: IUser;
@@ -31,46 +40,85 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
       role: roles.find((r) => r.id === role)!,
     };
     onSave(newUser);
-  }
+  };
   return (
-    <Modal>
-      <BasicRow>
-        <BasicLable>Username:</BasicLable>
-        <BasicInput
-          value={userName}
-          onChange={(e) => setUserName(e.target.value)}
-        />
-      </BasicRow>
-      <BasicRow>
-        <BasicLable>Email:</BasicLable>
-        <BasicInput value={email} onChange={(e) => setEmail(e.target.value)} />
-      </BasicRow>
-      <BasicRow>
-        <BasicLable>Password:</BasicLable>
-        <BasicInput
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </BasicRow>
-      <BasicRow>
-        <BasicLable>Username:</BasicLable>
-        <BasicSelect
-          value={role}
-          onChange={(e) => setRole(Number(e.target.value))}
-        >
-          {roles.map((role) => (
-            <option key={role.id} value={role.id}>
-              {role.name}
-            </option>
-          ))}
-        </BasicSelect>
-      </BasicRow>
-      <BasicRow>
-        <BluePinkButton onClick={onClose}>Cancel</BluePinkButton>
-        <PinkBlueButton onClick={() => handleSave()}>Save</PinkBlueButton>
-      </BasicRow>
-    </Modal>
+    <Card
+      sx={{
+        position: "absolute" as "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        padding: "10px",
+      }}
+      component={Paper}
+      elevation={5}
+    >
+      <CardContent sx={{
+        gap: "10px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+
+      }}>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <TextField
+              id="userName"
+              label="Username"
+              value={userName}
+              size="small"
+              onChange={(e) => setUserName(e.target.value)}
+            />
+          </Grid>
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            id="email"
+            label="Email"
+            value={email}
+            size="small"
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            id="password"
+            label="Password"
+            type="password"
+            value={password}
+            size="small"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <FormControl>
+            <InputLabel>Role:</InputLabel>
+            <Select
+              value={role}
+              label="Role"
+              onChange={(e) => setRole(Number(e.target.value))}
+            >
+              {roles.map((role) => (
+                <MenuItem key={role.id} value={role.id}>
+                  {role.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+      </CardContent>
+      <CardActions 
+        sx={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "10px",
+        }}
+      >
+        <Button variant="outlined" onClick={onClose}>Cancel</Button>
+        <Button variant="contained" onClick={() => handleSave()}>Save</Button>
+      </CardActions>
+    </Card>
   );
 };
 

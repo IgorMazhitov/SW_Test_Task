@@ -5,8 +5,20 @@ import {
   filterColumnsForUserTable,
 } from "../../common/helpers";
 import { IUser } from "../../interfaces/IUser";
-import { Table, TableCell, TableHead } from "../../UI/styled/tables";
-import { BluePinkButton, PinkBlueButton } from "../../UI/styled/buttons";
+import {
+  Button,
+  ButtonGroup,
+  Grid,
+  Pagination,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
+import React from "react";
 
 interface UserTableComponentProps {
   users: IUser[];
@@ -25,42 +37,67 @@ const UsersTableComponent: React.FC<UserTableComponentProps> = ({
   const isUserAdmin = store.user.role.name === "Admin";
   const columns = filterColumnsForUserTable(isUserAdmin);
   return (
-    <Table>
-      {columns.map((column) => (
-        <TableHead key={column}>{column}</TableHead>
-      ))}
-      <tbody>
-        {users.map((user) => (
-          <tr key={user.id}>
-            <TableCell>{user.id}</TableCell>
-            <TableCell>{user.role.name}</TableCell>
-            <TableCell>{user.userName}</TableCell>
-            {user.email && <TableCell>{user.email}</TableCell>}
-            {user?.created_at && (
-              <TableCell>{user?.created_at.toLocaleString()}</TableCell>
-            )}
-            {user?.password && <TableCell>{user.password}</TableCell>}
-            <TableCell>
-              {isUserAdmin && (
-                <PinkBlueButton
-                  onClick={() => onClickEdit && onClickEdit(user)}
-                >
-                  Edit
-                </PinkBlueButton>
+    <TableContainer component={Paper}>
+      <Table sx={{ minWidth: "100%", margin: 0 }} aria-label="simple table">
+        <TableHead>
+          <TableRow
+            sx={{
+              backgroundColor: "black",
+            }}
+          >
+            {columns.map((column) => (
+              <TableCell sx={{ color: "white" }} key={column}>
+                {column}
+              </TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {users.map((user) => (
+            <TableRow key={user.id}>
+              <TableCell>{user.id}</TableCell>
+              <TableCell>{user.role.name}</TableCell>
+              <TableCell>{user.userName}</TableCell>
+              {user.email && <TableCell>{user.email}</TableCell>}
+              {user?.created_at && (
+                <TableCell>{user?.created_at.toLocaleString()}</TableCell>
               )}
-              <BluePinkButton
-                onClick={() => onClickMessage && onClickMessage(user)}
-              >
-                Message
-              </BluePinkButton>
-              <PinkBlueButton onClick={() => onClickItem && onClickItem(user)}>
-                Item
-              </PinkBlueButton>
-            </TableCell>
-          </tr>
-        ))}
-      </tbody>
-    </Table>
+              {user?.password && <TableCell>{user.password}</TableCell>}
+              <TableCell>
+                <ButtonGroup orientation="vertical">
+                  {isUserAdmin && (
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      size="small"
+                      onClick={() => onClickEdit && onClickEdit(user)}
+                    >
+                      Edit
+                    </Button>
+                  )}
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    onClick={() => onClickMessage && onClickMessage(user)}
+                  >
+                    Message
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    size="small"
+                    onClick={() => onClickItem && onClickItem(user)}
+                  >
+                    Item
+                  </Button>
+                </ButtonGroup>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 

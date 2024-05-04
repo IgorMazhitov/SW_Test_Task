@@ -1,19 +1,19 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { UsersModule } from './users/users.module';
-import { User } from './users/database/user.entity';
-import { RolesModule } from './roles/roles.module';
-import { Role } from './roles/database/role.entity';
-import { AuthModule } from './auth/auth.module';
-import { ActionsModule } from './actions/actions.module';
-import { Action } from './actions/database/action.entity';
-import { Item } from './actions/database/item.entity';
+import { UsersModule } from './modules/users/users.module';
+import { User } from './entities/user.entity';
+import { RolesModule } from './modules/roles/roles.module';
+import { Role } from './entities/role.entity';
+import { AuthModule } from './modules/auth/auth.module';
+import { ActionsModule } from './modules/actions/actions.module';
+import { Action } from './entities/action.entity';
+import { Item } from './entities/item.entity';
 import { InitialRoles1712854276047 } from './migrations/1712854276047-initialRoles';
-import { AuditLog } from './audit/database/auditLog.entity';
-import { AuditModule } from './audit/audit.module';
-import { MessagesModule } from './messages/messages.module';
-import { Message } from './messages/database/message.entity';
+import { AuditLog } from './entities/auditLog.entity';
+import { AuditModule } from './modules/audit/audit.module';
+import { MessagesModule } from './modules/messages/messages.module';
+import { Message } from './entities/message.entity';
 
 @Module({
   imports: [

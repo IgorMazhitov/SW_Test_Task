@@ -8,21 +8,25 @@ import {
   IUser,
   UserCreationDto,
 } from "../interfaces/IUser";
-import { GiveItemToUserFromAdminDto, IItem } from "../interfaces/IItem";
+import { IItem } from "../interfaces/IItem";
 import ActionsService from "../services/actionsService";
-import { ActionRequest } from "../interfaces/ActionRequest";
-import { ActionType } from "../interfaces/IAction";
 import UserCreationForm from "../components/userCreationForm";
 import RolesCreationForm from "../components/rolesCreationForm";
-import Modal from "../common/modal";
 import UserMessagesModal from "../components/modals/messagerModal";
-import { TableContainer } from "../UI/styled/tables";
-import { BasicLable, BasicSelect } from "../UI/styled/inputs";
-import { BasicRow } from "../UI/styled/cards";
 import PaginationComponent from "../components/paginationComponent";
 import UserEditModal from "../components/modals/userEditModal";
 import UsersTableComponent from "../components/tables/usersTableComponent";
 import GivingItemModal from "../components/modals/givingItemModal";
+import EmptyTableComponent from "../components/tables/emptyTableComponent";
+import {
+  Box,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Pagination,
+  Select,
+} from "@mui/material";
 
 const UsersTable = () => {
   /* <---------------------------------------------- STORE ----------------------------------------------> */
@@ -38,6 +42,7 @@ const UsersTable = () => {
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
   /* <------------------------------------------- PAGINATION --------------------------------------------> */
   const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(0);
   const [limit, setLimit] = useState<number>(10);
   const [role, setRole] = useState<number>(2);
   const [rowsPerPageOptions] = useState<number[]>([10, 20, 30, 40, 50]);
@@ -46,7 +51,7 @@ const UsersTable = () => {
   const fetchRoles = async () => {
     try {
       const roles = await UsersService.fetchRoles();
-      setRoles(roles.data);
+      setRoles(roles);
     } catch (error) {
       console.log(error);
     }
@@ -60,11 +65,11 @@ const UsersTable = () => {
         roleId: role,
         senderId: store.user.id,
       };
-      console.log(request);
-      const users = await UsersService.fetchUsers(request);
+      const { users, count } = await UsersService.fetchUsers(request);
       const items = await ActionsService.getItems(store.user.id);
       setUsers(users);
       setItems(items);
+      setTotalPages(Math.ceil(count / limit));
     } catch (error) {
       console.log(error);
     }
@@ -109,6 +114,7 @@ const UsersTable = () => {
 
       await UsersService.updateUser(request);
       await fetchUsers();
+
       setShowEditModal(false);
     } catch (error) {
       console.log(error);
@@ -116,83 +122,112 @@ const UsersTable = () => {
   };
 
   return (
-    <>
-      {store.user.role.name === "Admin" && (
-        <UserCreationForm handleSubmitUserCreation={handleSubmitUserCreation} />
-      )}
-      {store.user.role.name === "Admin" && <RolesCreationForm />}
-      {users.length !== 0 && (
-        <>
-          <TableContainer>
-            <BasicRow>
-              <BasicLable>Rows per page:</BasicLable>
-              <BasicSelect
+    <Box sx={{ flexGrow: 1 }}>
+      <Grid container spacing={4}>
+        <Grid item xs={12}>
+          {store.user.role.name === "Admin" && (
+            <UserCreationForm
+              handleSubmitUserCreation={handleSubmitUserCreation}
+            />
+          )}
+        </Grid>
+        <Grid item xs={12}>
+          {store.user.role.name === "Admin" && <RolesCreationForm />}
+        </Grid>
+        <Grid container item rowSpacing={2}>
+          <Grid item xs={4}>
+            <FormControl>
+              <InputLabel>Rows:</InputLabel>
+              <Select
                 value={selectedRowsPerPage}
-                onChange={(e) => setSelectedRowsPerPage(Number(e.target.value))}
+                size="small"
+                label="Rows"
+                onChange={(e: any) =>
+                  setSelectedRowsPerPage(Number(e.target.value))
+                }
               >
                 {rowsPerPageOptions.map((option) => (
-                  <option key={option} value={option}>
+                  <MenuItem key={option} value={option}>
                     {option}
-                  </option>
+                  </MenuItem>
                 ))}
-              </BasicSelect>
-            </BasicRow>
-            <PaginationComponent currentPage={page} onPageChange={setPage} />
-
-            <BasicRow>
-              <BasicLable>Filter by role:</BasicLable>
-              <BasicSelect
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={4}>
+            <FormControl>
+              <InputLabel>Role:</InputLabel>
+              <Select
                 id="roleFilter"
                 value={role}
+                label="Role"
+                size="small"
                 onChange={(e) => setRole(Number(e.target.value))}
               >
                 {roles.map((role) => (
-                  <option key={role.id} value={role.id}>
+                  <MenuItem key={role.id} value={role.id}>
                     {role.name}
-                  </option>
+                  </MenuItem>
                 ))}
-              </BasicSelect>
-            </BasicRow>
-
-            <UsersTableComponent
-              users={users}
-              onClickEdit={handleOpenEditModalClick}
-              onClickMessage={handleOpenMessagesModalClick}
-              onClickItem={handleOpenItemModalClick}
-            />
-          </TableContainer>
-        </>
-      )}
-      {users.length === 0 && (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <label htmlFor="roleFilter">Filter by Role:</label>
-          <select
-            id="roleFilter"
-            value={role}
-            onChange={(e) => setRole(Number(e.target.value))}
-          >
-            {roles.map((role) => (
-              <option key={role.id} value={role.id}>
-                {role.name}
-              </option>
-            ))}
-          </select>
-          <p
-            style={{
-              color: "red",
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid
+            item
+            xs={4}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
-            No users found except You
-          </p>
-        </div>
-      )}
+            <Pagination
+              count={totalPages === 0 ? 1 : totalPages}
+              page={page}
+              onChange={(_, value) => setPage(value)}
+            />
+          </Grid>
+          {users.length !== 0 && (
+            <>
+              <Grid item xs={12}>
+                <UsersTableComponent
+                  users={users}
+                  onClickEdit={handleOpenEditModalClick}
+                  onClickMessage={handleOpenMessagesModalClick}
+                  onClickItem={handleOpenItemModalClick}
+                />
+              </Grid>
+            </>
+          )}
+          {users.length === 0 && (
+            <Box sx={{ flexGrow: 1 }}>
+              <Grid
+                container
+                spacing={4}
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Grid
+                  xs={12}
+                  item
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <EmptyTableComponent name="Users" />
+                </Grid>
+              </Grid>
+            </Box>
+          )}
+        </Grid>
+      </Grid>
       {showEditModal && (
         <UserEditModal
           user={selectedUser!}
@@ -213,7 +248,7 @@ const UsersTable = () => {
           onClose={() => setShowGiveItemModal(false)}
         />
       )}
-    </>
+    </Box>
   );
 };
 

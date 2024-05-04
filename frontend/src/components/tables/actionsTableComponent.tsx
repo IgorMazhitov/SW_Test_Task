@@ -1,6 +1,6 @@
-import exp from "constants";
-import { Table, TableCell, TableHead } from "../../UI/styled/tables";
+import { Button, Paper, Table, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import { IAction } from "../../interfaces/IAction";
+import { fakeActions } from "../../common/helpers";
 
 interface TableComponentProps {
   actions: IAction[];
@@ -12,55 +12,66 @@ interface TableComponentProps {
 const TableComponent: React.FC<TableComponentProps> = (
   props: TableComponentProps
 ) => {
+  console.log(props.actions)
   const { actions, handleApproveAction, handleDeclineAction, columns } = props;
+  let validActions = actions
+  if (!validActions) {
+    validActions = fakeActions;
+  }
   return (
-    <Table>
-      <thead>
-        <tr>
-          {columns.map((column) => {
-            return <TableHead>{column}</TableHead>;
-          })}
-        </tr>
-      </thead>
-      <tbody>
-        {actions.map((action) => (
-          <tr key={action.id}>
-            {columns.map((column: string) => {
-              if (column === "approve") {
-                return (
-                  <TableCell>
-                    <button onClick={() => handleApproveAction!(action.id)}>
-                      Approve
-                    </button>
-                  </TableCell>
-                );
-              } else if (column === "decline") {
-                return (
-                  <TableCell>
-                    <button onClick={() => handleDeclineAction!(action.id)}>
-                      Decline
-                    </button>
-                  </TableCell>
-                );
-              } else if (column === "approved") {
-                return (
-                  <TableCell>
-                    {action.approved ? "Approved" : "Not Approved"}
-                  </TableCell>
-                );
-              } else {
-                console.log(column, "column", action);
-                return (
-                  <TableCell>
-                    {(action as any)[column] ? (action as any)[column] : " - "}
-                  </TableCell>
-                );
-              }
+    <TableContainer component={Paper}>
+      <Table sx={{ minWidth: "100%", margin: 0 }} aria-label="simple table">
+        <TableHead sx={{
+          backgroundColor: "black",
+        }}>
+          <TableRow>
+            {columns.map((column) => {
+              return <TableCell sx={{ color: "white" }} key={column}>{column}</TableCell>
             })}
-          </tr>
-        ))}
-      </tbody>
-    </Table>
+          </TableRow>
+        </TableHead>
+        <tbody>
+          {validActions.map((action) => (
+            <tr key={action.id}>
+              {columns.map((column: string) => {
+                if (column === "approve") {
+                  return (
+                    <TableCell>
+                      <Button variant="outlined" onClick={() => handleApproveAction!(action.id)}>
+                        Approve
+                      </Button>
+                    </TableCell>
+                  );
+                } else if (column === "decline") {
+                  return (
+                    <TableCell>
+                      <Button variant="outlined" onClick={() => handleDeclineAction!(action.id)}>
+                        Decline
+                      </Button>
+                    </TableCell>
+                  );
+                } else if (column === "approved") {
+                  return (
+                    <TableCell>
+                      {action.approved ? "Approved" : "Not Approved"}
+                    </TableCell>
+                  );
+                } else {
+                  console.log(column, "column", action);
+                  return (
+                    <TableCell>
+                      {(action as any)[column]
+                        ? (action as any)[column]
+                        : " - "}
+                    </TableCell>
+                  );
+                }
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </TableContainer>
   );
 };
 

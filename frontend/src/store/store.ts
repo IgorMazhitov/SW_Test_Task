@@ -22,21 +22,21 @@ export default class Store {
     async login(email: string, password: string) {
         try {
             const response = await AuthService.login(email, password)
-            localStorage.setItem('token', response.data.token)
+            localStorage.setItem('token', response.token)
             localStorage.setItem('userEmail', email)
             this.setAuth(true)
-            this.setUser(response.data.user)
+            this.setUser(response.user)
         } catch (error) {
-            console.log(error)
+            return new Error('Login error')
         }
     }
 
     async signup(email: string, password: string, roleId: number, userName: string) {
         try {
             const response = await AuthService.signup(userName, roleId, email, password)
-            localStorage.setItem('token', response.data.token)
+            localStorage.setItem('token', response.token)
             this.setAuth(true)
-            this.setUser(response.data.user)
+            this.setUser(response.user)
         } catch (error) {
             console.log(error)
         }

@@ -8,11 +8,16 @@ import {
   typeMappingWithUndefined,
 } from "../common/helpers";
 import TableComponent from "../components/tables/actionsTableComponent";
-import { TableContainer } from "../UI/styled/tables";
 import { FetchActionsRequest } from "../interfaces/ActionRequest";
 import EmptyTableComponent from "../components/tables/emptyTableComponent";
-import { BasicLable, BasicSelect } from "../UI/styled/inputs";
-import { BasicRow } from "../UI/styled/cards";
+import {
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+} from "@mui/material";
 
 const ActionsHistory = () => {
   const { store } = useContext(Context);
@@ -30,9 +35,8 @@ const ActionsHistory = () => {
         userId: store.user.id,
       };
       const response = await ActionsService.fetchActions(request);
-      const responseData = response.data;
 
-      setActions(responseData.actions);
+      setActions(response.actions);
     } catch (error) {
       console.error("Error fetching actions:", error);
     }
@@ -44,30 +48,32 @@ const ActionsHistory = () => {
   }, [selectedType]);
 
   return (
-    <TableContainer>
-      <BasicRow>
-        <BasicLable>Actions type</BasicLable>
-        <BasicSelect
-          value={selectedType}
-          onChange={(e) => {
-            setSelectedType(e.target.value);
-          }}
-        >
-          <option value="ALL">All</option>
-          {Object.values(ActionType).map((type) => (
-            <option key={type} value={type}>
-              {type}
-            </option>
-          ))}
-        </BasicSelect>
-      </BasicRow>
+    <Grid container spacing={2}>
+      <Grid item xs={4}>
+        <FormControl>
+          <InputLabel>Type</InputLabel>
+          <Select
+            value={selectedType}
+            size="small"
+            label="Type"
+            onChange={(e) => {
+              setSelectedType(e.target.value);
+            }}
+          >
+            <MenuItem value="ALL">All</MenuItem>
+            {Object.values(ActionType).map((type) => (
+              <MenuItem key={type} value={type}>
+                {type}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Grid>
 
-      {actions?.length ? (
+      <Grid item xs={12}>
         <TableComponent columns={columns} actions={actions} />
-      ) : (
-        <EmptyTableComponent name="History of actions" />
-      )}
-    </TableContainer>
+      </Grid>
+    </Grid>
   );
 };
 

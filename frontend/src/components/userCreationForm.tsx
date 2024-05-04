@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
 import UsersService from "../services/usersService";
 import { IRole, UserCreationDto } from "../interfaces/IUser";
-import { CreationContainerA } from "../UI/styled/cards";
-import { BasicInput, BasicLable, BasicSelect } from "../UI/styled/inputs";
-import { PinkBlueButton } from "../UI/styled/buttons";
+import {
+  Button,
+  Grid,
+  MenuItem,
+  Paper,
+  Select,
+  TextField,
+} from "@mui/material";
 
 type UserCreationFormProps = {
   handleSubmitUserCreation: (formData: UserCreationDto) => void;
@@ -19,7 +24,7 @@ function UserCreationForm({ handleSubmitUserCreation }: UserCreationFormProps) {
   const fetchRoles = async () => {
     try {
       const roles = await UsersService.fetchRoles();
-      setRoles(roles.data);
+      setRoles(roles);
     } catch (error) {
       console.log(error);
     }
@@ -28,22 +33,6 @@ function UserCreationForm({ handleSubmitUserCreation }: UserCreationFormProps) {
   useEffect(() => {
     fetchRoles();
   }, []);
-
-  const handleUserNameChange = (e: any) => {
-    setUserName(e.target.value);
-  };
-
-  const handleEmailChange = (e: any) => {
-    setEmail(e.target.value);
-  };
-
-  const handlePasswordChange = (e: any) => {
-    setPassword(e.target.value);
-  };
-
-  const handleRoleChange = (e: any) => {
-    setRole(e.target.value);
-  };
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -66,54 +55,73 @@ function UserCreationForm({ handleSubmitUserCreation }: UserCreationFormProps) {
   };
 
   return (
-    <CreationContainerA>
-      <h3 style={{ marginRight: "10px" }}>Create New User</h3>
-      <BasicLable htmlFor="userName">User Name:</BasicLable>
-      <BasicInput
-        type="text"
-        id="userName"
-        name="userName"
-        value={userName}
-        onChange={(e) => handleUserNameChange(e)}
-        required
-      />
-        <BasicLable htmlFor="email">Email:</BasicLable>
-        <BasicInput
-          type="email"
-          id="email"
-          name="email"
-          value={email}
-          onChange={(e) => handleEmailChange(e)}
-          required
-        />
-      <BasicLable htmlFor="password">Password:</BasicLable>
-      <BasicInput
-        type="password"
-        id="password"
-        name="password"
-        value={password}
-        onChange={(e) => handlePasswordChange(e)}
-        required
-      />
-      <BasicLable htmlFor="role" style={{ marginRight: "10px" }}>
-        Select a Role:
-      </BasicLable>
-      <BasicSelect
-        id="role"
-        value={role}
-        onChange={(e) => setRole(Number(e.target.value))}
-        style={{ marginRight: "10px" }}
+    <Grid
+      container
+      gap={2}
+      sx={{
+        padding: "10px",
+      }}
+      component={Paper}
+      elevation={5}
+    >
+      <Grid
+        item
+        xs={2}
       >
-        {roles.map((role) => (
-          <option key={role.id} value={role.id}>
-            {role.name}
-          </option>
-        ))}
-      </BasicSelect>
-      <PinkBlueButton type="submit" onClick={(e) => handleSubmit(e)}>
-        Create User
-      </PinkBlueButton>
-    </CreationContainerA>
+        <TextField
+          required
+          id="userName"
+          label="Username"
+          value={userName}
+          size="small"
+          onChange={(e) => setUserName(e.target.value)}
+        />
+      </Grid>
+      <Grid item xs={2}>
+        <TextField
+          required
+          id="email"
+          label="Email"
+          value={email}
+          size="small"
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </Grid>
+      <Grid item xs={2}>
+        <TextField
+          required
+          id="password"
+          type="password"
+          label="Password"
+          value={password}
+          size="small"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </Grid>
+      <Grid item xs={2}>
+        <Select
+          id="role"
+          size="small"
+          value={role}
+          onChange={(e) => setRole(Number(e.target.value))}
+        >
+          {roles.map((role) => (
+            <MenuItem key={role.id} value={role.id}>
+              {role.name}
+            </MenuItem>
+          ))}
+        </Select>
+      </Grid>
+      <Grid item xs={2}>
+        <Button
+          variant="contained"
+          type="submit"
+          onClick={(e) => handleSubmit(e)}
+        >
+          Create User
+        </Button>
+      </Grid>
+    </Grid>
   );
 }
 

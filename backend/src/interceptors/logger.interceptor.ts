@@ -1,7 +1,7 @@
 import { Injectable, NestInterceptor, ExecutionContext, CallHandler, UnauthorizedException } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { AuditService } from 'src/audit/audit.service';
+import { AuditService } from 'src/modules/audit/audit.service';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()

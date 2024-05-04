@@ -2,10 +2,11 @@ import React, { useContext } from "react";
 import GreetingsComponent from "../components/greetingsComponent";
 import { Context } from "..";
 import UsersTable from "../tables/UsersTable";
-import { BlueButton } from "../UI/styled/buttons";
 import ActionsTable from "../tables/ActionsActiveTable";
 import ActionsHistory from "../tables/ActionsHistoryTable";
 import AuditLogTable from "../tables/AuditLogsTable";
+import { Box, Button, ButtonGroup, Grid } from "@mui/material";
+import LogOutComponent from "../components/authComponents/logOutComponent";
 
 interface TablesPageProps {}
 
@@ -18,37 +19,57 @@ const TablesPage: React.FC<TablesPageProps> = () => {
   };
 
   return (
-    <>
-      <div style={{ marginBottom: "10px", textAlign: "center" }}>
-        <BlueButton onClick={() => handleTableChange("users")}>
-          Users
-        </BlueButton>
-        <BlueButton onClick={() => handleTableChange("actions")}>
-          Actions
-        </BlueButton>
-        <BlueButton onClick={() => handleTableChange("history")}>
-          Actions history
-        </BlueButton>
-        <BlueButton onClick={() => handleTableChange("fun")}>
-          Fun 
-        </BlueButton>
-        {store.user.role.name === "Admin" && (
-          <BlueButton onClick={() => handleTableChange("logs")}>
-            Audit logs
-          </BlueButton>
-        )}
-      </div>
-      {selectedTable === "fun" && (
-        <GreetingsComponent
-          userName={store.user.userName}
-          userRole={store.user.role.name}
-        />
-      )}
-      {selectedTable === "users" && <UsersTable />}
-      {selectedTable === "actions" && <ActionsTable />}
-      {selectedTable === "history" && <ActionsHistory />}
-      {selectedTable === "logs" && <AuditLogTable />}
-    </>
+    <Box sx={{ flexGrow: 1 }}>
+      <Grid container spacing={2}>
+        <Grid
+          xs={8}
+          item
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <ButtonGroup variant="text">
+            <Button onClick={() => handleTableChange("users")}>Users</Button>
+            <Button onClick={() => handleTableChange("actions")}>
+              Actions
+            </Button>
+            <Button onClick={() => handleTableChange("history")}>
+              Actions history
+            </Button>
+            <Button onClick={() => handleTableChange("fun")}>Fun</Button>
+            {store.user.role.name === "Admin" && (
+              <Button onClick={() => handleTableChange("logs")}>
+                Audit logs
+              </Button>
+            )}
+          </ButtonGroup>
+        </Grid>
+        <Grid
+          xs={4}
+          item
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <LogOutComponent />
+        </Grid>
+        <Grid xs={12} item>
+          {selectedTable === "fun" && (
+            <GreetingsComponent/>
+          )}
+          {selectedTable === "users" && <UsersTable />}
+          {selectedTable === "actions" && <ActionsTable />}
+          {selectedTable === "history" && <ActionsHistory />}
+          {selectedTable === "logs" && <AuditLogTable />}
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 

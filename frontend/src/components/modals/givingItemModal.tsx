@@ -1,14 +1,21 @@
 import { useContext, useEffect, useState } from "react";
 import { GiveItemToUserFromAdminDto, IItem } from "../../interfaces/IItem";
 import { IUser } from "../../interfaces/IUser";
-import { BasicRow } from "../../UI/styled/cards";
-import { BluePinkButton, PinkBlueButton } from "../../UI/styled/buttons";
-import { Modal } from "../../UI/styled/modals";
 import { Context } from "../..";
 import ActionsService from "../../services/actionsService";
-import { BasicLable, BasicSelect } from "../../UI/styled/inputs";
 import { ActionRequest } from "../../interfaces/ActionRequest";
 import { ActionType } from "../../interfaces/IAction";
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  FormControl,
+  Grid,
+  InputLabel,
+  Select,
+  Typography,
+} from "@mui/material";
 
 interface GivingItemModalProps {
   userReceiving: IUser;
@@ -67,40 +74,73 @@ const GivingItemModal: React.FC<GivingItemModalProps> = ({
 
   if (!items.length) {
     return (
-      <Modal>
-        <BasicLable>No items to give</BasicLable>
-        <BluePinkButton onClick={onClose}>Close</BluePinkButton>
-      </Modal>
+      <div>
+        <div>No items to give</div>
+        <button onClick={onClose}>Close</button>
+      </div>
     );
   }
 
   return (
-    <Modal>
-      <BasicRow>
-        <BasicLable>
-          Choose item to give to user: {userReceiving.userName} with id -{" "}
-          {userReceiving.id}
-        </BasicLable>
-        <BasicSelect
-          value={selectedItem.id}
-          onChange={(e) => {
-            setSelectedItem(items.find((item) => item.id === +e.target.value)!);
-          }}
-        >
-          {items.map((item) => (
-            <option key={item.id} value={item.id}>
-              {item.name}
-            </option>
-          ))}
-        </BasicSelect>
-      </BasicRow>
-      <BasicRow>
-        <PinkBlueButton onClick={() => handleGiveItem()}>
-          Give item
-        </PinkBlueButton>
-        <BluePinkButton onClick={onClose}>Close</BluePinkButton>
-      </BasicRow>
-    </Modal>
+    <Card
+      sx={{
+        position: "absolute" as "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        padding: "10px",
+        maxWidth: "max-content",
+      }}
+    >
+      <CardContent>
+        <Grid container spacing={2}>
+          <Grid item xs={3}>
+            <Typography variant="h4">Give item</Typography>
+          </Grid>
+          <Grid item xs={4}>
+            <FormControl>
+              <InputLabel>Item</InputLabel>
+              <Select
+                value={selectedItem.id}
+                size="small"
+                label="Item"
+                onChange={(e) => {
+                  setSelectedItem(
+                    items.find((item) => item.id === +e.target.value)!
+                  );
+                }}
+              >
+                {items.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="h6">
+              Who will get: {userReceiving.userName}
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="h6">
+              Who gives: {store.user.userName}
+            </Typography>
+          </Grid>
+        </Grid>
+      </CardContent>
+      <CardActions
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Button variant="outlined" onClick={onClose}>Close</Button>
+        <Button variant="contained" onClick={() => handleGiveItem()}>Give item</Button>
+      </CardActions>
+    </Card>
   );
 };
 

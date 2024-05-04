@@ -1,11 +1,13 @@
 import { useContext } from "react";
 import { Context } from "../..";
-import { BluePinkButton } from "../../UI/styled/buttons";
+import { Button } from "@mui/material";
 
 const LogOutComponent = () => {
   const { store } = useContext(Context);
   return (
-    <BluePinkButton onClick={() => store.logout()}>Log Out</BluePinkButton>
+    <Button variant="outlined" onClick={() => store.logout()}>
+      Log Out
+    </Button>
   );
 };
 

@@ -15,16 +15,20 @@ import {
   FetchActionsRequest,
 } from "../interfaces/ActionRequest";
 import TableComponent from "../components/tables/actionsTableComponent";
-import { TableContainer } from "../UI/styled/tables";
-import { CreationContainerB } from "../UI/styled/cards";
-import { BasicInput, BasicLable } from "../UI/styled/inputs";
-import { BluePinkButton, PinkBlueButton } from "../UI/styled/buttons";
+import {
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  Typography,
+} from "@mui/material";
+import ItemCreationForm from "../components/itemCreationForm";
 
 const ActionsTable = () => {
   const { store } = useContext(Context);
   const [actions, setActions] = useState<IAction[]>([]);
-  const [itemName, setItemName] = useState("");
-  const [itemDescription, setItemDescription] = useState("");
   const [pendingActionsAmount, setPendingActionsAmount] = useState<number>(0);
   const [filteredColumnsForTable, setFilteredColumnsForTable] = useState<
     string[]
@@ -59,32 +63,13 @@ const ActionsTable = () => {
         userId: store.user.id,
       };
       const response = await ActionsService.fetchActions(request);
-      const responseData = response.data;
 
-      setActions(responseData.actions);
-      if (responseData.count !== undefined && responseData.count !== null) {
-        setPendingActionsAmount(responseData.count || 0);
+      setActions(response.actions);
+      if (response.count !== undefined && response.count !== null) {
+        setPendingActionsAmount(response.count || 0);
       }
     } catch (error: any) {
       console.error("Error fetching actions:", error.data.message);
-    }
-  };
-
-  const handleCreateItem = async () => {
-    try {
-      if (!itemName.trim() || !itemDescription.trim()) {
-        console.error("Name and description are required");
-        return;
-      }
-
-      await ActionsService.createItem(itemName, itemDescription);
-
-      setItemName("");
-      setItemDescription("");
-
-      fetchActions();
-    } catch (error) {
-      console.error("Error creating item:", error);
     }
   };
 
@@ -115,82 +100,61 @@ const ActionsTable = () => {
   };
 
   return (
-    <>
-      {store.user.role.name === "Admin" && (
-        <CreationContainerB>
-          <BasicLable>Item creation</BasicLable>
-          <BasicInput
-            type="text"
-            value={itemName}
-            onChange={(e) => setItemName(e.target.value)}
-            placeholder="Item Name"
-          />
-          <BasicInput
-            type="text"
-            value={itemDescription}
-            onChange={(e) => setItemDescription(e.target.value)}
-            placeholder="Item Description"
-          />
-          <BluePinkButton
-            className="btn btn-primary"
-            onClick={handleCreateItem}
-          >
-            Create Item
-          </BluePinkButton>
-        </CreationContainerB>
-      )}
-      <TableContainer>
-        {store.user.role.name === "User" && (
+    <Grid container xs={12} rowGap={2}>
+      {store.user.role.name === "User" && (
+        <Grid item xs={12}>
           <NewActionRequest handleActionRequest={handleActionRequest} />
-        )}
-        <div>
-          <select
-            value={selectedType}
-            onChange={(e) => setSelectedType(e.target.value)}
-          >
-            <option value="ALL">All</option>
-            {Object.values(ActionType).map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
-        </div>
+        </Grid>
+      )}
+      {store.user.role.name === "Admin" && (
+        <Grid item xs={12}>
+          <ItemCreationForm onCreation={fetchActions} />
+        </Grid>
+      )}
+      <Grid container item component={Paper} elevation={2} xs={12}>
+        <Grid item xs={4} sx={{
+          padding: "10px",
+        }}>
+          <FormControl>
+            <InputLabel>Type</InputLabel>
+            <Select
+              size="small"
+              label="Type"
+              value={selectedType}
+              onChange={(e) => setSelectedType(e.target.value)}
+            >
+              <MenuItem value="ALL">All</MenuItem>
+              {Object.values(ActionType).map((type) => (
+                <MenuItem key={type} value={type}>
+                  {type}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
 
         {pendingActionsAmount !== 0 && store.user.role.name === "Admin" && (
-          <div
-            style={{
-              marginTop: "10px",
-              backgroundColor: "#f2f2f2",
-              padding: "10px",
-            }}
-          >
-            Pending Actions Amount: {pendingActionsAmount}
-          </div>
+          <Grid item xs={4} sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}>
+            <Typography>
+              Pending Actions Amount: {pendingActionsAmount}
+            </Typography>
+          </Grid>
         )}
+      </Grid>
 
-        {actions?.length ? (
-          <TableComponent
-            actions={actions}
-            columns={filteredColumnsForTable}
-            handleApproveAction={handleApproveAction}
-            handleDeclineAction={handleDeclineAction}
-          />
-        ) : (
-          <div
-            style={{
-              color: "red",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            No actions found
-          </div>
-        )}
-      </TableContainer>
-    </>
+      <Grid item xs={12}>
+        <TableComponent
+          actions={actions}
+          columns={filteredColumnsForTable}
+          handleApproveAction={handleApproveAction}
+          handleDeclineAction={handleDeclineAction}
+        />
+      </Grid>
+    </Grid>
   );
 };
 

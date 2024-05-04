@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import LoginComponent from "../components/authComponents/logInComponent";
 import SignupComponent from "../components/authComponents/signUpComponent";
-import { AuthPageLayout } from "../UI/styled/pages";
+import { Container } from "@mui/material";
 
 interface AuthPageProps {}
 
@@ -13,9 +13,15 @@ const AuthPage: React.FC<AuthPageProps> = () => {
   };
 
   return (
-    <AuthPageLayout>
+    <Container maxWidth="sm" sx={{
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      padding: "20px",
+    }}>
       {isSignup ? <SignupComponent callback={toggleForm} /> : <LoginComponent callback={toggleForm} />}
-    </AuthPageLayout>
+    </Container>
   );
 };
 

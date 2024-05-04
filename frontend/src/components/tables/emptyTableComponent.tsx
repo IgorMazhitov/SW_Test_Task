@@ -1,13 +1,11 @@
-import { EmptyTableCover } from "../../UI/styled/cards"
-
 interface EmptyTableComponentProps {
     name: string
 }
 const EmptyTableComponent: React.FC<EmptyTableComponentProps> = ({ name }) => {
     return (
-        <EmptyTableCover>
+        <div>
             {name} table is empty
-        </EmptyTableCover>
+        </div>
     )
 }
 

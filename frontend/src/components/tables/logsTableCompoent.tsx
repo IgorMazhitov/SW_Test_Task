@@ -1,4 +1,4 @@
-import { Table, TableCell, TableHead } from "../../UI/styled/tables";
+import { Paper, Table, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import {
   formatRequestForLogs,
   formatResponseForLogs,
@@ -18,17 +18,22 @@ const LogsTableComponent: React.FC<LogsTableComponentProps> = ({ logs }) => {
     };
   });
   return (
-    <Table>
-      <thead>
-        <tr>
-          <TableHead>Email</TableHead>
-          <TableHead>Id</TableHead>
-          <TableHead>Type</TableHead>
-          <TableHead>Created At</TableHead>
-          <TableHead>Request</TableHead>
-          <TableHead>Response</TableHead>
-        </tr>
-      </thead>
+    <TableContainer component={Paper} sx={{
+      maxHeight: "75vh",
+    }}>
+      <Table sx={{ minWidth: "100%", margin: 0 }} aria-label="simple table">
+      <TableHead sx={{
+        backgroundColor: "black",
+      }}>
+        <TableRow>
+          <TableCell sx={{ color: "white" }}>Email</TableCell>
+          <TableCell sx={{ color: "white" }}>Id</TableCell>
+          <TableCell sx={{ color: "white" }}>Type</TableCell>
+          <TableCell sx={{ color: "white" }}>Created At</TableCell>
+          <TableCell sx={{ color: "white" }}>Request</TableCell>
+          <TableCell sx={{ color: "white" }}>Response</TableCell>
+        </TableRow>
+      </TableHead>
       <tbody>
         {formattedLogs.map((log) => (
           <tr key={log.id}>
@@ -36,12 +41,14 @@ const LogsTableComponent: React.FC<LogsTableComponentProps> = ({ logs }) => {
             <TableCell>{log.id}</TableCell>
             <TableCell>{log.type}</TableCell>
             <TableCell>{log.createdAt.toLocaleString()}</TableCell>
-            <TableCell>{log.requestData}</TableCell>
+            <TableCell sx={{  wordBreak: "break-word"}}>{log.requestData}</TableCell>
             <TableCell>{log.responseData}</TableCell>
           </tr>
         ))}
       </tbody>
-    </Table>
+      </Table>
+      
+    </TableContainer>
   );
 };
 

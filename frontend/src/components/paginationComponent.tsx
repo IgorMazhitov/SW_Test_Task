@@ -1,22 +1,22 @@
-import { BluePinkButton } from "../UI/styled/buttons";
-import { PaginationContainer } from "../UI/styled/cards";
-
 interface PaginationComponentProps {
     currentPage: number;
     onPageChange: (page: number) => void;
+    limit: number;
+    amount: number;
 }
-const PaginationComponent: React.FC<PaginationComponentProps> = ({ currentPage, onPageChange }) => {
+const PaginationComponent: React.FC<PaginationComponentProps> = ({ currentPage, onPageChange, limit, amount }) => {
     return (
-        <PaginationContainer>
-            <BluePinkButton
+        <div>
+            <button
                 onClick={() => onPageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-            > Prev </BluePinkButton>
+            > Prev </button>
             <span>{currentPage}</span>
-            <BluePinkButton
+            <button
+                disabled={amount < limit}
                 onClick={() => onPageChange(currentPage + 1)}
-            > Next </BluePinkButton>
-        </PaginationContainer>
+            > Next </button>
+        </div>
     )
 }
 

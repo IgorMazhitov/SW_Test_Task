@@ -1,7 +1,5 @@
+import { Button, Chip, Grid, Paper, TextField } from "@mui/material";
 import { useState } from "react";
-import { CreationContainerB } from "../UI/styled/cards";
-import { BluePinkButton } from "../UI/styled/buttons";
-import { BasicInput, BasicLable } from "../UI/styled/inputs";
 
 function RolesCreationForm() {
   const [roleName, setRoleName] = useState<string>("");
@@ -15,26 +13,37 @@ function RolesCreationForm() {
   };
 
   return (
-    <CreationContainerB>
-      <h3 style={{ marginRight: "20px" }}>Create New Role</h3>
-      <BasicLable htmlFor="roleName">Role Name:</BasicLable>
-      <BasicInput
-        disabled
-        type="text"
-        id="roleName"
-        name="roleName"
-        value={roleName}
-        placeholder="Role name"
-        onChange={(e) => handleRoleNameChange(e)}
-        required
-      />
-      <BluePinkButton disabled type="submit" onClick={(e) => handleSubmit(e)}>
-        Create User
-      </BluePinkButton>
-      <span style={{ marginLeft: "10px", fontSize: "16px", fontWeight: "bold", color: "red" }}>
-        (Role creation will be added in next versions)
-      </span>
-    </CreationContainerB>
+    <Grid container component={Paper} elevation={5} sx={{
+      padding: "10px",
+      gap: "10px",
+    }}>
+      <Grid item xs={2}>
+        <TextField
+          disabled
+          type="text"
+          id="roleName"
+          label="Role name"
+          value={roleName}
+          size="small"
+          placeholder="Role name"
+          onChange={(e) => handleRoleNameChange(e)}
+          required
+        />
+      </Grid>
+      <Grid item xs={2}>
+        <Button
+          variant="outlined"
+          disabled
+          type="submit"
+          onClick={(e) => handleSubmit(e)}
+        >
+          Create Role
+        </Button>
+      </Grid>
+      <Grid item xs={4}>
+        <Chip label="Role creation will be added in next versions" variant="outlined"/>
+      </Grid>
+    </Grid>
   );
 }
 

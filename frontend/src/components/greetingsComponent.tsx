@@ -1,22 +1,17 @@
 import React, { useState } from "react";
-import { GreetingsCard } from "../UI/styled/cards";
 import { getRandomMatrix } from "../common/helpers";
-import { BasicInput, InputColor } from "../UI/styled/inputs";
+import { Box, Container, Grid, TextField } from "@mui/material";
 
 interface GreetingsComponentProps {
-  userName: string;
-  userRole: string;
 }
 
 const GreetingsComponent: React.FC<GreetingsComponentProps> = ({
-  userName,
-  userRole,
 }) => {
-  const matrixCols = Math.floor(window.innerWidth / 20);
-  const matrixRows = Math.floor(window.innerHeight / 20);
+  const matrixCols = Math.floor(window.innerWidth / 10);
+  const matrixRows = Math.floor(window.innerHeight / 15);
   const preMatrix = Array(matrixRows).fill(Array(matrixCols).fill(0));
   const [matrix, setMatrix] = useState<number[][]>(getRandomMatrix(preMatrix));
-  const [colorA, setColorA] = useState<string>("#FBEAEB");
+  const [colorA, setColorA] = useState<string>("");
   const [colorB, setColorB] = useState<string>("#2F3C7E");
 
   const handleClick = (x: number, y: number) => {
@@ -36,44 +31,53 @@ const GreetingsComponent: React.FC<GreetingsComponentProps> = ({
     }
   };
   return (
-    <>
-      <GreetingsCard>
-        <InputColor>
-          <BasicInput
+    <Container sx={{
+        minWidth: "100%",
+    }}> 
+      <Grid container rowSpacing={2}>
+        <Grid item xs={6}>
+          <TextField
+            variant="outlined"
+            label="Color A"
             value={colorA}
             onChange={(e) => setColorA(e.target.value)}
           />
-          <BasicInput
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            variant="outlined"
+            label="Color B"
             value={colorB}
             onChange={(e) => setColorB(e.target.value)}
           />
-        </InputColor>
+        </Grid>
+        <Grid item xs={12}>
         {matrix.map((row, indexRow) => {
           return (
-            <div style={{ display: "flex" }}>
+            <Box style={{ display: "flex" }}>
               {row.map((col: any, indexCol: number) => {
                 return (
-                  <div
+                  <Box
                     onClick={() => handleClick(indexRow, indexCol)}
                     style={{
                       transition: "all 0.5s",
-                      width: "20px",
-                      height: "20px",
+                      width: "10px",
+                      height: "10px",
                       color: "",
                       backgroundColor:
                         matrix[indexRow][indexCol] === 0
                           ? `${colorA}`
                           : `${colorB}`,
-                      border: "0.5px solid black",
                     }}
-                  ></div>
+                  ></Box>
                 );
               })}
-            </div>
+            </Box>
           );
         })}
-      </GreetingsCard>
-    </>
+        </Grid>
+      </Grid>
+    </Container>
   );
 };
 
