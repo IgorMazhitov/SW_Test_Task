@@ -18,8 +18,7 @@ function ItemCreationForm({ onCreation }: ItemCreationFormProps) {
   const handleCreateItem = async () => {
     try {
       if (!itemName.trim() || !itemDescription.trim()) {
-        console.error("Name and description are required");
-        return;
+        throw new Error("All fields should not be empty");
       }
 
       await ActionsService.createItem(itemName, itemDescription);

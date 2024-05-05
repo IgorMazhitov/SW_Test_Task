@@ -31,7 +31,6 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
   const [email, setEmail] = useState<string>(user.email);
   const [password, setPassword] = useState<string>(user.password);
   const [role, setRole] = useState<number>(user.role.id);
-  console.log(user);
   const handleSave = () => {
     const newUser: IUser = {
       ...user,

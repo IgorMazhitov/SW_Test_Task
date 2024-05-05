@@ -46,8 +46,6 @@ const ActionsTable = () => {
     try {
       await ActionsService.requestActionUser(formData);
       fetchActions();
-      // Optionally, you can handle success feedback to the user
-      console.log("Action requested successfully!");
     } catch (error) {
       console.error("Error requesting action:", error);
     }

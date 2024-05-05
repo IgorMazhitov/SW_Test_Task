@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Context } from "..";
 import { ActionType } from "../interfaces/IAction.interface";
-import ActionsService from "../services/actionsService";
 import { ActionRequest } from "../interfaces/api-interfaces/ActionsApi.interface";
 import { typeMapping } from "../common/helpers";
 import {

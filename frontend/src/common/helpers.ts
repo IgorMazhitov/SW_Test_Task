@@ -1,5 +1,4 @@
 import { ActionType, IAction } from "../interfaces/IAction.interface";
-import { IUser } from "../interfaces/IUser.interface";
 
 export const typeMappingWithUndefined: {
   [key: string]: ActionType | undefined;

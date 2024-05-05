@@ -32,11 +32,9 @@ const GivingItemModal: React.FC<GivingItemModalProps> = ({
   const isUserAdmin = store.user.role.name === "Admin";
   const [items, setItems] = useState<IItem[]>([]);
   const [selectedItem, setSelectedItem] = useState<IItem>(items[0]);
-  console.log(items);
   const fetchItems = async () => {
     try {
       const items = await ActionsService.getItems(store.user.id);
-      console.log(items);
       setItems(items);
       setSelectedItem(items[0]);
     } catch (error) {

@@ -12,7 +12,6 @@ interface TableComponentProps {
 const TableComponent: React.FC<TableComponentProps> = (
   props: TableComponentProps
 ) => {
-  console.log(props.actions)
   const { actions, handleApproveAction, handleDeclineAction, columns } = props;
   let validActions = actions
   if (!validActions) {
@@ -57,7 +56,6 @@ const TableComponent: React.FC<TableComponentProps> = (
                     </TableCell>
                   );
                 } else {
-                  console.log(column, "column", action);
                   return (
                     <TableCell>
                       {(action as any)[column]
