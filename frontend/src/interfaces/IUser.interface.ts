@@ -1,4 +1,5 @@
 import { IMessage } from "./IMessage.interface";
+import { IRole } from "./IRole.interface";
 
 export interface IUser {
   id: number;
@@ -9,37 +10,4 @@ export interface IUser {
   role: IRole;
   sentMessages?: IMessage[];
   receivedMessages?: IMessage[];
-}
-
-export interface GetUsersDto {
-    page: number;
-    limit: number;
-    roleId: number;
-    senderId: number;
-}
-
-export interface UserCreationDto {
-    userName: string;
-    email: string;
-    password: string;
-    roleId: number;
-  }
-
-export interface ChangeUserDto {
-    id: number;
-    userName: string;
-    email: string;
-    password: string;
-    roleId: number;
-}
-  
-
-export interface IRole {
-    id: number;
-    name: string;
-}
-
-export interface GetAllUsersResponse {
-  users: IUser[];
-  count: number;
 }

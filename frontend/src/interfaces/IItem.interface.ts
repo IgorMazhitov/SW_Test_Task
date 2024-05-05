@@ -3,9 +3,3 @@ export interface IItem {
     name: string;
     description: string;
   }
-
-export interface GiveItemToUserFromAdminDto {
-    itemId: number;
-    userId: number;
-    adminId: number;
-}
