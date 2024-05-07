@@ -95,6 +95,7 @@ export class ActionsController {
     description: 'Endpoint to give an item to a user by an admin.',
   })
   giveItemAdmin(@Body() dto: GiveItemDto) {
+    console.log(dto);
     return this.actionsService.giveItemAdmin(dto);
   }
 
@@ -108,11 +109,15 @@ export class ActionsController {
     @Query('userId') userId: number,
     @Query('active') active: boolean,
     @Query('type') type: ActionType,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
   ) {
     const request: GetAllActionsDto = {
       userId,
       active,
       type,
+      page,
+      limit,
     };
     return this.actionsService.getAllActions(request);
   }

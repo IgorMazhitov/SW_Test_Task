@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ActionType } from '../../../entities/action.entity';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
 
 export class ActionRequestDto {
   @ApiProperty({ description: 'The ID of the user making the request', example: 1 })
@@ -36,7 +37,7 @@ export class ApproveActionDto {
   readonly userId: number;
 }
 
-export class GetAllActionsDto {
+export class GetAllActionsDto extends PaginationDto {
   @ApiProperty({ description: 'The ID of the user to get actions for', example: 1 })
   @IsNumber({}, { message: 'User id should be number' })
   readonly userId: number;

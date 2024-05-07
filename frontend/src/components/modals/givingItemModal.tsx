@@ -80,7 +80,9 @@ const GivingItemModal: React.FC<GivingItemModalProps> = ({
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
+          backgroundColor: "white",
           padding: "10px",
+          zIndex: 1000,
           maxWidth: "max-content",
         }}
       >
@@ -97,11 +99,15 @@ const GivingItemModal: React.FC<GivingItemModalProps> = ({
         top: "50%",
         left: "50%",
         transform: "translate(-50%, -50%)",
+        backgroundColor: "white",
         padding: "10px",
+        zIndex: 1000,
         maxWidth: "max-content",
       }}
     >
-      <CardContent>
+      <CardContent sx={{
+        backgroundColor: "white",
+      }}>
         <Grid container spacing={2}>
           <Grid item xs={3}>
             <Typography variant="h4">Give item</Typography>

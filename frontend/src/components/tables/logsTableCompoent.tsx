@@ -21,17 +21,17 @@ const LogsTableComponent: React.FC<LogsTableComponentProps> = ({ logs }) => {
     <TableContainer component={Paper} sx={{
       maxHeight: "75vh",
     }}>
-      <Table sx={{ minWidth: "100%", margin: 0 }} aria-label="simple table">
+      <Table stickyHeader sx={{ minWidth: "100%", margin: 0 }} aria-label="simple table">
       <TableHead sx={{
         backgroundColor: "black",
       }}>
         <TableRow>
-          <TableCell sx={{ color: "white" }}>Email</TableCell>
-          <TableCell sx={{ color: "white" }}>Id</TableCell>
-          <TableCell sx={{ color: "white" }}>Type</TableCell>
-          <TableCell sx={{ color: "white" }}>Created At</TableCell>
-          <TableCell sx={{ color: "white" }}>Request</TableCell>
-          <TableCell sx={{ color: "white" }}>Response</TableCell>
+          <TableCell sx={{ color: "white", backgroundColor: 'black' }}>Email</TableCell>
+          <TableCell sx={{ color: "white", backgroundColor: 'black'  }}>Id</TableCell>
+          <TableCell sx={{ color: "white", backgroundColor: 'black'  }}>Type</TableCell>
+          <TableCell sx={{ color: "white", backgroundColor: 'black'  }}>Created At</TableCell>
+          <TableCell sx={{ color: "white", backgroundColor: 'black'  }}>Request</TableCell>
+          <TableCell sx={{ color: "white", backgroundColor: 'black'  }}>Response</TableCell>
         </TableRow>
       </TableHead>
       <tbody>

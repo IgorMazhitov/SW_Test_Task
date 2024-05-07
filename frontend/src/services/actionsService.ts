@@ -17,9 +17,9 @@ export default class ActionsService {
     request: FetchActionsRequest
   ): Promise<FetchActionsResponse> {
     try {
-      const { active, type, userId } = request;
+      const { active, type, userId, limit, page } = request;
       const { data } = await $api.get<FetchActionsResponse>("/actions", {
-        params: { active, type, userId },
+        params: { active, type, userId, limit, page },
       });
       return data;
     } catch (error: any) {

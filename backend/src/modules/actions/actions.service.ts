@@ -1,6 +1,4 @@
-import {
-  Injectable,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateItemDto, GiveItemDto } from './dtos/create-item.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Item } from '../../entities/item.entity';
@@ -120,9 +118,9 @@ export class ActionsService {
     request: GetAllActionsDto,
   ): Promise<{ actions: Action[]; count?: number }> {
     try {
-      const { userId, type, active } = request;
+      const { userId, type, active, page, limit } = request;
+      console.log(request, 'test')
       const user: User = await this.getUserById(userId);
-      let actions: Action[] = null;
       if (user.role.name === 'Admin') {
         const query: any = {
           active: active,
@@ -132,20 +130,13 @@ export class ActionsService {
           query.type = type;
         }
 
-        actions = await this.actionsRepository.find({
+        const [actions, count] = await this.actionsRepository.findAndCount({
           where: query,
+          take: limit,
+          skip: page * limit,
         });
 
-        if (active) {
-          const count = await this.actionsRepository.count({
-            where: {
-              active: true,
-              type,
-            },
-          });
-
-          return { actions, count };
-        }
+        return { actions, count };
       } else {
         const query: any = {
           active: active,
@@ -156,11 +147,14 @@ export class ActionsService {
           query.type = type;
         }
 
-        actions = await this.actionsRepository.find({
+        const [actions, count] = await this.actionsRepository.findAndCount({
           where: query,
+          take: limit,
+          skip: page * limit,
         });
+
+        return { actions, count };
       }
-      return { actions };
     } catch (error) {
       throw new Error(`Error during getting all actions: ${error.message}`);
     }
@@ -271,7 +265,7 @@ export class ActionsService {
         },
         relations: {
           role: true,
-        }
+        },
       });
       return user;
     } catch (error) {

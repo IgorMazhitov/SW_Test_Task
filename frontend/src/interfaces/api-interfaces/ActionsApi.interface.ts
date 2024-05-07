@@ -25,4 +25,6 @@ export interface FetchActionsRequest {
   userId: number;
   type: ActionType | undefined;
   active: boolean;
+  limit?: number;
+  page?: number;
 }

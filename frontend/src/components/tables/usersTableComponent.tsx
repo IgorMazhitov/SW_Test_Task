@@ -33,7 +33,7 @@ const UsersTableComponent: React.FC<UserTableComponentProps> = ({
   const columns = filterColumnsForUserTable(isUserAdmin);
   console.log(users)
   return (
-    <TableContainer component={Paper} sx={{ maxHeight: 440}}>
+    <TableContainer component={Paper} sx={{ maxHeight: 500}}>
       <Table stickyHeader sx={{ minWidth: "100%", margin: 0 }} aria-label="sticky table">
         <TableHead>
           <TableRow

@@ -18,14 +18,14 @@ const TableComponent: React.FC<TableComponentProps> = (
     validActions = fakeActions;
   }
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: "100%", margin: 0 }} aria-label="simple table">
+    <TableContainer component={Paper} sx={{ maxHeight: 500}}>
+      <Table stickyHeader sx={{ minWidth: "100%", margin: 0 }} aria-label="simple table">
         <TableHead sx={{
           backgroundColor: "black",
         }}>
           <TableRow>
             {columns.map((column) => {
-              return <TableCell sx={{ color: "white" }} key={column}>{column}</TableCell>
+              return <TableCell sx={{ color: "white", backgroundColor: 'black' }} key={column}>{column}</TableCell>
             })}
           </TableRow>
         </TableHead>

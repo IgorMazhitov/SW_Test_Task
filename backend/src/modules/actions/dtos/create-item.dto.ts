@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNumber, IsString } from 'class-validator';
+import { IsEmail, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateItemDto {
   @ApiProperty({ description: 'The name of the item', example: 'Product A' })
@@ -21,10 +21,12 @@ export class GiveItemDto {
   readonly itemId: number;
 
   @ApiProperty({ description: 'The ID of the user receiving the item', example: 1, required: false })
+  @IsOptional()
   @IsNumber({}, { message: 'User id should be number' })
   readonly userId?: number;
 
   @ApiProperty({ description: 'The email of the user receiving the item', example: 'user@example.com', required: false })
+  @IsOptional()
   @IsEmail({}, { message: 'User email should be a valid email' })
   readonly userEmail?: string;
 }

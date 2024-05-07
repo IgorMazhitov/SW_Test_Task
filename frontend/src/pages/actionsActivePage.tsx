@@ -20,6 +20,7 @@ import {
   Grid,
   InputLabel,
   MenuItem,
+  Pagination,
   Paper,
   Select,
   Typography,
@@ -34,13 +35,17 @@ const ActionsTable = () => {
     string[]
   >(columnsForActionsTable);
   const [selectedType, setSelectedType] = useState<string>("ALL");
+  const [totalActions, setTotalActions] = useState<number>(0);
+  const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(10);
+  const [rowsPerPageOptions] = useState<number[]>([10, 20, 30, 40, 50]);
 
   useEffect(() => {
     fetchActions();
     setFilteredColumnsForTable(
       filterColumnsForActionsTable(store.user.role.name === "Admin")
     );
-  }, [selectedType]);
+  }, [selectedType, limit, page]);
 
   const handleActionRequest = async (formData: ActionRequest) => {
     try {
@@ -59,10 +64,14 @@ const ActionsTable = () => {
         active: true,
         type: actionType,
         userId: store.user.id,
+        limit,
+        page: page - 1,
       };
+      console.log("request", request)
       const response = await ActionsService.fetchActions(request);
 
       setActions(response.actions);
+      setTotalActions(response.count || 0);
       if (response.count !== undefined && response.count !== null) {
         setPendingActionsAmount(response.count || 0);
       }
@@ -143,7 +152,37 @@ const ActionsTable = () => {
           </Grid>
         )}
       </Grid>
-
+      <Grid item xs={1}>
+        <FormControl>
+          <InputLabel>Rows:</InputLabel>
+          <Select
+            value={limit}
+            label="Rows"
+            size="small"
+            onChange={(e) => {
+              setLimit(Number(e.target.value))
+            }}
+          >
+            {rowsPerPageOptions.map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Grid>
+      <Grid item xs={5} sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "flex-end",
+      
+      }}>
+        <Pagination
+          count={Math.ceil(totalActions / limit) || 1}
+          page={page}
+          onChange={(e, value) => setPage(value)}
+        />
+      </Grid>
       <Grid item xs={12}>
         <TableComponent
           actions={actions}
