@@ -7,7 +7,11 @@ import { Role } from 'src/entities/role.entity';
 import { ChangeUserDto } from './dtos/change-user.dto';
 import * as crypt from 'bcryptjs';
 import { GetAllUsersDto } from './dtos/get-all-users.dto';
-import { validateEmail, validateName, validatePassword } from 'src/common/helpers/validations';
+import {
+  validateEmail,
+  validateName,
+  validatePassword,
+} from 'src/common/helpers/validations';
 
 @Injectable()
 export class UsersService {
@@ -20,19 +24,11 @@ export class UsersService {
 
   async createUser(dto: CreateUserDto) {
     try {
-      let role = null;
+      let role: Role = null;
       if (dto.roleId) {
-        role = await this.rolesRepository.findOne({
-          where: {
-            id: dto.roleId,
-          },
-        });
+        role = await this.getRoleById(dto.roleId);
       } else {
-        role = await this.rolesRepository.findOne({
-          where: {
-            name: 'User',
-          },
-        });
+        role = await this.getUserRole();
       }
       this.validateUser(dto);
       const hashPassword = await crypt.hash(dto.password, 5);
@@ -61,33 +57,39 @@ export class UsersService {
 
   async changeUser(dto: ChangeUserDto) {
     try {
-      const user = await this.usersRepository.findOne({
-        where: {
-          id: dto.id,
-        },
-      });
-      const roleToChange = await this.rolesRepository.findOne({
-        where: {
-          id: dto.roleId,
-        },
-      });
+      const user: User = await this.getUserById(dto.id);
+      const roleToChange: Role = await this.getRoleById(dto.roleId);
+
       if (!user || !roleToChange) {
         throw new HttpException('User or Role not found', HttpStatus.NOT_FOUND);
       }
-      const isPasswordSame = dto.password === user.password;
-      const hashPassword = await crypt.hash(dto.password, 5);
-      const userToUpdate = {
-        ...user,
-        userName: dto.userName,
-        email: dto.email,
-        role: roleToChange,
-      };
-      if (!isPasswordSame) {
-        userToUpdate.password = hashPassword;
+
+      const userToUpdate: Partial<User> = {};
+
+      if (dto.userName !== user.userName) {
+        validateName(dto.userName);
+        userToUpdate.userName = dto.userName;
       }
+
+      if (dto.email !== user.email) {
+        validateEmail(dto.email);
+        userToUpdate.email = dto.email;
+      }
+
+      if (dto.password !== user.password) {
+        validatePassword(dto.password);
+        userToUpdate.password = await crypt.hash(dto.password, 5);
+      }
+
+      if (dto.roleId !== user.role.id) {
+        userToUpdate.role = roleToChange;
+      }
+
       const updatedUser = await this.usersRepository.save({
-        ...userToUpdate
+        ...user,
+        ...userToUpdate,
       });
+
       return updatedUser;
     } catch (error) {
       throw new Error(`Error during change user: ${error.message}`);
@@ -106,48 +108,50 @@ export class UsersService {
       let count = 0;
 
       if (user.role.name === 'Admin') {
-        const [fetchedUsers, fetchedCount] = await this.usersRepository.findAndCount({
-          where: {
-            id: Not(user.id),
-            role: {
-              id: roleId,
+        const [fetchedUsers, fetchedCount] =
+          await this.usersRepository.findAndCount({
+            where: {
+              id: Not(user.id),
+              role: {
+                id: roleId,
+              },
             },
-          },
-          relations: {
-            role: true,
-          },
-          skip,
-          take: limit,
-        });
+            relations: {
+              role: true,
+            },
+            skip,
+            take: limit,
+          });
         users = fetchedUsers;
         count = fetchedCount;
       } else {
-        const [fetchedUsers, fetchedCount] = await this.usersRepository.findAndCount({
-          select: {
-            userName: true,
-            id: true,
-            role: {
-              name: true,
+        const [fetchedUsers, fetchedCount] =
+          await this.usersRepository.findAndCount({
+            select: {
+              userName: true,
               id: true,
+              role: {
+                name: true,
+                id: true,
+              },
             },
-          },
-          where: {
-            id: Not(user.id),
-            role: {
-              id: roleId,
+            where: {
+              id: Not(user.id),
+              role: {
+                id: roleId,
+              },
             },
-          },
 
-          relations: {
-            role: true,
-          },
-          skip,
-          take: limit,
-        });
+            relations: {
+              role: true,
+            },
+            skip,
+            take: limit,
+          });
         users = fetchedUsers;
         count = fetchedCount;
       }
-      return {users, count};
+      return { users, count };
     } catch (error) {
       throw new Error(`Error during getting all users: ${error.message}`);
     }
@@ -182,6 +186,32 @@ export class UsersService {
       return user;
     } catch (error) {
       throw new Error(`Error during get user by id: ${error.message}`);
+    }
+  }
+
+  async getRoleById(id: number) {
+    try {
+      const role = await this.rolesRepository.findOne({
+        where: {
+          id,
+        },
+      });
+      return role;
+    } catch (error) {
+      throw new Error(`Error during get role by id: ${error.message}`);
+    }
+  }
+
+  async getUserRole() {
+    try {
+      const role = await this.rolesRepository.findOne({
+        where: {
+          name: 'User',
+        },
+      });
+      return role;
+    } catch (error) {
+      throw new Error(`Error during get user role: ${error.message}`);
     }
   }
 }
