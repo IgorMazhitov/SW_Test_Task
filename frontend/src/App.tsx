@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Context } from ".";
 import { observer } from "mobx-react-lite";
 import AuthPage from "./pages/authPage";
@@ -7,6 +7,12 @@ import TablesPage from "./pages/tablesPage";
 
 function App() {
   const { store } = useContext(Context);
+
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      store.checkAuth();
+    }
+  }, []);
 
   const isUserLoggedIn = store.isAuth;
 

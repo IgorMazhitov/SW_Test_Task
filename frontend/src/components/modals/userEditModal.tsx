@@ -14,12 +14,13 @@ import {
   TextField,
 } from "@mui/material";
 import { IRole } from "../../interfaces/IRole.interface";
+import { ChangeUserDto } from "../../interfaces/api-interfaces/UsersApi.interface";
 
 interface UserEditModalProps {
   user: IUser;
   roles: IRole[];
   onClose: () => void;
-  onSave: (user: IUser) => void;
+  onSave: (user: ChangeUserDto) => void;
 }
 const UserEditModal: React.FC<UserEditModalProps> = ({
   user,
@@ -29,15 +30,15 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
 }) => {
   const [userName, setUserName] = useState<string>(user.userName);
   const [email, setEmail] = useState<string>(user.email);
-  const [password, setPassword] = useState<string>(user.password);
-  const [role, setRole] = useState<number>(user.role.id);
+  const [password, setPassword] = useState<string>('');
+  const [role, setRole] = useState<number>(1);
   const handleSave = () => {
-    const newUser: IUser = {
+    const newUser: ChangeUserDto = {
       ...user,
       userName,
       email,
       password,
-      role: roles.find((r) => r.id === role)!,
+      roleId: roles.find((r) => r.id === role)!.id,
     };
     onSave(newUser);
   };

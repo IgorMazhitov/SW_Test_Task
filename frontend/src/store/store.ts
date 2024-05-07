@@ -1,6 +1,9 @@
 import { makeAutoObservable } from "mobx";
 import { IUser } from "../interfaces/IUser.interface";
 import AuthService from "../services/authService";
+import axios from "axios";
+import { AuthResponse } from "../interfaces/api-interfaces/AuthApi.interface";
+import { API_URL } from "../api";
 
 export default class Store {
     user = {} as IUser
@@ -21,10 +24,10 @@ export default class Store {
     async login(email: string, password: string) {
         try {
             const response = await AuthService.login(email, password)
-            localStorage.setItem('token', response.token)
+            localStorage.setItem('token', response.accessToken)
             localStorage.setItem('userEmail', email)
             this.setAuth(true)
-            this.setUser(response.user)
+            this.setUser(response.userPublic)
         } catch (error) {
             return new Error('Login error')
         }
@@ -33,9 +36,9 @@ export default class Store {
     async signup(email: string, password: string, roleId: number, userName: string) {
         try {
             const response = await AuthService.signup(userName, roleId, email, password)
-            localStorage.setItem('token', response.token)
+            localStorage.setItem('token', response.accessToken)
             this.setAuth(true)
-            this.setUser(response.user)
+            this.setUser(response.userPublic)
         } catch (error) {
             console.log(error)
         }
@@ -43,10 +46,21 @@ export default class Store {
 
     async logout() {
         try {
+            const response = await AuthService.logout()
             localStorage.removeItem('token')
-            localStorage.removeItem('userEmail')
             this.setAuth(false)
             this.setUser({} as IUser)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async checkAuth() {
+        try {
+            const response = await axios.get<AuthResponse>(`${API_URL}/auth/refresh`, { withCredentials: true })
+            localStorage.setItem('token', response.data.accessToken)
+            this.setAuth(true)
+            this.setUser(response.data.userPublic)
         } catch (error) {
             console.log(error)
         }

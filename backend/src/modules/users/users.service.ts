@@ -7,11 +7,6 @@ import { Role } from 'src/entities/role.entity';
 import { ChangeUserDto } from './dtos/change-user.dto';
 import * as crypt from 'bcryptjs';
 import { GetAllUsersDto } from './dtos/get-all-users.dto';
-import {
-  validateEmail,
-  validateName,
-  validatePassword,
-} from 'src/common/helpers/validations';
 
 @Injectable()
 export class UsersService {
@@ -30,7 +25,6 @@ export class UsersService {
       } else {
         role = await this.getUserRole();
       }
-      this.validateUser(dto);
       const hashPassword = await crypt.hash(dto.password, 5);
       const user: User = await this.usersRepository.save({
         ...dto,
@@ -40,18 +34,6 @@ export class UsersService {
       return user;
     } catch (error) {
       throw new Error(`Error during user creation: ${error.message}`);
-    }
-  }
-
-  validateUser(dto: CreateUserDto): boolean {
-    try {
-      const { password, email, userName } = dto;
-      validatePassword(password);
-      validateEmail(email);
-      validateName(userName);
-      return true;
-    } catch (error) {
-      throw new Error(`Error during user validation: ${error.message}`);
     }
   }
 
@@ -67,17 +49,14 @@ export class UsersService {
       const userToUpdate: Partial<User> = {};
 
       if (dto.userName !== user.userName) {
-        validateName(dto.userName);
         userToUpdate.userName = dto.userName;
       }
 
       if (dto.email !== user.email) {
-        validateEmail(dto.email);
         userToUpdate.email = dto.email;
       }
 
       if (dto.password !== user.password) {
-        validatePassword(dto.password);
         userToUpdate.password = await crypt.hash(dto.password, 5);
       }
 
@@ -115,6 +94,14 @@ export class UsersService {
               role: {
                 id: roleId,
               },
+            },
+            select: {
+              id: true,
+              userName: true,
+              role: {
+                name: true,
+              },
+              email: true,
             },
             relations: {
               role: true,

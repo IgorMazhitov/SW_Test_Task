@@ -31,9 +31,10 @@ const UsersTableComponent: React.FC<UserTableComponentProps> = ({
   const { store } = useContext(Context);
   const isUserAdmin = store.user.role.name === "Admin";
   const columns = filterColumnsForUserTable(isUserAdmin);
+  console.log(users)
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: "100%", margin: 0 }} aria-label="simple table">
+    <TableContainer component={Paper} sx={{ maxHeight: 440}}>
+      <Table stickyHeader sx={{ minWidth: "100%", margin: 0 }} aria-label="sticky table">
         <TableHead>
           <TableRow
             sx={{
@@ -44,49 +45,37 @@ const UsersTableComponent: React.FC<UserTableComponentProps> = ({
               switch (column) {
                 case "id":
                   return (
-                    <TableCell sx={{ color: "white" }} key={column}>
+                    <TableCell sx={{ color: "white", backgroundColor: 'black' }} key={column}>
                       ID
                     </TableCell>
                   );
                 case "role":
                   return (
-                    <TableCell sx={{ color: "white" }} key={column}>
+                    <TableCell sx={{ color: "white", backgroundColor: 'black'  }} key={column}>
                       Role
                     </TableCell>
                   );
                 case "userName":
                   return (
-                    <TableCell sx={{ color: "white" }} key={column}>
+                    <TableCell sx={{ color: "white", backgroundColor: 'black'  }} key={column}>
                       Username
                     </TableCell>
                   );
                 case "email":
                   return (
-                    <TableCell sx={{ color: "white" }} key={column}>
+                    <TableCell sx={{ color: "white", backgroundColor: 'black'  }} key={column}>
                       Email
-                    </TableCell>
-                  );
-                case "created_at":
-                  return (
-                    <TableCell sx={{ color: "white" }} key={column}>
-                      Created At
-                    </TableCell>
-                  );
-                case "password":
-                  return (
-                    <TableCell sx={{ color: "white" }} key={column}>
-                      Password
                     </TableCell>
                   );
                 case "Actions":
                   return (
-                    <TableCell sx={{ color: "white" }} key={column}>
+                    <TableCell sx={{ color: "white", backgroundColor: 'black'  }} key={column}>
                       Actions
                     </TableCell>
                   );
                 default:
                   return (
-                    <TableCell sx={{ color: "white" }} key={column}>
+                    <TableCell sx={{ color: "white", backgroundColor: 'black'  }} key={column}>
                       No Data
                     </TableCell>
                   );
@@ -94,24 +83,13 @@ const UsersTableComponent: React.FC<UserTableComponentProps> = ({
             })}
           </TableRow>
         </TableHead>
-        <TableBody>
+        <TableBody >
           {users.map((user) => (
             <TableRow key={user.id}>
               <TableCell>{user.id}</TableCell>
               <TableCell>{user.role.name}</TableCell>
               <TableCell>{user.userName}</TableCell>
               {user.email && <TableCell>{user.email}</TableCell>}
-              {user?.created_at && (
-                <TableCell>{user?.created_at.toLocaleString()}</TableCell>
-              )}
-              {user?.password && (
-                <TableCell>
-                  {user.password
-                    .split("")
-                    .map((el) => "*")
-                    .join("")}
-                </TableCell>
-              )}
               <TableCell>
                 <ButtonGroup orientation="vertical">
                   {isUserAdmin && (

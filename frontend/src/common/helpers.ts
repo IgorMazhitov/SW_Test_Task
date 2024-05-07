@@ -75,8 +75,6 @@ export const columnsForUserTable: string[] = [
   "role",
   "userName",
   "email",
-  "created_at",
-  "password",
   "Actions"
 ];
 

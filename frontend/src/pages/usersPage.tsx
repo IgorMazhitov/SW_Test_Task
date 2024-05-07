@@ -91,14 +91,14 @@ const UsersTable = () => {
     setShowMessagesModal(true);
   };
 
-  const handleSaveEdit = async (userToUpdate: IUser) => {
+  const handleSaveEdit = async (userToUpdate: ChangeUserDto) => {
     try {
       const request: ChangeUserDto = {
         id: userToUpdate.id,
         userName: userToUpdate.userName,
         email: userToUpdate.email,
         password: userToUpdate.password,
-        roleId: userToUpdate.role.id,
+        roleId: userToUpdate.roleId,
       };
 
       await UsersService.updateUser(request);
@@ -178,7 +178,9 @@ const UsersTable = () => {
           </Grid>
           {users.length !== 0 && (
             <>
-              <Grid item xs={12}>
+              <Grid item xs={12} style={{
+                maxHeight: "70vh",
+              }}>
                 <UsersTableComponent
                   users={users}
                   onClickEdit={handleOpenEditModalClick}

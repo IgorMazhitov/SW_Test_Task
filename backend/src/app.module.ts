@@ -14,6 +14,7 @@ import { AuditLog } from './entities/auditLog.entity';
 import { AuditModule } from './modules/audit/audit.module';
 import { MessagesModule } from './modules/messages/messages.module';
 import { Message } from './entities/message.entity';
+import { Token } from './entities/token.entity';
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import { Message } from './entities/message.entity';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [User, Role, Action, Item, AuditLog, Message],
+      entities: [User, Role, Action, Item, AuditLog, Message, Token],
       synchronize: true,
       autoLoadEntities: true,
       migrations: [InitialRoles1712854276047],

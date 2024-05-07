@@ -2,7 +2,7 @@ import { Button, Chip, Grid, Paper, TextField } from "@mui/material";
 import { useState } from "react";
 
 function RolesCreationForm() {
-  const [roleName, setRoleName] = useState<string>("");
+  const [roleName, setroleName] = useState<string>("");
 
   const handleRoleNameChange = (e: any) => {
     // logic to be implemented
@@ -21,7 +21,7 @@ function RolesCreationForm() {
         <TextField
           disabled
           type="text"
-          id="roleName"
+          id="role.name"
           label="Role name"
           value={roleName}
           size="small"

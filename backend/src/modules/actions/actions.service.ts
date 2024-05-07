@@ -122,7 +122,6 @@ export class ActionsService {
     try {
       const { userId, type, active } = request;
       const user: User = await this.getUserById(userId);
-      console.log(user, 'Admin')
       let actions: Action[] = null;
       if (user.role.name === 'Admin') {
         const query: any = {
@@ -144,7 +143,6 @@ export class ActionsService {
               type,
             },
           });
-          console.log(actions, 'lol')
 
           return { actions, count };
         }
@@ -162,7 +160,6 @@ export class ActionsService {
           where: query,
         });
       }
-      console.log(actions, 'test')
       return { actions };
     } catch (error) {
       throw new Error(`Error during getting all actions: ${error.message}`);

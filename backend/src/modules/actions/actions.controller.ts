@@ -114,7 +114,6 @@ export class ActionsController {
       active,
       type,
     };
-    console.log(request, 'test');
     return this.actionsService.getAllActions(request);
   }
 }
