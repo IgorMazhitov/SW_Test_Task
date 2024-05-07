@@ -11,6 +11,7 @@ import { User } from 'src/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Role } from 'src/entities/role.entity';
+import { validateEmail, validateName, validatePassword } from 'src/common/helpers/validations';
 
 @Injectable()
 export class AuthService {
@@ -64,8 +65,9 @@ export class AuthService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    this.validateEmail(userDto.email);
-    this.validatePassword(userDto.password);
+    validateEmail(userDto.email);
+    validatePassword(userDto.password);
+    validateName(userDto.userName);
     const hashPassword = await crypt.hash(userDto.password, 5);
     const role = await this.rolesRepository.findOne({
       where: {
@@ -82,25 +84,6 @@ export class AuthService {
       token,
       user,
     };
-  }
-
-  private validateEmail(email: string) {
-    if (!email) {
-      throw new HttpException('Email is required', HttpStatus.BAD_REQUEST);
-    }
-    const emailRegexp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    if (!emailRegexp.test(email)) {
-      throw new HttpException('Email is invalid', HttpStatus.BAD_REQUEST);
-    }
-  }
-
-  private validatePassword(password: string) {
-    if (!password) {
-      throw new HttpException('Password is required', HttpStatus.BAD_REQUEST);
-    }
-    if (password.length < 4) {
-      throw new HttpException('Password is too short', HttpStatus.BAD_REQUEST);
-    }
   }
 
   private async generateToken(user: User) {

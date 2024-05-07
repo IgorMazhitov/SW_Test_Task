@@ -7,6 +7,7 @@ import { Role } from 'src/entities/role.entity';
 import { ChangeUserDto } from './dtos/change-user.dto';
 import * as crypt from 'bcryptjs';
 import { GetAllUsersDto } from './dtos/get-all-users.dto';
+import { validateEmail, validateName, validatePassword } from 'src/common/helpers/validations';
 
 @Injectable()
 export class UsersService {
@@ -33,6 +34,7 @@ export class UsersService {
           },
         });
       }
+      this.validateUser(dto);
       const hashPassword = await crypt.hash(dto.password, 5);
       const user: User = await this.usersRepository.save({
         ...dto,
@@ -42,6 +44,18 @@ export class UsersService {
       return user;
     } catch (error) {
       throw new Error(`Error during user creation: ${error.message}`);
+    }
+  }
+
+  validateUser(dto: CreateUserDto): boolean {
+    try {
+      const { password, email, userName } = dto;
+      validatePassword(password);
+      validateEmail(email);
+      validateName(userName);
+      return true;
+    } catch (error) {
+      throw new Error(`Error during user validation: ${error.message}`);
     }
   }
 
