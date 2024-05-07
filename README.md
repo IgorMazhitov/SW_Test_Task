@@ -6,7 +6,7 @@
 
 ## Tech Stack
 
-**Client:** React, MobX
+**Client:** React, MobX, MaterialUI
 
 **Server:** NestJS, Custom Interceptor, PostgreSQL, TypeORM
 
