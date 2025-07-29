@@ -14,8 +14,8 @@ import { MessagesService } from 'src/modules/messages/messages.service';
 import { SendMessageDto } from 'src/modules/messages/dtos/send-message.dto';
 import { Message } from 'src/entities/message.entity';
 import { GetAllItems } from './dtos/get-all-items.dto';
-import { IHandleAction } from './interfaces/actions.interface';
 import { RoleType } from 'src/entities/role.entity';
+import { IHandleAction } from './interfaces/actions.interface';
 
 @Injectable()
 export class ActionsService {
