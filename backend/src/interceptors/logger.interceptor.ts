@@ -13,8 +13,11 @@ export class LoggerInterceptor implements NestInterceptor {
     const res = context.switchToHttp().getResponse();
 
     const startTime = Date.now();
+
     const { method, url, headers, body } = req;
+
     try {
+      
       let { useremail } = headers;
       const requestInfo = {
         method,

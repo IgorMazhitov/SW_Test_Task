@@ -4,11 +4,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToMany,
-  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+
+export enum RoleType {
+  ADMIN = 'Admin',
+  USER = 'User',
+}
 
 @Entity()
 export class Role {
@@ -21,7 +24,7 @@ export class Role {
 
   @Column()
   @ApiProperty({ example: 'admin', description: 'The name of the role.' })
-  name: string;
+  name: RoleType;
 
   @CreateDateColumn({ type: 'timestamp' })
   @ApiProperty({
