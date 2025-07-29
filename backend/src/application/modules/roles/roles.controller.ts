@@ -7,14 +7,14 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { RolesService } from '../../../modules/roles/roles.service';
 import { CreateRoleDto } from './dtos/create-role.dto';
 import { RolesGuard } from 'src/shared/guards/roles.guard';
 import { Roles } from 'src/shared/decorators/roles-auth.decorator';
 import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard';
 import { LoggerInterceptor } from 'src/shared/interceptors/logger.interceptor';
 import { IRoleResponse, IRolesListResponse } from '../../../domain/interfaces/role-response.interface';
-import { RoleType } from '../../entities/role.entity';
+import { RolesService } from './roles.service';
+import { RoleType } from 'src/domain/entities/role.entity';
 
 @ApiTags('Roles')
 @Controller('roles')

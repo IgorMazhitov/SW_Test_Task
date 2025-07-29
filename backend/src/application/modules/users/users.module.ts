@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { UsersController } from './users.controller';
-import { UsersService } from '../../../modules/users/users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '../../entities/user.entity';
-import { Role } from 'src/entities/role.entity';
 import { AuditService } from 'src/application/modules/audit/audit.service';
-import { AuditLog } from 'src/entities/auditLog.entity';
 import { CommonModule } from '../../helpers/common.module';
+import { UsersService } from './users.service';
+import { User } from 'src/domain/entities/user.entity';
+import { Role } from 'src/domain/entities/role.entity';
+import { AuditLog } from 'src/domain/entities/auditLog.entity';
 
 @Module({
   imports: [

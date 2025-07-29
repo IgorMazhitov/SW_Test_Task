@@ -1,9 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../../entities/user.entity';
 import { Not, Repository } from 'typeorm';
-import { Role, RoleType } from 'src/entities/role.entity';
 import { ChangeUserDto } from './dtos/change-user.dto';
 import * as crypt from 'bcryptjs';
 import { GetAllUsersDto } from './dtos/get-all-users.dto';
@@ -11,6 +9,8 @@ import { BaseService } from '../../abstracts/base-service.abstract';
 import { UserHelper } from '../../helpers/user.helper';
 import { RoleHelper } from '../../helpers/role.helper';
 import { IPaginatedUsersResponse, IUserResponse } from '../../../domain/interfaces/user-response.interface';
+import { User } from 'src/domain/entities/user.entity';
+import { Role, RoleType } from 'src/domain/entities/role.entity';
 
 @Injectable()
 export class UsersService extends BaseService {

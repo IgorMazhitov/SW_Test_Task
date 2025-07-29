@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { Role } from '../../entities/role.entity';
 import { CreateRoleDto } from './dtos/create-role.dto';
 import { BaseService } from '../../abstracts/base-service.abstract';
 import { RoleHelper } from '../../helpers/role.helper';
-import { IRoleResponse, IRolesListResponse } from '../../../domain/interfaces/role-response.interface';
+import {
+  IRoleResponse,
+  IRolesListResponse,
+} from '../../../domain/interfaces/role-response.interface';
 
 @Injectable()
 export class RolesService extends BaseService {
@@ -17,17 +19,14 @@ export class RolesService extends BaseService {
    * @returns The created role
    */
   async createRole(dto: CreateRoleDto): Promise<IRoleResponse> {
-    return await this.executeWithErrorHandling(
-      async () => {
-        const role = await this.roleHelper.createRole(dto);
-        return {
-          id: role.id,
-          name: role.name,
-          created_at: role.created_at
-        };
-      },
-      'Error creating role'
-    );
+    return await this.executeWithErrorHandling(async () => {
+      const role = await this.roleHelper.createRole(dto);
+      return {
+        id: role.id,
+        name: role.name,
+        created_at: role.created_at,
+      };
+    }, 'Error creating role');
   }
 
   /**
@@ -35,18 +34,15 @@ export class RolesService extends BaseService {
    * @returns Array of all roles
    */
   async getAllRoles(): Promise<IRolesListResponse> {
-    return await this.executeWithErrorHandling(
-      async () => {
-        const roles = await this.roleHelper.getAllRoles();
-        return {
-          roles: roles.map(role => ({
-            id: role.id,
-            name: role.name,
-            created_at: role.created_at
-          }))
-        };
-      },
-      'Error retrieving all roles'
-    );
+    return await this.executeWithErrorHandling(async () => {
+      const roles = await this.roleHelper.getAllRoles();
+      return {
+        roles: roles.map((role) => ({
+          id: role.id,
+          name: role.name,
+          created_at: role.created_at,
+        })),
+      };
+    }, 'Error retrieving all roles');
   }
 }
