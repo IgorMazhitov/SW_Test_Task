@@ -31,22 +31,18 @@ export class UsersService extends BaseService {
   async createUser(dto: CreateUserDto): Promise<IUserResponse> {
     return await this.executeWithErrorHandling(
       async () => {
-        // Check if email already exists
         try {
           await this.userHelper.getUserByEmail(dto.email);
-          // If we get here, user exists
           throw new HttpException(
             'User with this email already exists',
             HttpStatus.BAD_REQUEST
           );
         } catch (error) {
-          // Only continue if the error was "user not found"
           if (error instanceof HttpException) {
             throw error;
           }
         }
 
-        // Get the appropriate role
         let role: Role = null;
         if (dto.roleId) {
           role = await this.roleHelper.getRoleById(dto.roleId);
@@ -54,7 +50,6 @@ export class UsersService extends BaseService {
           role = await this.roleHelper.getUserRole();
         }
 
-        // Hash password and create user
         const hashPassword = await crypt.hash(dto.password, 5);
         const newUser = await this.usersRepository.save({
           ...dto,
@@ -62,7 +57,6 @@ export class UsersService extends BaseService {
           role,
         });
         
-        // Return formatted response
         return {
           id: newUser.id,
           userName: newUser.userName,
@@ -95,7 +89,6 @@ export class UsersService extends BaseService {
         }
 
         if (dto.email !== user.email) {
-          // Check if the new email is already taken by another user
           try {
             const existingUser = await this.userHelper.getUserByEmail(dto.email);
             if (existingUser.id !== user.id) {
@@ -105,7 +98,6 @@ export class UsersService extends BaseService {
               );
             }
           } catch (error) {
-            // Email not found error means we can use it
             if (!error.message.includes('not found')) {
               throw error;
             }
@@ -126,7 +118,6 @@ export class UsersService extends BaseService {
           ...userToUpdate,
         });
         
-        // Return formatted response
         return {
           id: updatedUser.id,
           userName: updatedUser.userName,
@@ -152,9 +143,7 @@ export class UsersService extends BaseService {
         const { limit, page, senderId, roleId } = body;
         const user: User = await this.userHelper.getUserWithRole(senderId);
         
-        let users: User[] = null;
         const skip = (page - 1) * limit;
-        let count = 0;
         const isAdmin = user.role.name === RoleType.ADMIN;
 
         const selectFields = isAdmin ? 
