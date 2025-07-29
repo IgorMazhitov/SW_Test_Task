@@ -1,113 +1,93 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Message } from '../../entities/message.entity';
-import { Repository } from 'typeorm';
+import { User } from '../../entities/user.entity';
 import { SendMessageDto } from './dtos/send-message.dto';
-import { User } from 'src/entities/user.entity';
 import { GetMessagesBetweenDto } from './dtos/get-messages.dto';
+import { MessagesHelper } from '../../common/services/messages.helper';
+import { BaseService } from '../../common/abstracts/base-service.abstract';
+import { IMessageResponse } from './interfaces/message-response.interface';
+import { UserHelper } from '../../common/services/user.helper';
 
+/**
+ * Service responsible for message operations.
+ * Acts as a facade for message-related functionality.
+ */
 @Injectable()
-export class MessagesService {
+export class MessagesService extends BaseService {
   constructor(
-    @InjectRepository(Message)
-    private messagesRepository: Repository<Message>,
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
-  ) {}
-
-  async sendMessageFromAdmin(request: SendMessageDto) {
-    try {
-      const { content, receiverId, senderId } = request;
-      const receiver = await this.getReceiverUser(receiverId);
-      const sender = await this.getSenderUser(senderId);
-      const messageToSave = await this.messagesRepository.create({
-        receiver,
-        sender,
-        content,
-      });
-      const message = await this.messagesRepository.save(messageToSave);
-      receiver.receivedMessages.push(message);
-      sender.sentMessages.push(message);
-      await this.usersRepository.save(receiver);
-      await this.usersRepository.save(sender);
-      return message;
-    } catch (error) {
-      throw new Error(
-        `Error during message sending from Admin. Error: ${error}`,
-      );
-    }
+    private readonly messagesHelper: MessagesHelper,
+    private readonly userHelper: UserHelper
+  ) {
+    super();
   }
 
-  async getMessagesBetween(request: GetMessagesBetweenDto) {
-    try {
-      const messages: Message[] = await this.messagesRepository.find({
-        where: [
-          {
-            sender: {
-              id: request.senderId,
-            },
-            receiver: {
-              id: request.receiverId,
-            },
-          },
-          {
-            sender: {
-              id: request.receiverId,
-            },
-            receiver: {
-              id: request.senderId,
-            },
-          },
-        ],
-        select: {
-            content: true,
-            sender: {
-                id: true
-            },
-            receiver: {
-                id: true
-            }
-        },
-        relations: {
-            sender: true,
-            receiver: true
-        }
-      });
-      return messages;
-    } catch (error) {
-      throw new Error(`Error during gettign messages between. Error: ${error}`);
-    }
+  /**
+   * Sends a message from an admin user to another user
+   * @param request - Message data including sender, receiver, and content
+   * @returns The created message
+   */
+  async sendMessageFromAdmin(request: SendMessageDto): Promise<IMessageResponse> {
+    return await this.executeWithErrorHandling(
+      async () => {
+        const message = await this.messagesHelper.createMessage(request);
+        return {
+          id: message.id,
+          content: message.content,
+          sender: { id: message.sender.id },
+          receiver: { id: message.receiver.id },
+          timestamp: message.timestamp
+        };
+      },
+      'Error sending message from admin',
+    );
   }
 
-  async getReceiverUser(userId: number) {
-    try {
-      const user = await this.usersRepository.findOne({
-        where: {
-          id: userId,
-        },
-        relations: {
-          receivedMessages: true,
-        },
-      });
-      return user;
-    } catch (error) {
-      throw new Error(`Error during getting receiver User. Error: ${error}`);
-    }
+  /**
+   * Retrieves messages exchanged between two users
+   * @param request - User IDs to fetch messages for
+   * @returns Array of messages between the specified users
+   */
+  async getMessagesBetween(request: GetMessagesBetweenDto): Promise<IMessageResponse[]> {
+    return await this.executeWithErrorHandling(
+      async () => {
+        const messages = await this.messagesHelper.getMessagesBetween(request);
+        return messages.map(message => ({
+          id: message.id,
+          content: message.content,
+          sender: { id: message.sender.id },
+          receiver: { id: message.receiver.id },
+          timestamp: message.timestamp
+        }));
+      },
+      'Error retrieving messages between users',
+    );
   }
 
-  async getSenderUser(userId: number) {
-    try {
-      const user = await this.usersRepository.findOne({
-        where: {
-          id: userId,
-        },
-        relations: {
-          sentMessages: true,
-        },
-      });
-      return user;
-    } catch (error) {
-      throw new Error(`Error during getting sender User. Error: ${error}`);
-    }
+  /**
+   * Gets a user by ID with their received messages
+   * @param userId - ID of the user to retrieve
+   * @returns The user with their received messages
+   */
+  async getReceiverUser(userId: number): Promise<User> {
+    return await this.executeWithErrorHandling(
+      async () => {
+        return await this.userHelper.getUserWithReceivedMessages(userId);
+      },
+      'Error retrieving receiver user',
+    );
+  }
+
+  /**
+   * Gets a user by ID with their sent messages
+   * @param userId - ID of the user to retrieve
+   * @returns The user with their sent messages
+   */
+  async getSenderUser(userId: number): Promise<User> {
+    return await this.executeWithErrorHandling(
+      async () => {
+        return await this.userHelper.getUserWithSentMessages(userId);
+      },
+      'Error retrieving sender user',
+    );
   }
 }

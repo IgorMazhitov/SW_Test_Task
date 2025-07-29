@@ -8,7 +8,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'; // Import Swagger decorators
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
@@ -17,6 +17,7 @@ import { RolesGuard } from 'src/guards/roles.guard';
 import { ChangeUserDto } from './dtos/change-user.dto';
 import { GetAllUsersDto } from './dtos/get-all-users.dto';
 import { LoggerInterceptor } from 'src/interceptors/logger.interceptor';
+import { IUserResponse, IPaginatedUsersResponse } from './interfaces/user-response.interface';
 
 @ApiTags('Users')
 @Controller('users')
@@ -29,8 +30,24 @@ export class UsersController {
   @Post('create')
   @ApiBearerAuth()
   @ApiTags('Create User')
-  create(@Body() userDto: CreateUserDto) {
-    return this.usersService.createUser(userDto);
+  @ApiResponse({
+    status: 201,
+    description: 'User created successfully',
+    type: Object,
+    schema: {
+      example: {
+        id: 1,
+        userName: 'John Doe',
+        email: 'john.doe@example.com',
+        role: {
+          id: 1,
+          name: 'User'
+        }
+      }
+    }
+  })
+  async create(@Body() userDto: CreateUserDto): Promise<IUserResponse> {
+    return await this.usersService.createUser(userDto);
   }
 
   @UseGuards(RolesGuard)
@@ -38,25 +55,71 @@ export class UsersController {
   @Patch('/change')
   @ApiTags('Edit User')
   @ApiBearerAuth()
-  changeUser(@Body() dto: ChangeUserDto) {
-    return this.usersService.changeUser(dto);
+  @ApiResponse({
+    status: 200,
+    description: 'User updated successfully',
+    type: Object,
+    schema: {
+      example: {
+        id: 1,
+        userName: 'John Doe',
+        email: 'john.doe@example.com',
+        role: {
+          id: 1,
+          name: 'User'
+        }
+      }
+    }
+  })
+  async changeUser(@Body() dto: ChangeUserDto): Promise<IUserResponse> {
+    return await this.usersService.changeUser(dto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get()
   @ApiTags('Get All Users')
-  getAllUsers(
+  @ApiResponse({
+    status: 200,
+    description: 'Users retrieved successfully',
+    type: Object,
+    schema: {
+      example: {
+        users: [
+          {
+            id: 1,
+            userName: 'John Doe',
+            email: 'john.doe@example.com',
+            role: {
+              id: 1,
+              name: 'User'
+            }
+          },
+          {
+            id: 2,
+            userName: 'Jane Smith',
+            email: 'jane.smith@example.com',
+            role: {
+              id: 1,
+              name: 'User'
+            }
+          }
+        ],
+        count: 2
+      }
+    }
+  })
+  async getAllUsers(
     @Query('senderId') senderId: number,
     @Query('roleId') roleId: number,
     @Query('page') page: number,
     @Query('limit') limit: number,
-  ) {
+  ): Promise<IPaginatedUsersResponse> {
     const request: GetAllUsersDto = {
       senderId,
       roleId,
       page,
       limit,
     };
-    return this.usersService.getAllUsers(request);
+    return await this.usersService.getAllUsers(request);
   }
 }

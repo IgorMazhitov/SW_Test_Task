@@ -6,9 +6,13 @@ import { RolesService } from './roles.service';
 import { RolesController } from './roles.controller';
 import { AuditService } from 'src/modules/audit/audit.service';
 import { AuditLog } from 'src/entities/auditLog.entity';
+import { CommonModule } from '../../common/common.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Role, User, AuditLog])],
+  imports: [
+    TypeOrmModule.forFeature([Role, User, AuditLog]),
+    CommonModule
+  ],
   controllers: [RolesController],
   providers: [RolesService, AuditService],
   exports: [RolesService],

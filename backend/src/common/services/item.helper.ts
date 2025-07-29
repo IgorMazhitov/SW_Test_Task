@@ -5,14 +5,14 @@ import { Item } from "src/entities/item.entity";
 import { User } from "src/entities/user.entity";
 import { DataSource, Repository } from "typeorm";
 import { CreateItemDto } from "src/modules/actions/dtos/create-item.dto";
+import { UserHelper } from "./user.helper";
 
 @Injectable()
 export class ItemHelper extends BaseService {
   constructor(
     @InjectRepository(Item)
     private itemsRepository: Repository<Item>,
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    private readonly userHelper: UserHelper,
     private dataSource: DataSource
   ) {
     super();
@@ -30,6 +30,13 @@ export class ItemHelper extends BaseService {
     );
   }
   
+  /**
+   * Transfers an item from one user to another.
+   * @param fromUserId - The ID of the user giving the item.
+   * @param toUserId - The ID of the user receiving the item.
+   * @param itemId - The ID of the item being transferred.
+   * @returns Boolean indicating whether the transfer was successful.
+   */
   /**
    * Transfers an item from one user to another.
    * @param fromUserId - The ID of the user giving the item.
@@ -94,10 +101,7 @@ export class ItemHelper extends BaseService {
    */
   async getUserWithItems(userId: number): Promise<User> {
     return this.executeWithErrorHandling(
-      () => this.usersRepository.findOne({
-        where: { id: userId },
-        relations: { items: true },
-      }),
+      () => this.userHelper.getUserWithItems(userId),
       'Error retrieving user with items'
     );
   }

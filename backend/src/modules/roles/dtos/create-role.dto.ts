@@ -1,8 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsEnum } from 'class-validator';
+import { RoleType } from '../../../entities/role.entity';
 
 export class CreateRoleDto {
-  @ApiProperty({ description: 'The name of the role', example: 'Admin' })
-  @IsString({ message: 'Role name has to be a string' })
-  name: string;
+  @ApiProperty({ 
+    description: 'The name of the role', 
+    example: 'Admin',
+    enum: RoleType,
+    enumName: 'RoleType'
+  })
+  @IsEnum(RoleType, { message: 'Role name has to be a valid role type' })
+  name: RoleType;
 }

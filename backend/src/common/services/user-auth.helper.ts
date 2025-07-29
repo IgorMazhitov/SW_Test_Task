@@ -12,6 +12,7 @@ import { CreateUserDto } from '../../modules/users/dtos/create-user.dto';
 import * as crypt from 'bcryptjs';
 import { CryptUserDto } from '../dtos/cryptUser.dto';
 import { BaseService } from '../abstracts/base-service.abstract';
+import { UserHelper } from './user.helper';
 
 /**
  * Helper service responsible for user authentication operations.
@@ -24,6 +25,7 @@ export class UserAuthHelper extends BaseService {
     private readonly usersRepository: Repository<User>,
     @InjectRepository(Role)
     private readonly rolesRepository: Repository<Role>,
+    private readonly userHelper: UserHelper,
   ) {
     super();
   }
@@ -35,12 +37,17 @@ export class UserAuthHelper extends BaseService {
    */
   async validateUser(userDto: CreateUserDto): Promise<User> {
     return await this.executeWithErrorHandling(async () => {
-      const user = await this.usersRepository.findOne({
-        where: { email: userDto.email },
-        relations: { role: true },
-      });
+      let user: User;
+      
+      try {
+        user = await this.userHelper.getUserByEmail(userDto.email, ['role']);
+      } catch (error) {
+        throw new UnauthorizedException({
+          message: 'Incorrect Email or Password',
+        });
+      }
 
-      if (!user || !userDto) {
+      if (!userDto) {
         throw new UnauthorizedException({
           message: 'Incorrect Email or Password',
         });
@@ -67,15 +74,19 @@ export class UserAuthHelper extends BaseService {
    */
   async createUser(userDto: CreateUserDto): Promise<User> {
     return await this.executeWithErrorHandling(async () => {
-      const candidate = await this.usersRepository.findOneBy({
-        email: userDto.email,
-      });
-
-      if (candidate) {
+      try {
+        // This will throw an error if user doesn't exist
+        await this.userHelper.getUserByEmail(userDto.email);
+        // If we reach here, user exists
         throw new HttpException(
           'User with this email already exists',
           HttpStatus.BAD_REQUEST,
         );
+      } catch (error) {
+        // Only continue if the error was "user not found"
+        if (error.message && !error.message.includes('not found')) {
+          throw error;
+        }
       }
 
       const hashPassword = await crypt.hash(userDto.password, 5);
@@ -99,16 +110,7 @@ export class UserAuthHelper extends BaseService {
    */
   async getUserById(userId: number): Promise<User> {
     return await this.executeWithErrorHandling(async () => {
-      const user = await this.usersRepository.findOne({
-        where: { id: userId },
-        relations: { role: true },
-      });
-
-      if (!user) {
-        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-      }
-
-      return user;
+      return await this.userHelper.getUserWithRole(userId);
     }, 'Error retrieving user');
   }
 
