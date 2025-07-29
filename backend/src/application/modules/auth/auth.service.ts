@@ -73,17 +73,17 @@ export class AuthService extends BaseService {
 
       const userNow = await this.userAuthHelper.getUserById(userVerified.id);
 
-      const userPublic = this.userAuthHelper.createPublicUserDto(userNow);
+      const userpublic = this.userAuthHelper.createPublicUserDto(userNow);
 
       const { accessToken, refreshToken: newRefreshToken } =
-        await this.tokenHelper.generateTokens(userPublic);
+        await this.tokenHelper.generateTokens(userpublic);
 
       await this.tokenHelper.saveToken(userNow.id, newRefreshToken);
 
       return {
         accessToken,
         refreshToken: newRefreshToken,
-        userPublic,
+        userpublic,
       };
     }, 'Error during token refresh');
   }
