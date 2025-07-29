@@ -9,12 +9,12 @@ export class AuthResponseDto {
    * JWT access token
    */
   accessToken: string;
-  
+
   /**
    * JWT refresh token
    */
   refreshToken: string;
-  
+
   /**
    * Public user information (without sensitive data)
    */

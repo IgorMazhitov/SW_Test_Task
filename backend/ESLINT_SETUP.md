@@ -1,52 +1,66 @@
-# ESLint & Git Hooks Setup
+# ESLint Setup Without Scripts
 
-This project uses ESLint to enforce code quality and Git hooks to automatically check code before commits.
+This project uses ESLint to enforce code quality. This setup guide provides options that don't require PowerShell scripts or changing security settings.
 
-## Installation
+## No-Script Approach
 
-All dependencies are already installed in package.json. If for some reason you need to reinstall:
+If you prefer not to enable script execution in PowerShell (which is a reasonable security choice), you can use these alternatives:
 
-```bash
-npm install --save-dev eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin husky lint-staged
-```
+### Option 1: NPM Scripts for Different Modules
 
-## Configuration
-
-The project contains several important files:
-
-- `.eslintrc.js` - ESLint rules configuration
-- `.lintstagedrc` - Defines which files to lint during commit
-- `.husky/pre-commit` - Git hook that runs before each commit
-
-## Setting up Git hooks
-
-On Windows, run as Administrator:
+Run ESLint on specific modules:
 
 ```bash
-setup-hooks.cmd
+# Check auth module
+npm run lint:auth
+
+# Check users module
+npm run lint:users
+
+# Check roles module
+npm run lint:roles
+
+# Check messages module
+npm run lint:messages
+
+# Check actions module
+npm run lint:actions
+
+# Check audit module
+npm run lint:audit
 ```
 
-This will configure Git to use the hooks in this project.
+### Option 2: Batch Files
 
-## Manual Linting
+We've included simple batch files that don't require PowerShell script execution:
 
-You can manually run the linter with:
+```
+# Check the file you're currently working on
+check-file.bat src/application/modules/auth/auth.service.ts
 
-```bash
-# Check all files
-npm run lint
-
-# Check only staged files
-npm run lint:staged
+# Check all changed files in git
+check-eslint.bat
 ```
 
-## PowerShell Execution Policy
+### Option 3: Manual Process
 
-If you encounter PowerShell execution policy errors, open PowerShell as Administrator and run:
+For a fully manual process:
 
-```powershell
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-```
+1. Run ESLint on all files:
+   ```
+   npm run lint
+   ```
+
+2. See the `MANUAL_ESLINT_PROCESS.md` document for a complete checklist
+
+## ESLint Rules
+
+Our ESLint configuration checks for:
+
+1. **Complexity**: No nested loops, max complexity of 10
+2. **Nesting**: No deeply nested if statements (max depth: 3)
+3. **Magic Numbers**: All numbers should be named constants
+4. **Naming**: Variables must use camelCase
 
 ## Troubleshooting
 

@@ -16,12 +16,12 @@ import { CommonModule } from 'src/application/helpers/common.module';
       global: true,
       secret: process.env.PRIVATE_KEY || 'SECRET',
       signOptions: {
-        expiresIn: '24h'
-      }
+        expiresIn: '24h',
+      },
     }),
     TypeOrmModule.forFeature([User, Role, Token]),
-    CommonModule
+    CommonModule,
   ],
-  exports: [AuthService]
+  exports: [AuthService],
 })
 export class AuthModule {}

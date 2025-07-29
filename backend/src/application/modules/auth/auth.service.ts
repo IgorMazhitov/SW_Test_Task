@@ -71,19 +71,19 @@ export class AuthService extends BaseService {
         throw new Error('Invalid token');
       }
 
-      const usernow = await this.userAuthHelper.getUserById(userVerified.id);
+      const userNow = await this.userAuthHelper.getUserById(userVerified.id);
 
-      const userpublic = this.userAuthHelper.createPublicUserDto(usernow);
+      const userPublic = this.userAuthHelper.createPublicUserDto(userNow);
 
       const { accessToken, refreshToken: newRefreshToken } =
-        await this.tokenHelper.generateTokens(userpublic);
+        await this.tokenHelper.generateTokens(userPublic);
 
-      await this.tokenHelper.saveToken(usernow.id, newRefreshToken);
+      await this.tokenHelper.saveToken(userNow.id, newRefreshToken);
 
       return {
         accessToken,
         refreshToken: newRefreshToken,
-        userPublic: userpublic,
+        userPublic,
       };
     }, 'Error during token refresh');
   }
