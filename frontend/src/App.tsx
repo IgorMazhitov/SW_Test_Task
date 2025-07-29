@@ -1,13 +1,13 @@
 /**
  * Main application component
  */
-import React from 'react';
-import { observer } from 'mobx-react-lite';
-import { ThemeProvider, CssBaseline } from '@mui/material';
-import theme from './theme/theme';
-import { useAuth } from './hooks/useAuth';
-import AuthPage from './pages/authPage';
-import TablesPage from './pages/tablesPage';
+import React from "react";
+import { observer } from "mobx-react-lite";
+import { ThemeProvider, CssBaseline } from "@mui/material";
+import theme from "./theme/theme";
+import { useAuth } from "./hooks/useAuth";
+import AuthPage from "./atomic/pages/authPage";
+import TablesPage from "./atomic/pages/tablesPage";
 
 /**
  * App component - root of the application
@@ -15,18 +15,20 @@ import TablesPage from './pages/tablesPage';
  */
 const App: React.FC = () => {
   const { isAuthenticated, loading } = useAuth();
-  
+
   // Show loading state if checking authentication
   if (loading) {
     return (
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          alignItems: 'center', 
-          height: '100vh' 
-        }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+          }}
+        >
           Loading...
         </div>
       </ThemeProvider>

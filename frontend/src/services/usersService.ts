@@ -1,7 +1,11 @@
 import $api from "../api";
-import { IRole } from "../interfaces/IRole.interface";
-import { IUser } from "../interfaces/IUser.interface";
-import { ChangeUserDto, GetAllUsersResponse, GetUsersDto, UserCreationDto } from "../interfaces/api-interfaces/UsersApi.interface";
+import {
+  GetAllUsersResponse,
+  GetUsersDto,
+  UserCreationDto,
+} from "../types/api-interfaces/UsersApi.interface";
+import { IRole } from "../types/role.types";
+import { IUser, IUserUpdateRequest } from "../types/user.types";
 
 export default class UsersService {
   static async fetchUsers(request: GetUsersDto): Promise<GetAllUsersResponse> {
@@ -45,7 +49,7 @@ export default class UsersService {
     }
   }
 
-  static async updateUser(request: ChangeUserDto): Promise<IUser> {
+  static async updateUser(request: IUserUpdateRequest): Promise<IUser> {
     try {
       const { data } = await $api.patch<IUser>("/users/change", request);
       return data;

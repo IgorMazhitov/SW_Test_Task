@@ -1,16 +1,16 @@
 import { AxiosResponse } from "axios";
 import $api from "../api";
-import { ActionType, IAction } from "../interfaces/IAction.interface";
-import { IUser } from "../interfaces/IUser.interface";
+import { ActionType, IAction } from "../types/action.types";
+import { IUser } from "../types/user.types";
 import {
   ActionRequest,
   ApproveActionRequest,
   DeclineActionRequest,
   FetchActionsRequest,
   FetchActionsResponse,
-} from "../interfaces/api-interfaces/ActionsApi.interface";
-import { IItem } from "../interfaces/IItem.interface";
-import { GiveItemToUserFromAdminDto } from "../interfaces/api-interfaces/ItemsApi.interface";
+} from "../types/api-interfaces/ActionsApi.interface";
+import { IItem } from "../types/item.types";
+import { GiveItemToUserFromAdminDto } from "../types/api-interfaces/ItemsApi.interface";
 
 export default class ActionsService {
   static async fetchActions(

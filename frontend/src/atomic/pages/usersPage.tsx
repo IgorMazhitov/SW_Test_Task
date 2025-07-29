@@ -1,12 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Context } from "..";
-import UsersService from "../services/usersService";
-import { DashboardTemplate } from "../atomic/templates";
-import { UserCreationForm, RolesCreationForm, ActionRequestForm } from "../atomic/molecules/forms";
-import { UserEditModal } from "../atomic/molecules/modals/user";
-import { UserMessagesModal } from "../atomic/molecules/modals/message";
-import { GiveItemModal } from "../atomic/molecules/modals/item";
-import { UsersTable as UsersTableComponent } from "../atomic/organisms/tables";
+import React, { useContext, useState, useEffect } from "react";
+import UsersService from "../../services/usersService";
+import { DashboardTemplate } from "../../atomic/templates";
+import { UserCreationForm, RolesCreationForm } from "../../atomic/molecules/forms";
+import { UserEditModal } from "../../atomic/molecules/modals/user";
+import { UserMessagesModal } from "../../atomic/molecules/modals/message";
+import { GiveItemModal } from "../../atomic/molecules/modals/item";
+import { UsersTable as UsersTableComponent } from "../../atomic/organisms/tables";
 import {
   Box,
   FormControl,
@@ -17,27 +16,25 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import { ChangeUserDto, GetUsersDto, UserCreationDto } from "../interfaces/api-interfaces/UsersApi.interface";
-import { IUser, IUserUpdateRequest } from "../types/user.types";
-import { IRole } from "../types/role.types";
+import { GetUsersDto, UserCreationDto } from "../../types/api-interfaces/UsersApi.interface";
+import { IUserUpdateRequest } from "../../types/user.types";
+import { IUser } from "../../types/user.types";
+import { IRole } from "../../types/role.types";
+import { Context } from "../..";
 
-const UsersTable = () => {
-  /* <---------------------------------------------- STORE ----------------------------------------------> */
+const UsersPage = () => {
   const { store } = useContext(Context);
-  /* <---------------------------------------------- MODALS ---------------------------------------------> */
   const [showMessagesModal, setShowMessagesModal] = useState<boolean>(false);
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
   const [showGiveItemModal, setShowGiveItemModal] = useState<boolean>(false);
-  /* <---------------------------------------------- ENTITIES -------------------------------------------> */
   const [users, setUsers] = useState<IUser[]>([]);
   const [roles, setRoles] = useState<IRole[]>([]);
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
-  /* <------------------------------------------- PAGINATION --------------------------------------------> */
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [limit, setLimit] = useState<number>(10);
   const [role, setRole] = useState<number>(2);
-  const limitOptions = [10, 20, 30, 40, 50]
+  const limitOptions = [10, 20, 30, 40, 50];
 
   const fetchRoles = async () => {
     try {
@@ -91,19 +88,10 @@ const UsersTable = () => {
     setShowMessagesModal(true);
   };
 
-  const handleSaveEdit = async (userToUpdate: ChangeUserDto) => {
+  const handleSaveEdit = async (userToUpdate: IUserUpdateRequest) => {
     try {
-      const request: ChangeUserDto = {
-        id: userToUpdate.id,
-        userName: userToUpdate.userName,
-        email: userToUpdate.email,
-        password: userToUpdate.password,
-        roleId: userToUpdate.roleId,
-      };
-
-      await UsersService.updateUser(request);
+      await UsersService.updateUser(userToUpdate);
       await fetchUsers();
-
       setShowEditModal(false);
     } catch (error) {
       console.log(error);
@@ -115,9 +103,7 @@ const UsersTable = () => {
       <Grid container spacing={4}>
         <Grid item xs={12}>
           {store.user.role.name === "Admin" && (
-            <UserCreationForm 
-              onSubmit={handleSubmitUserCreation}
-            />
+            <UserCreationForm onSubmit={handleSubmitUserCreation} />
           )}
         </Grid>
         <Grid item xs={12}>
@@ -131,9 +117,7 @@ const UsersTable = () => {
                 value={limit}
                 size="small"
                 label="Rows"
-                onChange={(e: any) =>
-                  setLimit(Number(e.target.value))
-                }
+                onChange={(e: any) => setLimit(Number(e.target.value))}
               >
                 {limitOptions.map((option) => (
                   <MenuItem key={option} value={option}>
@@ -161,15 +145,7 @@ const UsersTable = () => {
               </Select>
             </FormControl>
           </Grid>
-          <Grid
-            item
-            xs={4}
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
+          <Grid item xs={4} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
             <Pagination
               count={totalPages === 0 ? 1 : totalPages}
               page={page}
@@ -178,43 +154,21 @@ const UsersTable = () => {
           </Grid>
           {users.length !== 0 && (
             <>
-              <Grid item xs={12} style={{
-                maxHeight: "70vh",
-              }}>
+              <Grid item xs={12} style={{ maxHeight: "70vh" }}>
                 <UsersTableComponent
                   users={users}
-                  onClickEdit={handleOpenEditModalClick}
-                  onClickMessage={handleOpenMessagesModalClick}
-                  onClickItem={handleOpenItemModalClick}
+                  onEdit={handleOpenEditModalClick}
+                  onMessage={handleOpenMessagesModalClick}
+                  onItem={handleOpenItemModalClick}
                 />
               </Grid>
             </>
           )}
           {users.length === 0 && (
             <Box sx={{ flexGrow: 1 }}>
-              <Grid
-                container
-                spacing={4}
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Grid
-                  xs={12}
-                  item
-                  sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Typography variant="h2">
-                    No users found
-                  </Typography>
+              <Grid container spacing={4} sx={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+                <Grid xs={12} item sx={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+                  <Typography variant="h2">No users found</Typography>
                 </Grid>
               </Grid>
             </Box>
@@ -224,27 +178,20 @@ const UsersTable = () => {
       {showEditModal && (
         <UserEditModal
           user={selectedUser!}
+          open={showEditModal}
           onClose={() => setShowEditModal(false)}
           roles={roles}
           onSave={handleSaveEdit}
         />
       )}
       {showMessagesModal && (
-        <UserMessagesModal
-          user={selectedUser!}
-          open={showMessagesModal}
-          onClose={() => setShowMessagesModal(false)}
-        />
+        <UserMessagesModal user={selectedUser!} open={showMessagesModal} onClose={() => setShowMessagesModal(false)} />
       )}
       {showGiveItemModal && (
-        <GiveItemModal
-          userReceiving={selectedUser!}
-          open={showGiveItemModal}
-          onClose={() => setShowGiveItemModal(false)}
-        />
+        <GiveItemModal userReceiving={selectedUser!} open={showGiveItemModal} onClose={() => setShowGiveItemModal(false)} />
       )}
     </DashboardTemplate>
   );
 };
 
-export default UsersTable;
+export default UsersPage;
