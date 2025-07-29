@@ -67,7 +67,6 @@ export class UserAuthHelper extends BaseService {
    */
   async createUser(userDto: CreateUserDto): Promise<User> {
     return await this.executeWithErrorHandling(async () => {
-      // Check if user already exists
       const candidate = await this.usersRepository.findOneBy({
         email: userDto.email,
       });
@@ -79,15 +78,12 @@ export class UserAuthHelper extends BaseService {
         );
       }
 
-      // Hash the password
       const hashPassword = await crypt.hash(userDto.password, 5);
 
-      // Find the role
       const role = await this.rolesRepository.findOne({
         where: { id: userDto.roleId },
       });
 
-      // Save the user
       return await this.usersRepository.save({
         ...userDto,
         password: hashPassword,

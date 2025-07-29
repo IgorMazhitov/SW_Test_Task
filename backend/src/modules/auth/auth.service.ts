@@ -26,19 +26,14 @@ export class AuthService extends BaseService {
   async logIn(userDto: CreateUserDto): Promise<AuthResponseDto> {
     return await this.executeWithErrorHandling(
       async () => {
-        // Validate user credentials
         const user = await this.userAuthHelper.validateUser(userDto);
         
-        // Create sanitized user object
         const userPublic = this.userAuthHelper.createPublicUserDto(user);
         
-        // Generate tokens
         const { accessToken, refreshToken } = await this.tokenHelper.generateTokens(userPublic);
         
-        // Save refresh token
         await this.tokenHelper.saveToken(user.id, refreshToken);
         
-        // Return response
         return {
           accessToken,
           refreshToken,
@@ -71,32 +66,25 @@ export class AuthService extends BaseService {
   async refresh(refreshToken: string): Promise<AuthResponseDto> {
     return await this.executeWithErrorHandling(
       async () => {
-        // Check if token exists in database
         const token = await this.tokenHelper.findToken(refreshToken);
         if (!token) {
           throw new Error('Token not found');
         }
         
-        // Validate the token and get user data
         const userVerified = await this.tokenHelper.validateRefreshToken(refreshToken);
         if (!userVerified) {
           throw new Error('Invalid token');
         }
         
-        // Get the current user data with role
         const userNow = await this.userAuthHelper.getUserById(userVerified.id);
         
-        // Create sanitized user object
         const userPublic = this.userAuthHelper.createPublicUserDto(userNow);
         
-        // Generate new tokens
         const { accessToken, refreshToken: newRefreshToken } = 
           await this.tokenHelper.generateTokens(userPublic);
         
-        // Save the new refresh token
         await this.tokenHelper.saveToken(userNow.id, newRefreshToken);
         
-        // Return the new tokens and user info
         return {
           accessToken,
           refreshToken: newRefreshToken,
@@ -115,19 +103,14 @@ export class AuthService extends BaseService {
   async signUp(userDto: CreateUserDto): Promise<AuthResponseDto> {
     return await this.executeWithErrorHandling(
       async () => {
-        // Create the user
         const user = await this.userAuthHelper.createUser(userDto);
         
-        // Create sanitized user object
         const userPublic = this.userAuthHelper.createPublicUserDto(user);
         
-        // Generate tokens
         const { accessToken, refreshToken } = await this.tokenHelper.generateTokens(userPublic);
         
-        // Save refresh token
         await this.tokenHelper.saveToken(user.id, refreshToken);
         
-        // Return response
         return {
           accessToken,
           refreshToken,
