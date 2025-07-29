@@ -1,21 +1,23 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { UsersModule } from './modules/users/users.module';
-import { User } from './entities/user.entity';
-import { RolesModule } from './modules/roles/roles.module';
-import { Role } from './entities/role.entity';
-import { AuthModule } from './modules/auth/auth.module';
-import { ActionsModule } from './modules/actions/actions.module';
-import { Action } from './entities/action.entity';
-import { Item } from './entities/item.entity';
-import { InitialRoles1712854276047 } from './migrations/1712854276047-initialRoles';
-import { AuditLog } from './entities/auditLog.entity';
-import { AuditModule } from './modules/audit/audit.module';
-import { MessagesModule } from './modules/messages/messages.module';
-import { Message } from './entities/message.entity';
-import { Token } from './entities/token.entity';
-import { CommonModule } from './common/common.module';
+
+// Import entities
+import { User } from './domain/entities/user.entity';
+import { Role } from './domain/entities/role.entity';
+import { Item } from './domain/entities/item.entity';
+import { Token } from './domain/entities/token.entity';
+import { AuditLog } from './domain/entities/auditLog.entity';
+
+// Import modules
+import { UsersModule } from './application/modules/users/users.module';
+import { RolesModule } from './application/modules/roles/roles.module';
+import { MessagesModule } from './application/modules/messages/messages.module';
+import { AuthModule } from './application/modules/auth/auth.module';
+import { Message } from './domain/entities/message.entity';
+import { Action } from './domain/entities/action.entity';
+import { ActionsModule } from './application/modules/actions/actions.module';
+import { AuditModule } from './application/modules/audit/audit.module';
 
 @Module({
   imports: [
@@ -29,20 +31,15 @@ import { CommonModule } from './common/common.module';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [User, Role, Action, Item, AuditLog, Message, Token],
+      entities: [User, Role, Message, Item, Action, Token, AuditLog],
       synchronize: true,
-      autoLoadEntities: true,
-      migrations: [InitialRoles1712854276047],
     }),
-    CommonModule,
     UsersModule,
     RolesModule,
-    AuthModule,
+    MessagesModule,
     ActionsModule,
     AuditModule,
-    MessagesModule,
+    AuthModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}

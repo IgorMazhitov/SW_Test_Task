@@ -1,73 +1,58 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Backend Project Structure
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This project follows a domain-driven design approach with a clean architecture pattern. The structure is organized to promote separation of concerns, maintainability, and scalability.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Directory Structure
 
-## Description
+### /src
+The root source directory of the application.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+#### /domain
+Contains all domain-related code representing business entities and rules.
 
-## Installation
+- **/entities**: Database entity models (User, Role, Item, etc.)
+- **/interfaces**: Core business interfaces and types
 
-```bash
-$ npm install
-```
+#### /application
+Contains application-specific logic and features.
 
-## Running the app
+- **/modules**: Feature modules (Users, Roles, Messages, etc.)
+  - Each module has its own folder with controller, service, DTOs, and interfaces
+- **/helpers**: Helper services used across modules
+- **/abstracts**: Abstract classes and base implementations
+- **/dtos**: Common DTOs used across modules
 
-```bash
-# development
-$ npm run start
+#### /infrastructure
+Contains implementation details related to external systems.
 
-# watch mode
-$ npm run start:dev
+- **/database**: Database-specific code
+  - **/migrations**: Database migrations
 
-# production mode
-$ npm run start:prod
-```
+#### /shared
+Contains shared utilities, middleware, and cross-cutting concerns.
 
-## Test
+- **/guards**: Authentication and authorization guards
+- **/interceptors**: Request/response interceptors
+- **/pipes**: Data transformation pipes
+- **/decorators**: Custom decorators
 
-```bash
-# unit tests
-$ npm run test
+## Best Practices
 
-# e2e tests
-$ npm run test:e2e
+1. **Single Responsibility**: Each file should have a single responsibility
+2. **Domain-Driven Design**: Business logic should be in the domain layer
+3. **Feature Modularity**: Features are organized into modules
+4. **Clean Architecture**: Dependencies should point inward (domain ← application ← infrastructure)
+5. **Dependency Injection**: Use NestJS DI to manage dependencies
 
-# test coverage
-$ npm run test:cov
-```
+## Import Guidelines
 
-## Support
+- Import from most specific to least specific paths
+- Use barrel files (index.ts) to simplify imports
+- Avoid circular dependencies
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Naming Conventions
 
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+- **Files**: kebab-case.type.ts (e.g., user.entity.ts, auth.controller.ts)
+- **Classes**: PascalCase (e.g., UserService, AuthGuard)
+- **Interfaces**: Prefixed with "I" (e.g., IUserResponse)
+- **Enums**: PascalCase (e.g., UserRole, ActionType)
