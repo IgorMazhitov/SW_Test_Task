@@ -1,5 +1,9 @@
 import { IsEmail, IsNumber, IsString, Length } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import {
+  MAX_PASSWORD_LENGTH,
+  MIN_PASSORD_LENGTH,
+} from '../constants/constants';
 
 export class ChangeUserDto {
   @ApiProperty({
@@ -29,7 +33,7 @@ export class ChangeUserDto {
     example: 'password123',
   })
   @IsString({ message: 'User password has to be a string' })
-  @Length(4, 16, {
+  @Length(MIN_PASSORD_LENGTH, MAX_PASSWORD_LENGTH, {
     message: 'User password should be more than 4 digits and less than 16',
   })
   readonly password: string;

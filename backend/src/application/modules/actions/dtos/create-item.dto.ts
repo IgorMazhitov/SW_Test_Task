@@ -6,7 +6,10 @@ export class CreateItemDto {
   @IsString({ message: 'Item name should be string' })
   readonly name: string;
 
-  @ApiProperty({ description: 'The description of the item', example: 'A description of Product A' })
+  @ApiProperty({
+    description: 'The description of the item',
+    example: 'A description of Product A',
+  })
   @IsString({ message: 'Item description should be string' })
   readonly description: string;
 }
@@ -20,12 +23,20 @@ export class GiveItemDto {
   @IsNumber({}, { message: 'Item id should be number' })
   readonly itemId: number;
 
-  @ApiProperty({ description: 'The ID of the user receiving the item', example: 1, required: false })
+  @ApiProperty({
+    description: 'The ID of the user receiving the item',
+    example: 1,
+    required: false,
+  })
   @IsOptional()
   @IsNumber({}, { message: 'User id should be number' })
   readonly userId?: number;
 
-  @ApiProperty({ description: 'The email of the user receiving the item', example: 'user@example.com', required: false })
+  @ApiProperty({
+    description: 'The email of the user receiving the item',
+    example: 'user@example.com',
+    required: false,
+  })
   @IsOptional()
   @IsEmail({}, { message: 'User email should be a valid email' })
   readonly userEmail?: string;

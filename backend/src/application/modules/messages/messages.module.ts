@@ -9,10 +9,7 @@ import { CommonModule } from '../../helpers/common.module';
 @Module({
   providers: [MessagesService],
   controllers: [MessagesController],
-  imports: [
-    TypeOrmModule.forFeature([User, Message]),
-    CommonModule
-  ],
+  imports: [TypeOrmModule.forFeature([User, Message]), CommonModule],
   exports: [MessagesService],
 })
 export class MessagesModule {}

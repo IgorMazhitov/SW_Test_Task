@@ -1,7 +1,12 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { RolesGuard } from 'src/shared/guards/roles.guard';
 import { Roles } from 'src/shared/decorators/roles-auth.decorator';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { SendMessageDto } from './dtos/send-message.dto';
 import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard';
 import { GetMessagesBetweenDto } from './dtos/get-messages.dto';
@@ -29,13 +34,15 @@ export class MessagesController {
         content: 'Hello, how are you?',
         sender: { id: 1 },
         receiver: { id: 2 },
-        timestamp: new Date()
-      }
-    }
+        timestamp: new Date(),
+      },
+    },
   })
   @ApiBearerAuth()
   @Post('send')
-  async sendMessageFromAdmin(@Body() request: SendMessageDto): Promise<IMessageResponse> {
+  async sendMessageFromAdmin(
+    @Body() request: SendMessageDto,
+  ): Promise<IMessageResponse> {
     return await this.messageService.sendMessageFromAdmin(request);
   }
 
@@ -55,17 +62,17 @@ export class MessagesController {
           content: 'Hello, how are you?',
           sender: { id: 1 },
           receiver: { id: 2 },
-          timestamp: new Date()
+          timestamp: new Date(),
         },
         {
           id: 2,
           content: 'I am good, thanks!',
           sender: { id: 2 },
           receiver: { id: 1 },
-          timestamp: new Date()
-        }
-      ]
-    }
+          timestamp: new Date(),
+        },
+      ],
+    },
   })
   @ApiBearerAuth()
   @Get()

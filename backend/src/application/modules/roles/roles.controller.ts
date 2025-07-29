@@ -6,13 +6,21 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CreateRoleDto } from './dtos/create-role.dto';
 import { RolesGuard } from 'src/shared/guards/roles.guard';
 import { Roles } from 'src/shared/decorators/roles-auth.decorator';
 import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard';
 import { LoggerInterceptor } from 'src/shared/interceptors/logger.interceptor';
-import { IRoleResponse, IRolesListResponse } from '../../../domain/interfaces/role-response.interface';
+import {
+  IRoleResponse,
+  IRolesListResponse,
+} from '../../../domain/interfaces/role-response.interface';
 import { RolesService } from './roles.service';
 import { RoleType } from 'src/domain/entities/role.entity';
 
@@ -39,9 +47,9 @@ export class RolesController {
       example: {
         id: 1,
         name: RoleType.ADMIN,
-        created_at: new Date()
-      }
-    }
+        createdAt: new Date(),
+      },
+    },
   })
   async createRole(@Body() roleDto: CreateRoleDto): Promise<IRoleResponse> {
     return await this.rolesService.createRole(roleDto);
@@ -65,16 +73,16 @@ export class RolesController {
           {
             id: 1,
             name: RoleType.ADMIN,
-            created_at: new Date()
+            createdAt: new Date(),
           },
           {
             id: 2,
             name: RoleType.USER,
-            created_at: new Date()
-          }
-        ]
-      }
-    }
+            createdAt: new Date(),
+          },
+        ],
+      },
+    },
   })
   async getAllRoles(): Promise<IRolesListResponse> {
     return await this.rolesService.getAllRoles();

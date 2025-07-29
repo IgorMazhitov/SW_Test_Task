@@ -9,10 +9,7 @@ import { AuditLog } from 'src/domain/entities/auditLog.entity';
 import { RolesService } from './roles.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Role, User, AuditLog]),
-    CommonModule
-  ],
+  imports: [TypeOrmModule.forFeature([Role, User, AuditLog]), CommonModule],
   controllers: [RolesController],
   providers: [RolesService, AuditService],
   exports: [RolesService],

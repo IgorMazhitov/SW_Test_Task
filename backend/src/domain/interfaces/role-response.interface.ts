@@ -6,7 +6,7 @@ import { RoleType } from '../entities/role.entity';
 export interface IRoleResponse {
   id: number;
   name: RoleType;
-  created_at: Date;
+  createdAt: Date;
 }
 
 /**

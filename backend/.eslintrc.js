@@ -23,14 +23,14 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     
     // Complexity rules
-    'complexity': ['error', { 'max': 10 }], // Limits cyclomatic complexity
-    'max-depth': ['error', { 'max': 3 }], // Prevents deeply nested blocks (including loops and ifs)
-    'max-nested-callbacks': ['error', { 'max': 3 }], // Prevents deeply nested callbacks
+    'complexity': ['error', { 'max': 10 }], 
+    'max-depth': ['error', { 'max': 3 }], 
+    'max-nested-callbacks': ['error', { 'max': 3 }], 
     'max-statements-per-line': ['error', { 'max': 1 }],
     
     // No magic numbers
     'no-magic-numbers': ['error', { 
-      'ignore': [-1, 0, 1], // Common values that aren't "magic"
+      'ignore': [-1, 0, 1], 
       'ignoreArrayIndexes': true,
       'enforceConst': true,
       'detectObjects': false

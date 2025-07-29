@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateItemDto, GiveItemDto } from './dtos/create-item.dto';
 import { Item } from '../../entities/item.entity';
-import { 
+import {
   ActionRequestDto,
   ApproveActionDto,
   GetAllActionsDto,
@@ -21,7 +21,7 @@ export class ActionsService {
   constructor(
     private readonly itemHelper: ItemHelper,
     private readonly actionHelper: ActionHelper,
-    private readonly actionHandlerService: ActionHandlerService
+    private readonly actionHandlerService: ActionHandlerService,
   ) {}
 
   /**
@@ -96,11 +96,11 @@ export class ActionsService {
    */
   async getAllItems(userId: number): Promise<Item[]> {
     const user = await this.actionHelper.getUserById(userId);
-    
+
     if (user.role && user.role.name === RoleType.ADMIN) {
       return await this.itemHelper.getItemsForAdmin();
     }
-    
+
     return await this.itemHelper.getItemsForUser(userId);
   }
 

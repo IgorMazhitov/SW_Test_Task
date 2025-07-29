@@ -24,7 +24,7 @@ export class RolesService extends BaseService {
       return {
         id: role.id,
         name: role.name,
-        created_at: role.created_at,
+        createdAt: role.createdAt,
       };
     }, 'Error creating role');
   }
@@ -40,7 +40,7 @@ export class RolesService extends BaseService {
         roles: roles.map((role) => ({
           id: role.id,
           name: role.name,
-          created_at: role.created_at,
+          createdAt: role.createdAt,
         })),
       };
     }, 'Error retrieving all roles');
