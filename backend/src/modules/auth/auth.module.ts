@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { Role } from 'src/entities/role.entity';
 import { Token } from 'src/entities/token.entity';
+import { CommonModule } from 'src/common/common.module';
 
 @Module({
   controllers: [AuthController],
@@ -18,7 +19,8 @@ import { Token } from 'src/entities/token.entity';
         expiresIn: '24h'
       }
     }),
-    TypeOrmModule.forFeature([User, Role, Token])
+    TypeOrmModule.forFeature([User, Role, Token]),
+    CommonModule
   ],
   exports: [AuthService]
 })

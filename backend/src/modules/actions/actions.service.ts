@@ -86,7 +86,6 @@ export class ActionsService {
    */
   async giveItemAdmin(dto: GiveItemDto): Promise<void> {
     const { adminId, userId, itemId } = dto;
-    // Verify admin status is handled inside the service
     await this.itemHelper.giveItemToUser(adminId, userId, itemId);
   }
 
@@ -96,10 +95,8 @@ export class ActionsService {
    * @returns Array of items the user has access to.
    */
   async getAllItems(userId: number): Promise<Item[]> {
-    // Get the user
     const user = await this.actionHelper.getUserById(userId);
     
-    // Check role and return appropriate items
     if (user.role && user.role.name === RoleType.ADMIN) {
       return await this.itemHelper.getItemsForAdmin();
     }

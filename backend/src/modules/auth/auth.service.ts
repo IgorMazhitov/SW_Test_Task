@@ -1,281 +1,142 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from 'src/modules/users/dtos/create-user.dto';
-import * as crypt from 'bcryptjs';
-import { User } from 'src/entities/user.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Role } from 'src/entities/role.entity';
-import { Token } from 'src/entities/token.entity';
-import { CryptUserDto } from 'src/common/dtos/cryptUser.dto';
+import { TokenHelper } from 'src/common/services/token.helper';
+import { UserAuthHelper } from 'src/common/services/user-auth.helper';
+import { BaseService } from 'src/common/abstracts/base-service.abstract';
+import { AuthResponseDto } from 'src/modules/auth/dtos/auth-response.dto';
 
+/**
+ * Service responsible for authentication-related operations.
+ * Acts as a facade for user authentication workflows.
+ */
 @Injectable()
-export class AuthService {
+export class AuthService extends BaseService {
   constructor(
-    private jwtService: JwtService,
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
-    @InjectRepository(Role)
-    private rolesRepository: Repository<Role>,
-    @InjectRepository(Token)
-    private tokenRepository: Repository<Token>,
-  ) {}
+    private readonly tokenHelper: TokenHelper,
+    private readonly userAuthHelper: UserAuthHelper,
+  ) {
+    super();
+  }
 
-  async logIn(userDto: CreateUserDto) {
-    const user = await this.validateUser(userDto);
-    if (!user) {
-      throw new UnauthorizedException({
-        message: 'Incorrect Email or Password',
-      });
-    }
-    const isPasswordEquals = await crypt.compare(
-      userDto.password,
-      user.password,
+  /**
+   * Authenticates a user with email and password
+   * @param userDto - User credentials
+   * @returns Authentication response containing tokens and user info
+   */
+  async logIn(userDto: CreateUserDto): Promise<AuthResponseDto> {
+    return await this.executeWithErrorHandling(
+      async () => {
+        // Validate user credentials
+        const user = await this.userAuthHelper.validateUser(userDto);
+        
+        // Create sanitized user object
+        const userPublic = this.userAuthHelper.createPublicUserDto(user);
+        
+        // Generate tokens
+        const { accessToken, refreshToken } = await this.tokenHelper.generateTokens(userPublic);
+        
+        // Save refresh token
+        await this.tokenHelper.saveToken(user.id, refreshToken);
+        
+        // Return response
+        return {
+          accessToken,
+          refreshToken,
+          userPublic,
+        };
+      },
+      'Authentication failed',
     );
-    if (!isPasswordEquals) {
-      throw new UnauthorizedException({
-        message: 'Incorrect Email or Password',
-      });
-    }
-    const userPublic: CryptUserDto = {
-      email: user.email,
-      id: user.id,
-      userName: user.userName,
-      role: user.role,
-    };
-    const { accessToken, refreshToken } = await this.generateTokens(userPublic);
-    await this.saveToken(user.id, refreshToken);
-    return {
-      accessToken,
-      refreshToken,
-      userPublic,
-    };
   }
 
+  /**
+   * Logs out a user by removing their refresh token
+   * @param refreshToken - User's refresh token
+   * @returns The removed token entity
+   */
   async logOut(refreshToken: string) {
-    try {
-      const token = await this.removeToken(refreshToken);
-      return token;
-    } catch (error) {
-      throw new HttpException(
-        'Error during logout',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    return await this.executeWithErrorHandling(
+      async () => {
+        return await this.tokenHelper.removeToken(refreshToken);
+      },
+      'Error during logout',
+    );
   }
 
-  async removeToken(refreshToken: string) {
-    try {
-      const token = await this.tokenRepository.findOne({
-        where: {
-          refreshToken,
-        },
-      });
-      if (!token) {
-        throw new UnauthorizedException({
-          message: 'Token not found',
-        });
-      }
-      await this.tokenRepository.remove(token);
-      return token;
-    } catch (error) {
-      throw new HttpException(
-        'Error during token removal',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
-  async refresh(refreshToken: string) {
-    try {
-      const token = await this.tokenRepository.findOne({
-        where: {
-          refreshToken,
-        },
-      });
-      if (!token) {
-        throw new UnauthorizedException({
-          message: 'Token not found',
-        });
-      }
-      const userVerified = await this.validateRefreshToken(refreshToken);
-      const tokenFromDb = await this.findToken(refreshToken);
-
-      if (!userVerified || !tokenFromDb) {
-        throw new UnauthorizedException({
-          message: 'Incorrect token',
-        });
-      }
-      const userNow = await this.usersRepository.findOne({
-        where: {
-          id: userVerified.id,
-        },
-        relations: {
-          role: true,
+  /**
+   * Refreshes the user's authentication tokens
+   * @param refreshToken - Current refresh token
+   * @returns New authentication response with fresh tokens
+   */
+  async refresh(refreshToken: string): Promise<AuthResponseDto> {
+    return await this.executeWithErrorHandling(
+      async () => {
+        // Check if token exists in database
+        const token = await this.tokenHelper.findToken(refreshToken);
+        if (!token) {
+          throw new Error('Token not found');
         }
-      });
-
-      const userPublic: CryptUserDto = {
-        email: userNow.email,
-        id: userNow.id,
-        userName: userNow.userName,
-        role: userNow.role,
-      };
-
-      const { accessToken, refreshToken: newRefreshToken } =
-        await this.generateTokens(userPublic);
-
-      await this.saveToken(userNow.id, newRefreshToken);
-      return {
-        accessToken,
-        refreshToken: newRefreshToken,
-        userPublic,
-      };
-    } catch (error) {
-      console.log(error)
-      throw new HttpException(
-        'Error during token refresh',
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
-  }
-
-  private async findToken(token: string) {
-    try {
-      const tokenData = await this.tokenRepository.findOne({
-        where: {
-          refreshToken: token,
-        },
-      });
-      return tokenData;
-    } catch (error) {
-      throw new HttpException(
-        'Error during token search',
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
-  }
-
-  private async validateRefreshToken(token: string) {
-    try {
-      const secret = process.env.PRIVATE_REFRESH_KEY;
-      const user = await this.jwtService.verifyAsync(token, {
-        secret,
-      });
-      return user;
-    } catch (error) {
-      console.log(error.message, 'error')
-      throw new HttpException(
-        'Error during token validation',
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
-  }
-
-  private async validateUser(userDto: CreateUserDto) {
-    const user = await this.usersRepository.findOne({
-      where: {
-        email: userDto.email,
+        
+        // Validate the token and get user data
+        const userVerified = await this.tokenHelper.validateRefreshToken(refreshToken);
+        if (!userVerified) {
+          throw new Error('Invalid token');
+        }
+        
+        // Get the current user data with role
+        const userNow = await this.userAuthHelper.getUserById(userVerified.id);
+        
+        // Create sanitized user object
+        const userPublic = this.userAuthHelper.createPublicUserDto(userNow);
+        
+        // Generate new tokens
+        const { accessToken, refreshToken: newRefreshToken } = 
+          await this.tokenHelper.generateTokens(userPublic);
+        
+        // Save the new refresh token
+        await this.tokenHelper.saveToken(userNow.id, newRefreshToken);
+        
+        // Return the new tokens and user info
+        return {
+          accessToken,
+          refreshToken: newRefreshToken,
+          userPublic,
+        };
       },
-      relations: {
-        role: true,
+      'Error during token refresh',
+    );
+  }
+
+  /**
+   * Registers a new user
+   * @param userDto - User registration data
+   * @returns Authentication response with tokens and user info
+   */
+  async signUp(userDto: CreateUserDto): Promise<AuthResponseDto> {
+    return await this.executeWithErrorHandling(
+      async () => {
+        // Create the user
+        const user = await this.userAuthHelper.createUser(userDto);
+        
+        // Create sanitized user object
+        const userPublic = this.userAuthHelper.createPublicUserDto(user);
+        
+        // Generate tokens
+        const { accessToken, refreshToken } = await this.tokenHelper.generateTokens(userPublic);
+        
+        // Save refresh token
+        await this.tokenHelper.saveToken(user.id, refreshToken);
+        
+        // Return response
+        return {
+          accessToken,
+          refreshToken,
+          userPublic,
+        };
       },
-    });
-    if (!user || !userDto) {
-      throw new UnauthorizedException({
-        message: 'Incorrect Email or Password',
-      });
-    }
-    const passwordEquals = await crypt.compare(userDto.password, user.password);
-    if (user && passwordEquals) {
-      return user;
-    }
-    throw new UnauthorizedException({
-      message: 'Incorrect Email or Password',
-    });
+      'Registration failed',
+    );
   }
 
-  async signUp(userDto: CreateUserDto) {
-    const candidate = await this.usersRepository.findOneBy({
-      email: userDto.email,
-    });
-    if (candidate) {
-      throw new HttpException(
-        'User with this email already existing',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    const hashPassword = await crypt.hash(userDto.password, 5);
-    const role = await this.rolesRepository.findOne({
-      where: {
-        id: userDto.roleId,
-      },
-    });
-    const user = await this.usersRepository.save({
-      ...userDto,
-      password: hashPassword,
-      role,
-    });
-    const userPublic: CryptUserDto = {
-      email: user.email,
-      id: user.id,
-      userName: user.userName,
-      role
-    };
-    const { accessToken, refreshToken } = await this.generateTokens(userPublic);
-    await this.saveToken(user.id, refreshToken);
-    return {
-      accessToken,
-      refreshToken,
-      userPublic,
-    };
-  }
 
-  private async generateTokens(user: CryptUserDto) {
-    const payload = {
-      email: user.email,
-      id: user.id,
-      userName: user.userName,
-      role: user.role,
-    };
-
-    const accessToken = this.jwtService.sign(payload, {
-      secret: process.env.PRIVATE_KEY,
-      expiresIn: '30m',
-    });
-
-    const refreshToken = this.jwtService.sign(payload, {
-      secret: process.env.PRIVATE_REFRESH_KEY,
-      expiresIn: '30d',
-    });
-
-    return {
-      accessToken,
-      refreshToken,
-    };
-  }
-
-  private async saveToken(userId: number, refreshToken: string) {
-    const tokenData = await this.tokenRepository.findOne({
-      where: {
-        userId,
-      },
-    });
-
-    if (tokenData) {
-      tokenData.refreshToken = refreshToken;
-      return this.tokenRepository.save(tokenData);
-    }
-
-    const token = await this.tokenRepository.save({
-      refreshToken,
-      userId,
-    });
-    return token;
-  }
 }
