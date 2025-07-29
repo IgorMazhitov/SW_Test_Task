@@ -83,7 +83,7 @@ export class AuthService extends BaseService {
       return {
         accessToken,
         refreshToken: newRefreshToken,
-        userpublic,
+        userPublic: userpublic,
       };
     }, 'Error during token refresh');
   }

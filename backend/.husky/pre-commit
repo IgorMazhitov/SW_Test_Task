@@ -1,5 +1,17 @@
 #!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
+# Windows compatibility - if running in Git Bash
+if [ -f "$(dirname "$0")/_/husky.sh" ]; then
+  . "$(dirname "$0")/_/husky.sh"
+fi
 
-# Run lint-staged to check files being committed
-npx lint-staged
+# Fallback for Windows Command Prompt or PowerShell
+if command -v npx >/dev/null 2>&1; then
+  npx lint-staged
+elif command -v npx.cmd >/dev/null 2>&1; then
+  npx.cmd lint-staged
+elif command -v eslint >/dev/null 2>&1; then
+  eslint "src/**/*.{js,ts}" --fix
+else
+  echo "Could not find linting tools. Please install them with: npm install"
+  exit 1
+fi
