@@ -15,6 +15,7 @@ import { AuditModule } from './modules/audit/audit.module';
 import { MessagesModule } from './modules/messages/messages.module';
 import { Message } from './entities/message.entity';
 import { Token } from './entities/token.entity';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { Token } from './entities/token.entity';
       autoLoadEntities: true,
       migrations: [InitialRoles1712854276047],
     }),
+    CommonModule,
     UsersModule,
     RolesModule,
     AuthModule,

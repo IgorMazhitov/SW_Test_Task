@@ -21,7 +21,6 @@ import {
 } from './dtos/action-request.dto';
 import { ActionType } from '../../entities/action.entity';
 import { LoggerInterceptor } from 'src/interceptors/logger.interceptor';
-import { GetAllItems } from './dtos/get-all-items.dto';
 
 @ApiTags('Actions')
 @Controller('actions')
@@ -37,8 +36,8 @@ export class ActionsController {
     summary: 'Create Item',
     description: 'Endpoint to create a new item.',
   })
-  createItem(@Body() dto: CreateItemDto) {
-    return this.actionsService.createItem(dto);
+  async createItem(@Body() dto: CreateItemDto) {
+    return await this.actionsService.createItem(dto);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -47,11 +46,8 @@ export class ActionsController {
     summary: 'Get All Items',
     description: 'Endpoint to get all items for a user.',
   })
-  getAllItems(@Query('userId') userId: number) {
-    const request: GetAllItems = {
-      userId,
-    };
-    return this.actionsService.getAllItems(request);
+  async getAllItems(@Query('userId') userId: number) {
+    return await this.actionsService.getAllItems(userId);
   }
 
   @UseGuards(RolesGuard)
@@ -61,8 +57,8 @@ export class ActionsController {
     summary: 'Request Action',
     description: 'Endpoint to request a new action.',
   })
-  requestAction(@Body() dto: ActionRequestDto) {
-    return this.actionsService.requestAction(dto);
+  async requestAction(@Body() dto: ActionRequestDto) {
+    return await this.actionsService.requestAction(dto);
   }
 
   @UseGuards(RolesGuard)
@@ -72,8 +68,8 @@ export class ActionsController {
     summary: 'Approve Action',
     description: 'Endpoint to approve an action.',
   })
-  approveAction(@Body() dto: ApproveActionDto) {
-    return this.actionsService.approveAction(dto);
+  async approveAction(@Body() dto: ApproveActionDto) {
+    return await this.actionsService.approveAction(dto);
   }
 
   @UseGuards(RolesGuard)
@@ -83,8 +79,8 @@ export class ActionsController {
     summary: 'Decline Action',
     description: 'Endpoint to decline an action.',
   })
-  declineAction(@Body() dto: ApproveActionDto) {
-    return this.actionsService.declineAction(dto);
+  async declineAction(@Body() dto: ApproveActionDto) {
+    return await this.actionsService.declineAction(dto);
   }
 
   @UseGuards(RolesGuard)
@@ -94,9 +90,8 @@ export class ActionsController {
     summary: 'Give Item (Admin)',
     description: 'Endpoint to give an item to a user by an admin.',
   })
-  giveItemAdmin(@Body() dto: GiveItemDto) {
-    console.log(dto);
-    return this.actionsService.giveItemAdmin(dto);
+  async giveItemAdmin(@Body() dto: GiveItemDto) {
+    return await this.actionsService.giveItemAdmin(dto);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -105,7 +100,7 @@ export class ActionsController {
     summary: 'Get All Actions',
     description: 'Endpoint to get all actions for a user.',
   })
-  getAllActions(
+  async getAllActions(
     @Query('userId') userId: number,
     @Query('active') active: boolean,
     @Query('type') type: ActionType,
@@ -119,6 +114,6 @@ export class ActionsController {
       page,
       limit,
     };
-    return this.actionsService.getAllActions(request);
+    return await this.actionsService.getAllActions(request);
   }
 }
