@@ -2,12 +2,8 @@ import React, { useContext, useState, useEffect } from "react";
 import { Context } from "..";
 import ActionsService from "../services/actionsService";
 import { IAction, ActionType } from "../interfaces/IAction.interface";
-import {
-  columnsForActionsTable,
-  filterColumnsForActionsTable,
-  typeMappingWithUndefined,
-} from "../common/helpers";
-import TableComponent from "../components/tables/actionsTableComponent";
+import { ActionHelpers } from "../shared/utils/helpers";
+import { ActionsTable } from "../atomic/organisms/tables";
 import { FetchActionsRequest } from "../interfaces/api-interfaces/ActionsApi.interface";
 import {
   FormControl,
@@ -21,7 +17,7 @@ import {
 const ActionsHistory = () => {
   const { store } = useContext(Context);
   const [actions, setActions] = useState<IAction[]>([]);
-  const [columns, setColumns] = useState<string[]>(columnsForActionsTable);
+  const [columns, setColumns] = useState<string[]>(ActionHelpers.columnsForActionsTable);
   const [selectedType, setSelectedType] = useState<string>("ALL");
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(10);
@@ -31,7 +27,7 @@ const ActionsHistory = () => {
   const fetchActions = async () => {
     try {
       const actionType: ActionType | undefined =
-        typeMappingWithUndefined[selectedType];
+        ActionHelpers.typeMappingWithUndefined[selectedType];
       const request: FetchActionsRequest = {
         active: false,
         type: actionType,
@@ -50,7 +46,7 @@ const ActionsHistory = () => {
 
   useEffect(() => {
     fetchActions();
-    setColumns(filterColumnsForActionsTable(false));
+    setColumns(ActionHelpers.filterColumnsForActionsTable(false));
   }, [selectedType, limit, page]);
 
   return (
@@ -112,7 +108,7 @@ const ActionsHistory = () => {
       </Grid>
 
       <Grid item xs={12}>
-        <TableComponent columns={columns} actions={actions} />
+        <ActionsTable columns={columns} actions={actions} />
       </Grid>
     </Grid>
   );

@@ -2,19 +2,15 @@ import React, { useContext, useState, useEffect } from "react";
 import { ActionType, IAction } from "../interfaces/IAction.interface";
 import { Context } from "..";
 import ActionsService from "../services/actionsService";
-import {
-  columnsForActionsTable,
-  filterColumnsForActionsTable,
-  typeMappingWithUndefined,
-} from "../common/helpers";
-import NewActionRequest from "../components/actionRequestForm";
+import { ActionHelpers } from "../shared/utils/helpers";
+import { ActionRequestForm } from "../atomic/molecules/forms";
 import {
   ActionRequest,
   ApproveActionRequest,
   DeclineActionRequest,
   FetchActionsRequest,
 } from "../interfaces/api-interfaces/ActionsApi.interface";
-import TableComponent from "../components/tables/actionsTableComponent";
+import { ActionsTable } from "../atomic/organisms/tables";
 import {
   FormControl,
   Grid,
@@ -25,15 +21,16 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import ItemCreationForm from "../components/itemCreationForm";
+import { ItemCreationForm } from "../atomic/molecules/forms";
+import { DashboardTemplate } from "../atomic/templates";
 
-const ActionsTable = () => {
+const ActionsActivePage = () => {
   const { store } = useContext(Context);
   const [actions, setActions] = useState<IAction[]>([]);
   const [pendingActionsAmount, setPendingActionsAmount] = useState<number>(0);
   const [filteredColumnsForTable, setFilteredColumnsForTable] = useState<
     string[]
-  >(columnsForActionsTable);
+  >(ActionHelpers.columnsForActionsTable);
   const [selectedType, setSelectedType] = useState<string>("ALL");
   const [totalActions, setTotalActions] = useState<number>(0);
   const [page, setPage] = useState<number>(1);
@@ -43,7 +40,7 @@ const ActionsTable = () => {
   useEffect(() => {
     fetchActions();
     setFilteredColumnsForTable(
-      filterColumnsForActionsTable(store.user.role.name === "Admin")
+      ActionHelpers.filterColumnsForActionsTable(store.user.role.name === "Admin")
     );
   }, [selectedType, limit, page]);
 
@@ -59,7 +56,7 @@ const ActionsTable = () => {
   const fetchActions = async () => {
     try {
       const actionType: ActionType | undefined =
-        typeMappingWithUndefined[selectedType];
+        ActionHelpers.typeMappingWithUndefined[selectedType];
       const request: FetchActionsRequest = {
         active: true,
         type: actionType,
@@ -107,15 +104,18 @@ const ActionsTable = () => {
   };
 
   return (
-    <Grid container xs={12} rowGap={2}>
+    <DashboardTemplate title="Actions">
+      <Grid container xs={12} rowGap={2}>
       {store.user.role.name === "User" && (
         <Grid item xs={12}>
-          <NewActionRequest handleActionRequest={handleActionRequest} />
+          <ActionRequestForm handleActionRequest={handleActionRequest} />
         </Grid>
       )}
       {store.user.role.name === "Admin" && (
         <Grid item xs={12}>
-          <ItemCreationForm onCreation={fetchActions} />
+                      <ItemCreationForm
+              onCreation={async () => await fetchActions()}
+            />
         </Grid>
       )}
       <Grid container item component={Paper} elevation={2} xs={12}>
@@ -184,15 +184,16 @@ const ActionsTable = () => {
         />
       </Grid>
       <Grid item xs={12}>
-        <TableComponent
+        <ActionsTable
           actions={actions}
           columns={filteredColumnsForTable}
           handleApproveAction={handleApproveAction}
           handleDeclineAction={handleDeclineAction}
         />
       </Grid>
-    </Grid>
+      </Grid>
+    </DashboardTemplate>
   );
 };
 
-export default ActionsTable;
+export default ActionsActivePage;

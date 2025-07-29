@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { IAudit } from "../interfaces/IAudit.interface";
 import LogsService from "../services/logsService";
-import LogsTableComponent from "../components/tables/logsTableCompoent";
+import { LogsTable } from "../atomic/organisms/tables";
 import {
   FormControl,
   Grid,
@@ -102,14 +102,14 @@ const AuditLogTable = () => {
       </Grid>
       {auditLogs.length > 0 && (
         <Grid item xs={12}>
-          <LogsTableComponent logs={auditLogs} />
+          <LogsTable logs={auditLogs} />
         </Grid>
       )}
       {auditLogs.length === 0 && (
         <Grid item xs={12} sx={{
           minWidth: "100%",
         }}>
-          <LogsTableComponent logs={fakeLogs} />
+          <LogsTable logs={fakeLogs} />
         </Grid>
       )}
     </Grid>

@@ -1,12 +1,12 @@
 import React, { useContext } from "react";
-import GreetingsComponent from "../components/greetingsComponent";
+import { GreetingsComponent } from "../atomic/organisms/interactive";
 import { Context } from "..";
 import UsersTable from "./usersPage";
 import ActionsTable from "./actionsActivePage";
 import ActionsHistory from "./actionsHistoryPage";
 import AuditLogTable from "./auditLogsPage";
 import { Box, Button, ButtonGroup, Grid } from "@mui/material";
-import LogOutComponent from "../components/authComponents/logOutComponent";
+import { LogoutButton } from "../atomic/molecules/auth";
 
 interface TablesPageProps {}
 
@@ -57,7 +57,7 @@ const TablesPage: React.FC<TablesPageProps> = () => {
             alignItems: "center",
           }}
         >
-          <LogOutComponent />
+          <LogoutButton />
         </Grid>
         <Grid xs={12} item>
           {selectedTable === "fun" && (

@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Context } from "..";
 import UsersService from "../services/usersService";
-import UserCreationForm from "../components/userCreationForm";
-import RolesCreationForm from "../components/rolesCreationForm";
-import UserMessagesModal from "../components/modals/messagerModal";
-import UserEditModal from "../components/modals/userEditModal";
-import UsersTableComponent from "../components/tables/usersTableComponent";
-import GivingItemModal from "../components/modals/givingItemModal";
+import { DashboardTemplate } from "../atomic/templates";
+import { UserCreationForm, RolesCreationForm, ActionRequestForm } from "../atomic/molecules/forms";
+import { UserEditModal } from "../atomic/molecules/modals/user";
+import { UserMessagesModal } from "../atomic/molecules/modals/message";
+import { GiveItemModal } from "../atomic/molecules/modals/item";
+import { UsersTable as UsersTableComponent } from "../atomic/organisms/tables";
 import {
   Box,
   FormControl,
@@ -18,8 +18,8 @@ import {
   Typography,
 } from "@mui/material";
 import { ChangeUserDto, GetUsersDto, UserCreationDto } from "../interfaces/api-interfaces/UsersApi.interface";
-import { IUser } from "../interfaces/IUser.interface";
-import { IRole } from "../interfaces/IRole.interface";
+import { IUser, IUserUpdateRequest } from "../types/user.types";
+import { IRole } from "../types/role.types";
 
 const UsersTable = () => {
   /* <---------------------------------------------- STORE ----------------------------------------------> */
@@ -111,12 +111,12 @@ const UsersTable = () => {
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <DashboardTemplate title="Users Management">
       <Grid container spacing={4}>
         <Grid item xs={12}>
           {store.user.role.name === "Admin" && (
-            <UserCreationForm
-              handleSubmitUserCreation={handleSubmitUserCreation}
+            <UserCreationForm 
+              onSubmit={handleSubmitUserCreation}
             />
           )}
         </Grid>
@@ -232,16 +232,18 @@ const UsersTable = () => {
       {showMessagesModal && (
         <UserMessagesModal
           user={selectedUser!}
-          handleModalClose={() => setShowMessagesModal(false)}
+          open={showMessagesModal}
+          onClose={() => setShowMessagesModal(false)}
         />
       )}
       {showGiveItemModal && (
-        <GivingItemModal
+        <GiveItemModal
           userReceiving={selectedUser!}
+          open={showGiveItemModal}
           onClose={() => setShowGiveItemModal(false)}
         />
       )}
-    </Box>
+    </DashboardTemplate>
   );
 };
 
