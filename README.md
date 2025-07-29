@@ -1,23 +1,49 @@
+# ScoreWarrior Administration System
 
-# ScoreWarrior
+A comprehensive full-stack application for managing users, items, and communication using a clean domain-driven architecture.
 
+## Architecture
 
+This project follows a **Domain-Driven Design** (DDD) architecture with clean separation of concerns:
 
+### Backend Architecture
+- **Application Layer**: Controllers and facades that handle HTTP requests
+- **Domain Layer**: Core business logic, entities, and domain services
+- **Infrastructure Layer**: Database access, external services integration
+- **Common Layer**: Shared utilities, helpers, and cross-cutting concerns
+
+### Design Patterns
+- **Repository Pattern**: Abstracts data access logic
+- **Facade Pattern**: Simplifies complex subsystems (ActionsService, AuthService)
+- **Dependency Injection**: For loose coupling and testability
+- **Single Responsibility Principle**: Each service has a clear purpose
+- **Base Service Pattern**: Common error handling abstraction
+- **DTO Pattern**: Data transfer objects for clean API boundaries
 
 ## Tech Stack
 
-**Client:** React, MobX, MaterialUI
+### Client
+- **React**: UI library for building component-based interfaces
+- **MobX**: State management with observable patterns
+- **MaterialUI**: Component library for consistent design
 
-**Server:** NestJS, Custom Interceptor, PostgreSQL, TypeORM
+### Server
+- **NestJS**: Progressive Node.js framework with modular architecture
+- **TypeORM**: ORM for database interactions with repository pattern
+- **PostgreSQL**: Relational database for structured data storage
+- **TypeScript**: Strongly-typed language for better developer experience
+- **JWT Authentication**: Access and refresh token implementation
+- **Class-Validator**: Request validation through decorators
 
-**AUX:** Docker, JWT Tokens - Access and Refresh, Class-Validation for requests
-
-
-
+### Development Tools
+- **Docker**: Containerization for consistent deployment
+- **ESLint**: Code quality enforcement
+- **Swagger**: API documentation
+- **Git Hooks**: Pre-commit code quality checks
 
 ## Environment Variables
 
-This project is running on next ports
+This project runs on the following ports:
 
 `POSTGRES_PORT` - 5432 
 
@@ -25,34 +51,31 @@ This project is running on next ports
 
 `FRONTEND_PORT` - 3000
 
+## Features
 
+- **Authentication**: SignUp/LogIn with JWT tokens and role-based access
+- **Audit System**: Comprehensive logging of all system activities
+- **Action Management**: Request/Approve/Decline workflow for operations
+- **User Management**: Role-based user administration
+- **Item System**: Item creation and transfer between users
+- **Messaging**: Internal communication system with approvals
+- **Advanced Filtering**: Type, role, and email filtering capabilities
+- **Pagination**: For efficient data display
 
-## FAQ
+### Admin Capabilities
+- Create and manage users
+- Send messages to any system user
+- Edit user profiles and roles
+- Create and distribute items
+- View audit logs and system activity
+- Approve/Decline action requests
 
-#### LogIn/LogOut 
-
-Firstly - create user or admin by switching to SingUp on the auth page and You will automatically login to created account.
-Now there is a JWT refresh implemented, so You can reload, refersh the page and still will be logged in
-IF YOU WANT TO LOG OUT - CLICK LOG OUT BUTTON
-
-#### Roles
-
-There are 2 roles created initially when project is built - Role 1 - {id: 1, name: Admin}, Role 2 - {id: 2, name: User}
-
-#### Items and Users
-
-Users in the system can possess multiple items without quantity tracking. Items are associated with users through a many-to-many relationship. Administrators can assign the same item to a user multiple times.
-
-When a user wants to transfer an item to another user, they initiate a transfer request. This request can be made repeatedly until it's approved. Once approved, the item is transferred to the designated user, and pending transfer requests will be declined even if You will click approve.
-
-#### Messages 
-
-Admin can send any message to anyone without any approval
-
-User can only request message sent and if approved - it will be sent, else action is declined and message will not be sent
-
-(Can hash message with Crypt to hide them from Admin as we did with passwords)
-
+### User Capabilities
+- Transfer owned items to other users
+- Send messages (requires approval)
+- Request various actions
+- View personal action history
+- View other system users
 
 ## Deployment
 
